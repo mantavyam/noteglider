@@ -74,7 +74,7 @@ const BuildPage = () => {
               <div className="bg-white rounded-lg shadow-sm border p-4 overflow-auto max-h-[70vh]">
                 <h2 className="text-lg font-medium mb-4">Markdown Content</h2>
                 <div className="bg-gray-50 rounded p-4">
-                  <MarkdownPreview source={markdownFile} />
+                  <MarkdownPreview file={markdownFile} />
                 </div>
               </div>
               
