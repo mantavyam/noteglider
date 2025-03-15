@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -70,25 +71,60 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+				'fade-in': {
+					from: { opacity: '0' },
+					to: { opacity: '1' }
+				},
+				'fade-out': {
+					from: { opacity: '1' },
+					to: { opacity: '0' }
+				},
+				'slide-in-right': {
+					from: { transform: 'translateX(100%)' },
+					to: { transform: 'translateX(0)' }
+				},
+				'slide-out-left': {
+					from: { transform: 'translateX(0)' },
+					to: { transform: 'translateX(-100%)' }
+				},
+				'slide-up': {
+					from: { transform: 'translateY(20px)', opacity: '0' },
+					to: { transform: 'translateY(0)', opacity: '1' }
+				},
+				'pulse-subtle': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.8' }
+				},
+				'spin-slow': {
+					from: { transform: 'rotate(0deg)' },
+					to: { transform: 'rotate(360deg)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.5s ease-out',
+				'fade-out': 'fade-out 0.5s ease-out',
+				'slide-in-right': 'slide-in-right 0.5s ease-out',
+				'slide-out-left': 'slide-out-left 0.5s ease-out',
+				'slide-up': 'slide-up 0.5s ease-out',
+				'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',
+				'spin-slow': 'spin-slow 3s linear infinite'
+			},
+			backdropFilter: {
+				'none': 'none',
+				'blur': 'blur(20px)'
+			},
+			boxShadow: {
+				'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+				'neo': '5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff'
 			}
 		}
 	},
