@@ -62,8 +62,8 @@ async def generate_pdf(
         with open(md_path, "r", encoding="utf-8") as f:
             md_content = f.read()
         
-        # Convert markdown to HTML
-        html_content = markdown.markdown(md_content)
+        # Convert markdown to HTML with support for tables
+        html_content = markdown.markdown(md_content, extensions=['tables', 'fenced_code'])
         
         # Apply CSS styling and add image references
         styled_html = f"""
@@ -73,6 +73,9 @@ async def generate_pdf(
             <meta charset="UTF-8">
             <title>Newsletter</title>
             <style>
+                @page {{
+                    margin: 20mm 15mm 20mm 15mm;
+                }}
                 body {{
                     font-family: Arial, sans-serif;
                     line-height: 1.6;
@@ -82,14 +85,75 @@ async def generate_pdf(
                 }}
                 h1, h2, h3 {{
                     color: #333;
+                    margin-top: 1.2em;
+                    margin-bottom: 0.5em;
                 }}
+                h1 {{ font-size: 24px; }}
+                h2 {{ font-size: 20px; }}
+                h3 {{ font-size: 16px; }}
+                p {{ margin: 0.6em 0; }}
                 img {{
                     max-width: 100%;
                     height: auto;
+                    display: block;
+                    margin: 1em auto;
                 }}
                 a {{
                     color: #0066cc;
                     text-decoration: none;
+                }}
+                table {{
+                    border-collapse: collapse;
+                    width: 100%;
+                    margin: 1em 0;
+                }}
+                th, td {{
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: left;
+                }}
+                th {{
+                    background-color: #f2f2f2;
+                    font-weight: bold;
+                }}
+                ul, ol {{
+                    padding-left: 2em;
+                    margin: 0.5em 0;
+                }}
+                li {{
+                    margin-bottom: 0.2em;
+                }}
+                blockquote {{
+                    margin: 1em 0;
+                    padding-left: 1em;
+                    border-left: 3px solid #ddd;
+                    color: #666;
+                }}
+                .separator-container {{
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    justify-content: center;
+                    margin: 1em 0;
+                }}
+                .separator-line {{
+                    flex-grow: 1;
+                    height: 4px;
+                    background: linear-gradient(90deg, #004aad, #5de0e6);
+                }}
+                .separator-text {{
+                    background: #0097b2;
+                    color: white;
+                    font-size: 10px;
+                    font-weight: bold;
+                    text-align: center;
+                    padding: 2px 8px;
+                    height: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    white-space: nowrap;
+                    margin: 0 10px;
                 }}
                 .footer {{
                     margin-top: 30px;
@@ -97,6 +161,33 @@ async def generate_pdf(
                     border-top: 1px solid #eee;
                     font-size: 0.8em;
                     color: #666;
+                }}
+                /* Special styling for component-like structures */
+                .question-table, .answer-table {{
+                    width: 100%;
+                    max-width: 60mm;
+                    margin: 1em auto;
+                    border: 1px solid black;
+                }}
+                .answer-table td:first-child {{
+                    width: 15%;
+                    text-align: center;
+                    border-right: 1px solid black;
+                }}
+                .static-table {{
+                    width: 100%;
+                    max-width: 60mm;
+                    margin: 1em auto;
+                }}
+                .static-table .descriptive-row {{
+                    background-color: #1d93d2;
+                    color: white;
+                    font-weight: bold;
+                }}
+                .static-table .header-row th {{
+                    color: white;
+                    background-color: #1d93d2;
+                    font-weight: bold;
                 }}
             </style>
         </head>

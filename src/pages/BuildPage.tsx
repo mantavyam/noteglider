@@ -117,22 +117,26 @@ const BuildPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[60vh]">
               {/* Left side - Markdown Preview */}
               <div className="bg-white rounded-lg shadow-sm border p-4 overflow-hidden flex flex-col">
-                <h2 className="text-lg font-medium mb-4 sticky">Markdown Content</h2>
-                <ScrollArea className="h-[60vh]">
-                  <div className="bg-gray-50 rounded p-4">
-                    <MarkdownPreview file={markdownFile} />
-                  </div>
-                </ScrollArea>
+                <h2 className="text-lg font-medium mb-4 sticky top-0 bg-white pb-2 z-10">Markdown Content</h2>
+                <div className="flex-1 overflow-hidden">
+                  <ScrollArea className="h-[60vh]">
+                    <div className="bg-gray-50 rounded p-4">
+                      <MarkdownPreview file={markdownFile} />
+                    </div>
+                  </ScrollArea>
+                </div>
               </div>
               
               {/* Right side - Image Grid */}
               <div className="bg-white rounded-lg shadow-sm border p-4 overflow-hidden flex flex-col">
-                <h2 className="text-lg font-medium mb-4 sticky">Image Assets</h2>
-                <ScrollArea className="h-[60vh]">
-                  <div className="bg-gray-50 rounded p-4">
-                    <ImageGrid zipFile={zipFile} />
-                  </div>
-                </ScrollArea>
+                <h2 className="text-lg font-medium mb-4 sticky top-0 bg-white pb-2 z-10">Image Assets</h2>
+                <div className="flex-1 overflow-hidden">
+                  <ScrollArea className="h-[60vh]">
+                    <div className="bg-gray-50 rounded p-4">
+                      <ImageGrid zipFile={zipFile} />
+                    </div>
+                  </ScrollArea>
+                </div>
               </div>
             </div>
             
