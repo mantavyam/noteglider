@@ -1,49 +1,16 @@
-
 import React from 'react';
 
 interface NewsImageProps {
-  src?: string;
-  alt?: string;
+  src: string;
+  alt: string;
 }
 
-const NewsImage: React.FC<NewsImageProps> = ({ 
-  src,
-  alt = "News Image"
-}) => {
+export const NewsImage: React.FC<NewsImageProps> = ({ src, alt }) => {
   return (
-    <div style={{
-      width: '60mm',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0mm'
-    }}>
-      <div style={{
-        width: '60mm',
-        height: '22mm',
-        backgroundColor: '#eee',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '12px',
-        color: '#666',
-        overflow: 'hidden'
-      }}>
-        {src ? (
-          <img 
-            src={src} 
-            alt={alt} 
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover'
-            }} 
-          />
-        ) : (
-          <span>Image Placeholder</span>
-        )}
+    <div className="w-[60mm] flex flex-col gap-0">
+      <div className="w-[60mm] h-[22mm] bg-gray-200 flex items-center justify-center text-[12px] text-gray-600 overflow-hidden">
+        <img src={src} alt={alt} className="w-full h-full object-cover" />
       </div>
     </div>
   );
 };
-
-export default NewsImage;

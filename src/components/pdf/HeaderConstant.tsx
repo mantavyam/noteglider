@@ -1,93 +1,30 @@
-
 import React from 'react';
 
 interface HeaderConstantProps {
-  youtubeIconSrc?: string;
-  youtubeLink?: string;
-  title?: string;
-  linkText?: string;
+  title: string;
+  linkText: string;
+  linkUrl: string;
 }
 
-const HeaderConstant: React.FC<HeaderConstantProps> = ({
-  youtubeIconSrc = "youtube.png",
-  youtubeLink = "https://www.youtube.com/@Studyniti/streams",
-  title = "IMPORTANT NEWS COVERAGE FOR ALL BANK EXAMS",
-  linkText = "[CLICK] to WATCH Today's NEWS Analysis + Current Affairs"
-}) => {
+export const HeaderConstant: React.FC<HeaderConstantProps> = ({ title, linkText, linkUrl }) => {
   return (
-    <div id="header" style={{
-      width: '210mm',
-      height: '15mm',
-      backgroundColor: '#0097b2',
-      color: '#ffffff',
-      fontSize: '8px',
-      fontFamily: 'sans-serif',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '0 5mm'
-    }}>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '5mm'
-      }}>
-        <a href={youtubeLink} target="_blank" rel="noopener noreferrer">
-          <img 
-            src={youtubeIconSrc} 
-            alt="YouTube" 
-            style={{
-              width: '6.74mm',
-              height: '4.67mm',
-              flexShrink: 0
-            }}
-          />
+    <div className="w-[210mm] h-[15mm] bg-[#0097b2] text-white text-[8px] font-sans flex justify-center items-center p-[0_5mm]">
+      <div className="flex items-center gap-[5mm]">
+        <a href={linkUrl} target="_blank">
+          <img src="/static/youtube.png" alt="YouTube" className="w-[6.74mm] h-[4.67mm]" />
         </a>
-
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          textAlign: 'center',
-          lineHeight: 0
-        }}>
-          <p style={{
-            fontSize: '7px',
-            fontWeight: 'bold'
-          }}>
-            {title}
-          </p>
-          <p>
-            <a 
-              href={youtubeLink} 
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: '#ffffff',
-                textDecoration: 'none',
-                fontWeight: 'bold',
-                fontSize: '8px'
-              }}
-            >
+        <div className="flex flex-col items-center text-center leading-none">
+          <p className="text-[7px] font-bold">{title}</p>
+          <p className="font-bold text-[8px]">
+            <a href={linkUrl} target="_blank" className="text-white no-underline">
               {linkText}
             </a>
           </p>
         </div>
-
-        <a href={youtubeLink} target="_blank" rel="noopener noreferrer">
-          <img 
-            src={youtubeIconSrc} 
-            alt="YouTube" 
-            style={{
-              width: '6.74mm',
-              height: '4.67mm',
-              flexShrink: 0
-            }}
-          />
+        <a href={linkUrl} target="_blank">
+          <img src="/static/youtube.png" alt="YouTube" className="w-[6.74mm] h-[4.67mm]" />
         </a>
       </div>
     </div>
   );
 };
-
-export default HeaderConstant;

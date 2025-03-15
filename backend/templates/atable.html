@@ -1,0 +1,19 @@
+<div class="w-[60mm] bg-[#f5f0e6] p-[5px] box-border text-center border-0">
+    <div class="text-[12px] text-black mb-[5px] font-bold">{{ title }}</div>
+    <div class="w-[57mm] border border-black p-0 box-border mx-auto">
+      <table class="w-full border-collapse">
+        <tbody>
+          {% for answer in answers %}
+            <tr>
+              <td class="text-[10px] p-[12px] border-b border-black text-center w-0 border-r border-black">
+                {{ answer.number }}
+              </td>
+              <td class="text-[10px] p-[12px] border-b border-black text-left w-[37mm]">
+                {{ answer.text }}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>

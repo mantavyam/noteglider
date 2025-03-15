@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm'; // Replaces remark-footnotes and adds table support
+import rehypeRaw from 'rehype-raw';
 import { motion } from 'framer-motion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { cn } from '@/lib/utils';
 
 interface MarkdownPreviewProps {
   file: File | null;
@@ -28,6 +33,30 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
     }
   }, [file]);
 
+  // YouTube link detection
+  const renderYouTubeEmbed = (text: string) => {
+    const youtubeRegex = /(https?:\/\/(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11}))/i;
+    const match = text.match(youtubeRegex);
+    if (match && match[1]) {
+      const videoId = match[2];
+      return (
+        <div className="my-4">
+          <iframe
+            width="100%"
+            height="315"
+            src={`https://www.youtube.com/embed/${videoId}`}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="rounded-lg shadow-md"
+          />
+        </div>
+      );
+    }
+    return null;
+  };
+
   if (isLoading) {
     return (
       <div className="h-full flex items-center justify-center">
@@ -51,72 +80,131 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="prose prose-sm max-w-none p-6 prose-headings:text-primary prose-a:text-blue-600 prose-strong:font-bold prose-li:marker:text-primary"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      className="prose prose-sm max-w-none p-6 bg-card rounded-lg shadow-lg border"
     >
       <ReactMarkdown
+        remarkPlugins={[remarkGfm]} // Use GFM for tables and other features
+        rehypePlugins={[rehypeRaw]}
         components={{
-          table: ({ node, ...props }) => (
-            <div className="my-4 w-full overflow-x-auto">
-              <Table {...props} />
+          table: ({ node, children, ...props }) => (
+            <div className="my-6 w-full overflow-x-auto">
+              <Table className="border rounded-lg shadow-sm">
+                {children}
+              </Table>
             </div>
           ),
-          thead: ({ node, ...props }) => <TableHeader {...props} />,
-          tbody: ({ node, ...props }) => <TableBody {...props} />,
-          tr: ({ node, ...props }) => <TableRow {...props} />,
-          th: ({ node, ...props }) => <TableHead className="font-bold bg-muted/50" {...props} />,
-          td: ({ node, ...props }) => <TableCell {...props} />,
+          thead: ({ node, children, ...props }) => (
+            <TableHeader {...props}>{children}</TableHeader>
+          ),
+          tbody: ({ node, children, ...props }) => (
+            <TableBody {...props}>{children}</TableBody>
+          ),
+          tr: ({ node, children, ...props }) => (
+            <TableRow className="hover:bg-muted/50" {...props}>{children}</TableRow>
+          ),
+          th: ({ node, children, ...props }) => (
+            <TableHead className="font-bold bg-muted/50 p-3" {...props}>{children}</TableHead>
+          ),
+          td: ({ node, children, ...props }) => (
+            <TableCell className="p-3" {...props}>{children}</TableCell>
+          ),
           
           ul: ({ node, ...props }) => (
-            <ul className="list-disc pl-6 my-4 space-y-2" {...props} />
+            <motion.ul
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ staggerChildren: 0.1 }}
+              className="list-disc pl-6 my-4 space-y-2"
+              {...props}
+            />
           ),
           ol: ({ node, ...props }) => (
-            <ol className="list-decimal pl-6 my-4 space-y-2" {...props} />
+            <motion.ol
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ staggerChildren: 0.1 }}
+              className="list-decimal pl-6 my-4 space-y-2"
+              {...props}
+            />
           ),
           li: ({ node, children, ...props }) => (
-            <li className="my-1" {...props}>
+            <motion.li
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              className="my-1"
+              {...props}
+            >
               {children}
-            </li>
+            </motion.li>
           ),
           
           blockquote: ({ node, ...props }) => (
-            <blockquote className="border-l-4 border-primary/50 pl-4 italic my-4" {...props} />
+            <blockquote className="border-l-4 border-primary/50 pl-4 italic my-6 bg-muted/20 p-4 rounded-r-lg shadow-sm" {...props} />
           ),
-          hr: () => <Separator className="my-6" />,
+          hr: () => <Separator className="my-6 bg-gradient-to-r from-transparent via-primary to-transparent h-0.5" />,
           h1: ({ node, ...props }) => (
-            <h1 className="text-2xl font-bold mt-6 mb-4 text-primary" {...props} />
+            <h1 className="text-3xl font-bold mt-8 mb-4 text-primary bg-gradient-to-r from-primary/10 to-transparent pr-4 rounded-lg" {...props} />
           ),
           h2: ({ node, ...props }) => (
-            <h2 className="text-xl font-bold mt-5 mb-3 text-primary/90" {...props} />
+            <h2 className="text-2xl font-bold mt-6 mb-3 text-primary/90 border-b border-primary/20 pb-1" {...props} />
           ),
           h3: ({ node, ...props }) => (
-            <h3 className="text-lg font-bold mt-4 mb-2 text-primary/80" {...props} />
+            <h3 className="text-xl font-bold mt-4 mb-2 text-primary/80" {...props} />
           ),
-          p: ({ node, ...props }) => (
-            <p className="my-3" {...props} />
-          ),
-          a: ({ node, ...props }) => (
-            <a className="text-blue-600 hover:underline" {...props} />
+          p: ({ node, children, ...props }) => {
+            const youtubeEmbed = renderYouTubeEmbed(children?.toString() || '');
+            return youtubeEmbed ? youtubeEmbed : <p className="my-4 leading-relaxed" {...props} />;
+          },
+          a: ({ node, href, ...props }) => (
+            <a href={href} className="text-blue-600 hover:underline hover:text-blue-800 transition-colors" {...props} />
           ),
           strong: ({ node, ...props }) => (
-            <strong className="font-bold" {...props} />
+            <strong className="font-bold text-foreground" {...props} />
           ),
           em: ({ node, ...props }) => (
-            <em className="italic" {...props} />
+            <em className="italic text-foreground/90" {...props} />
           ),
-          code: ({ node, inline, ...props }) => 
-            inline ? (
-              <code className="bg-gray-200 px-1 py-0.5 rounded text-sm font-mono" {...props} />
+          code: ({ node, inline, className, children, ...props }) => {
+            const match = /language-(\w+)/.exec(className || '');
+            return !inline && match ? (
+              <SyntaxHighlighter
+                style={oneDark}
+                language={match[1]}
+                PreTag="div"
+                className="rounded-md my-4 shadow-md"
+                {...props}
+              >
+                {String(children).replace(/\n$/, '')}
+              </SyntaxHighlighter>
+            ) : inline ? (
+              <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground" {...props}>
+                {children}
+              </code>
             ) : (
-              <code className="block bg-gray-100 p-2 rounded text-sm font-mono overflow-x-auto my-4" {...props} />
-            ),
-          pre: ({ node, ...props }) => (
-            <pre className="bg-gray-100 p-4 rounded-md overflow-x-auto my-4" {...props} />
+              <code className="block bg-muted p-3 rounded-md text-sm font-mono text-foreground my-4" {...props}>
+                {children}
+              </code>
+            );
+          },
+          img: ({ node, src, alt, ...props }) => (
+            <figure className="my-6">
+              <img
+                src={src}
+                alt={alt || 'image'}
+                className="max-w-full h-auto rounded-lg shadow-md border"
+                {...props}
+              />
+              {alt && <figcaption className="text-center text-sm text-muted-foreground mt-2">{alt}</figcaption>}
+            </figure>
           ),
-          img: ({ node, ...props }) => (
-            <img className="max-w-full h-auto my-4 rounded-md" {...props} alt={props.alt || 'image'} />
+          footnoteReference: ({ node, ...props }) => (
+            <sup className="text-blue-600 hover:underline cursor-pointer" {...props} />
+          ),
+          footnoteDefinition: ({ node, ...props }) => (
+            <div className="text-sm text-muted-foreground mt-2" {...props} />
           ),
         }}
       >

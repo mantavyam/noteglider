@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Layout</title>
+    <style>
+        /* Page Setup */
+        @page {
+            size: A4 portrait;
+            margin: 0;
+            @top-center {
+                content: element(header);
+            }
+            @bottom-center {
+                content: element(footer);
+            }
+        }
+
+        @page :first {
+            @top-center {
+                content: none;
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* Header Styles - First Page */
+        #header-first-pg {
+            width: 210mm;
+            height: 24mm;
+            background-color: #0097b2;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .header-line {
+            position: absolute;
+            top: 8mm;
+            left: 36mm;
+            right: 26mm;
+            height: 0;
+            border-top: 3px solid white;
+        }
+
+        .brand-name {
+            position: absolute;
+            top: 2mm;
+            left: 8mm;
+            font-size: 14px;
+            color: white;
+        }
+
+        .doc-type {
+            position: absolute;
+            top: 7mm;
+            left: 8mm;
+            background: black;
+            color: white;
+            font-size: 14px;
+            padding: 4px 5px;
+        }
+
+        .youtube-link {
+            position: absolute;
+            top: 14mm;
+            left: 8mm;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .youtube-icon {
+            margin-right: 2mm;
+        }
+
+        .youtube-icon img {
+            width: 9.37mm;
+            height: 6.48mm;
+        }
+
+        .youtube-text a {
+            color: white;
+            text-decoration: underline;
+            font-size: 10px;
+            line-height: 1.2;
+            display: block;
+        }
+
+        .tagline {
+            position: absolute;
+            top: 3mm;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: white;
+            text-align: center;
+        }
+
+        .brand-heading {
+            position: absolute;
+            top: 10mm;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            font-family: 'Ahsing', sans-serif;
+            color: white;
+            text-align: center;
+        }
+
+        .date {
+            position: absolute;
+            top: 8mm;
+            right: 8mm;
+            background: black;
+            color: white;
+            font-size: 16px;
+            padding: 4px 5px;
+        }
+
+        .author {
+            position: absolute;
+            top: 18mm;
+            right: 8mm;
+            font-size: 14px;
+            color: white;
+        }
+
+        /* Header Styles - Constant Pages */
+        #header-constant {
+            position: running(header);
+            width: 210mm;
+            height: 15mm;
+            background-color: #0097b2;
+            color: #ffffff;
+            font-size: 8px;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 5mm;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 5mm;
+        }
+
+        .header-icon-youtube {
+            width: 6.74mm;
+            height: 4.67mm;
+            flex-shrink: 0;
+        }
+
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .header-title {
+            font-size: 7px;
+            font-weight: bold;
+        }
+
+        .header-link a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 8px;
+        }
+
+        /* Footer Styles */
+        #footer {
+            position: running(footer);
+            width: 210mm;
+            height: 15mm;
+            background-color: #0097b2;
+            color: #ffffff;
+            font-size: 7.5px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 15mm;
+            box-sizing: border-box;
+        }
+
+        .footer-block {
+            width: 33%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .footer-title {
+            font-weight: bold;
+            margin: 0 0 2px 0;
+            line-height: 1.2em;
+        }
+
+        .block-1-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 2px;
+        }
+
+        .icon-instagram {
+            width: 4.17mm;
+            height: 4.17mm;
+        }
+
+        .icon-youtube {
+            width: 4.84mm;
+            height: 3.35mm;
+        }
+
+        .icon-telegram {
+            width: 3.67mm;
+            height: 3.67mm;
+        }
+
+        .block-2-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+        .icon-brand {
+            width: 7mm;
+            height: 7mm;
+            flex-shrink: 0;
+        }
+
+        .block-2-links {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            align-items: flex-start;
+        }
+
+        .footer-line {
+            margin: 2px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        #footer a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        /* Content Area */
+        .content-area {
+            position: absolute;
+            top: 24mm; /* Below first page header */
+            left: 10mm;
+            width: 190mm;
+            height: 258mm; /* Adjusted for footer */
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .column {
+            width: 63.33mm;
+            height: 100%;
+            overflow: hidden;
+            padding: 1mm;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Vertical Dividers */
+        .divider {
+            position: absolute;
+            top: 24mm;
+            height: 258mm;
+            width: 0;
+            border-left: 1px solid black;
+        }
+
+        .divider-1 {
+            left: 73.33mm;
+        }
+
+        .divider-2 {
+            left: 136.66mm;
+        }
+
+        /* Adjust content area for subsequent pages */
+        .page:not(:first-child) .content-area {
+            top: 15mm;
+            height: 267mm;
+        }
+
+        .page:not(:first-child) .divider {
+            top: 15mm;
+            height: 267mm;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- First Page Header -->
+        <div id="header-first-pg">
+            {% include 'header_main.html' %}
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="column column-1">
+                {% include 'qtable.html' %}
+            </div>
+            <div class="column column-2">
+                <!-- News blocks will be populated dynamically -->
+                {{ news_content_column_2|safe }}
+            </div>
+            <div class="column column-3">
+                <!-- News blocks and answer table will be populated dynamically -->
+                {{ news_content_column_3|safe }}
+                {% include 'atable.html' %}
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div id="footer">
+            {% include 'footer.html' %}
+        </div>
+
+        <!-- Dividers -->
+        <div class="divider divider-1"></div>
+        <div class="divider divider-2"></div>
+    </div>
+
+    <!-- Constant Header for Subsequent Pages -->
+    <div id="header-constant">
+        {% include 'header_const.html' %}
+    </div>
+</body>
+</html>

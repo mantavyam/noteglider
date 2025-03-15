@@ -1,31 +1,15 @@
-
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 interface NewsDescriptionProps {
-  children: ReactNode;
+  content: string;
 }
 
-const NewsDescription: React.FC<NewsDescriptionProps> = ({ children }) => {
+export const NewsDescription: React.FC<NewsDescriptionProps> = ({ content }) => {
   return (
-    <div style={{
-      width: '60mm',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0mm'
-    }}>
-      <div style={{
-        width: '60mm',
-        fontSize: '8px',
-        padding: '1mm',
-        boxSizing: 'border-box',
-        wordWrap: 'break-word',
-        textAlign: 'justify',
-        textJustify: 'inter-word'
-      }}>
-        {children}
+    <div className="w-[60mm] flex flex-col gap-0">
+      <div className="w-[60mm] text-[8px] p-[1mm] box-border break-words text-justify">
+        <div dangerouslySetInnerHTML={{ __html: content }} />
       </div>
     </div>
   );
 };
-
-export default NewsDescription;

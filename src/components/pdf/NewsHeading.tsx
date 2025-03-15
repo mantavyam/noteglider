@@ -1,33 +1,15 @@
-
 import React from 'react';
 
 interface NewsHeadingProps {
   heading: string;
 }
 
-const NewsHeading: React.FC<NewsHeadingProps> = ({ 
-  heading = "Heading Data Comes Here"
-}) => {
+export const NewsHeading: React.FC<NewsHeadingProps> = ({ heading }) => {
   return (
-    <div style={{
-      width: '60mm',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0mm'
-    }}>
-      <div style={{
-        width: '60mm',
-        fontSize: '10px',
-        padding: '0mm',
-        boxSizing: 'border-box',
-        wordWrap: 'break-word',
-        textAlign: 'justify',
-        textJustify: 'inter-word'
-      }}>
+    <div className="w-[60mm] flex flex-col gap-0">
+      <div className="w-[60mm] text-[10px] p-0 box-border break-words text-justify">
         {heading}
       </div>
     </div>
   );
 };
-
-export default NewsHeading;
