@@ -28,28 +28,28 @@ const Index = () => {
       title: 'PDF SDK for document creation, editing, and conversion',
       description: 'Transform your markdown documents into beautifully designed PDF newsletters with our powerful generation engine.',
       color: 'bg-green-100',
-      image: '/placeholder.svg'
+      image: "/landing-assets/landing-1.png"
     },
     {
       icon: <Shield className="h-8 w-8" />,
       title: 'Integrate secure MD5 document solutions',
       description: 'Ensure your documents are secure and can be verified with built-in MD5 hash verification for document integrity.',
       color: 'bg-orange-100',
-      image: '/placeholder.svg'
+      image: "/landing-assets/landing-2.png"
     },
     {
       icon: <Zap className="h-8 w-8" />,
       title: 'Automate and track complex workflows',
       description: 'Streamline your document generation process with automated workflows and comprehensive tracking.',
       color: 'bg-purple-100',
-      image: '/placeholder.svg'
+      image: "/landing-assets/landing-3.png"
     },
     {
       icon: <Cloud className="h-8 w-8" />,
       title: 'Leverage modern cloud-based document processing',
       description: 'Take advantage of cloud infrastructure to process documents at scale with reliable performance.',
       color: 'bg-yellow-100',
-      image: '/placeholder.svg'
+      image: "/landing-assets/landing-4.png"
     }
   ];
 
@@ -67,7 +67,7 @@ const Index = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                 >
-                  Building blocks to accelerate your digital transformation
+                  Accelerate Your Document Generation Process
                 </motion.h1>
                 <motion.p 
                   className="text-xl text-muted-foreground"
@@ -103,7 +103,7 @@ const Index = () => {
                     Featured
                   </div>
                   <img
-                    src={"/lovable-uploads/4bd857ff-8afc-411b-a3e4-9d2ce81bedbe.png"}
+                    src={"/landing-assets/landing-featured.png"}
                     alt="Newsletter preview"
                     className="rounded-xl shadow-lg w-full"
                   />
