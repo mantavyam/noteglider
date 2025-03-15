@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion } from 'framer-motion';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface MarkdownPreviewProps {
   file: File | null;
@@ -53,9 +54,30 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="prose prose-sm max-w-none p-6 overflow-auto h-full"
+      className="prose prose-sm max-w-none p-6 prose-headings:text-primary prose-a:text-blue-600 prose-strong:font-bold prose-li:marker:text-primary"
     >
-      <ReactMarkdown>{content}</ReactMarkdown>
+      <ReactMarkdown
+        components={{
+          table: ({ children }) => (
+            <div className="overflow-x-auto my-6">
+              <Table>{children}</Table>
+            </div>
+          ),
+          thead: ({ children }) => <TableHeader>{children}</TableHeader>,
+          tbody: ({ children }) => <TableBody>{children}</TableBody>,
+          tr: ({ children }) => <TableRow>{children}</TableRow>,
+          th: ({ children }) => <TableHead>{children}</TableHead>,
+          td: ({ children }) => <TableCell>{children}</TableCell>,
+          ul: ({ children }) => <ul className="list-disc pl-6 my-4">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal pl-6 my-4">{children}</ol>,
+          li: ({ children }) => <li className="my-1">{children}</li>,
+          blockquote: ({ children }) => (
+            <blockquote className="border-l-4 border-primary/50 pl-4 italic my-4">{children}</blockquote>
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
     </motion.div>
   );
 };

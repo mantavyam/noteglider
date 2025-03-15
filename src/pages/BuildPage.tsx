@@ -9,6 +9,7 @@ import ImageGrid from '@/components/ImageGrid';
 import Layout from '@/components/Layout';
 import PageTransition from '@/components/PageTransition';
 import { generatePDF } from '@/services/api';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface LocationState {
   markdownFile: File;
@@ -115,19 +116,23 @@ const BuildPage = () => {
             {/* Preview Container */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[60vh]">
               {/* Left side - Markdown Preview */}
-              <div className="bg-white rounded-lg shadow-sm border p-4 overflow-auto max-h-[70vh]">
-                <h2 className="text-lg font-medium mb-4">Markdown Content</h2>
-                <div className="bg-gray-50 rounded p-4">
-                  <MarkdownPreview file={markdownFile} />
-                </div>
+              <div className="bg-white rounded-lg shadow-sm border p-4 overflow-hidden flex flex-col">
+                <h2 className="text-lg font-medium mb-4 sticky">Markdown Content</h2>
+                <ScrollArea className="h-[60vh]">
+                  <div className="bg-gray-50 rounded p-4">
+                    <MarkdownPreview file={markdownFile} />
+                  </div>
+                </ScrollArea>
               </div>
               
               {/* Right side - Image Grid */}
-              <div className="bg-white rounded-lg shadow-sm border p-4 overflow-auto max-h-[70vh]">
-                <h2 className="text-lg font-medium mb-4">Image Assets</h2>
-                <div className="bg-gray-50 rounded p-4 h-full">
-                  <ImageGrid zipFile={zipFile} />
-                </div>
+              <div className="bg-white rounded-lg shadow-sm border p-4 overflow-hidden flex flex-col">
+                <h2 className="text-lg font-medium mb-4 sticky">Image Assets</h2>
+                <ScrollArea className="h-[60vh]">
+                  <div className="bg-gray-50 rounded p-4">
+                    <ImageGrid zipFile={zipFile} />
+                  </div>
+                </ScrollArea>
               </div>
             </div>
             

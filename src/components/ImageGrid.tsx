@@ -9,7 +9,9 @@ interface ImageGridProps {
 
 interface ImageItem {
   name: string;
+  displayName: string;
   url: string;
+  sortOrder: number;
 }
 
 const ImageGrid: React.FC<ImageGridProps> = ({ zipFile }) => {
@@ -39,8 +41,24 @@ const ImageGrid: React.FC<ImageGridProps> = ({ zipFile }) => {
           if (imageExtensions.includes(extension)) {
             const blob = await file.async('blob');
             const url = URL.createObjectURL(blob);
-            const name = relativePath.split('/').pop() || '';
-            imageFiles.push({ name, url });
+            
+            // Get just the filename (after the last slash)
+            const fullName = relativePath.split('/').pop() || '';
+            
+            // Extract the number from the beginning of the filename
+            const numberMatch = fullName.match(/^(\d+)-/);
+            const sortOrder = numberMatch ? parseInt(numberMatch[1], 10) : 999;
+            
+            // Create a display name without the directory part
+            let displayName = fullName;
+            
+            // Add the image with all necessary info
+            imageFiles.push({ 
+              name: fullName, 
+              displayName, 
+              url, 
+              sortOrder 
+            });
           }
         };
         
@@ -53,7 +71,10 @@ const ImageGrid: React.FC<ImageGridProps> = ({ zipFile }) => {
         });
         
         await Promise.all(promises);
-        setImages(imageFiles);
+        
+        // Sort images by the extracted number
+        const sortedImages = imageFiles.sort((a, b) => a.sortOrder - b.sortOrder);
+        setImages(sortedImages);
       } catch (err) {
         console.error('Error extracting images from zip:', err);
         setError('Failed to extract images from the ZIP file');
@@ -83,7 +104,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({ zipFile }) => {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-4">
       {images.map((image, index) => (
         <motion.div
           key={index}
@@ -95,11 +116,14 @@ const ImageGrid: React.FC<ImageGridProps> = ({ zipFile }) => {
           <div className="relative w-full aspect-square bg-gray-100 rounded-md overflow-hidden">
             <img 
               src={image.url} 
-              alt={image.name}
+              alt={image.displayName}
               className="w-full h-full object-cover" 
             />
+            <div className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded-full">
+              #{image.sortOrder}
+            </div>
           </div>
-          <p className="mt-2 text-sm text-center truncate w-full">{image.name}</p>
+          <p className="mt-2 text-sm text-center truncate w-full">{image.displayName}</p>
         </motion.div>
       ))}
     </div>

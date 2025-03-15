@@ -133,16 +133,21 @@ const DownloadPage = () => {
                 </Button>
               </div>
               
-              <ScrollArea className="flex-1 border rounded-md bg-white min-h-[500px]">
+              <div className="flex-1 border rounded-md bg-white overflow-hidden">
                 {state.pdfUrl && (
-                  <iframe
-                    src={`${backendUrl}${state.pdfUrl}`}
-                    title="PDF Preview"
+                  <object
+                    data={`${backendUrl}${state.pdfUrl}`}
+                    type="application/pdf"
                     className="w-full h-[680px]"
-                    frameBorder="0"
-                  />
+                  >
+                    <p>Your browser does not support PDF preview. 
+                      <a href={`${backendUrl}${state.pdfUrl}`} target="_blank" rel="noopener noreferrer">
+                        Click here to open the PDF
+                      </a>
+                    </p>
+                  </object>
                 )}
-              </ScrollArea>
+              </div>
             </div>
           </div>
         </div>
