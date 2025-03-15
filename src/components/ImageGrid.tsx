@@ -68,4 +68,42 @@ const ImageGrid: React.FC<ImageGridProps> = ({ zipFile }) => {
       // Clean up object URLs to prevent memory leaks
       images.forEach(image => URL.revokeObjectURL(image.url));
     };
-  },
+  }, [zipFile]);
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-full">Loading images...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+
+  if (images.length === 0 && !isLoading) {
+    return <div className="text-center text-gray-500">No images found in the ZIP file.</div>;
+  }
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+      {images.map((image, index) => (
+        <motion.div
+          key={index}
+          className="flex flex-col items-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+        >
+          <div className="relative w-full aspect-square bg-gray-100 rounded-md overflow-hidden">
+            <img 
+              src={image.url} 
+              alt={image.name}
+              className="w-full h-full object-cover" 
+            />
+          </div>
+          <p className="mt-2 text-sm text-center truncate w-full">{image.name}</p>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
+export default ImageGrid;
