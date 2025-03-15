@@ -2,6 +2,9 @@
 
 ## Project info
 
+**About**
+A SaaS web application that automates the creation of dynamically designed PDF newsletters by processing a Markdown document and associated image assets.
+
 ## How can I edit this code?
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. 
@@ -35,26 +38,26 @@ pip install -r requirements.txt
 This project is built with .
 
 **Frontend**
-Vite: For fast development and optimized builds
-React: Core UI library
-TypeScript: For type safety
-React Router: For client-side routing
-TanStack Query: For server state management and data fetching
-Axios: For API requests to the backend
-shadcn-ui: Component library built on Radix UI
-Tailwind CSS: For utility-first styling
-Framer Motion: For animations
-JSZip: For handling ZIP files
+- Vite: For fast development and optimized builds
+- React: Core UI library
+- TypeScript: For type safety
+- React Router: For client-side routing
+- TanStack Query: For server state management and data fetching
+- Axios: For API requests to the backend
+- shadcn-ui: Component library built on Radix UI
+- Tailwind CSS: For utility-first styling
+- Framer Motion: For animations
+- JSZip: For handling ZIP files
 
 **Backend**
-Python: Main backend language
-FastAPI: Web framework for building APIs
-Uvicorn: ASGI server to run FastAPI
-WeasyPrint: For generating PDFs from HTML/CSS
-python-multipart: For handling file uploads
-Markdown: For converting Markdown to HTML
-python-dotenv: For environment variable management
-Pydantic: For data validation
+- Python: Main backend language
+- FastAPI: Web framework for building APIs
+- Uvicorn: ASGI server to run FastAPI
+- WeasyPrint: For generating PDFs from HTML/CSS
+- python-multipart: For handling file uploads
+- Markdown: For converting Markdown to HTML
+- python-dotenv: For environment variable management
+- Pydantic: For data validation
 
 **Communication**
 REST API: For communication between frontend and backend
