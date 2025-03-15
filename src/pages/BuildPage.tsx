@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, UploadCloud, AlertTriangle, ArrowRight } from 'lucide-react';
@@ -8,13 +8,25 @@ import MarkdownPreview from '@/components/MarkdownPreview';
 import ImageGrid from '@/components/ImageGrid';
 import Layout from '@/components/Layout';
 import PageTransition from '@/components/PageTransition';
+import { generatePDF } from '@/services/api';
+
+interface LocationState {
+  markdownFile: File;
+  imagesZip: File;
+  streamUrl?: string;
+}
 
 const BuildPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
-  // For demo purposes, we need to handle the case where there's no file uploaded
-  const [markdownFile] = useState<File | null>(null);
-  const [zipFile] = useState<File | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  
+  // Get state from navigation or use default empty values
+  const state = location.state as LocationState | null;
+  const markdownFile = state?.markdownFile || null;
+  const zipFile = state?.imagesZip || null;
+  const customUrl = state?.streamUrl;
 
   const handleReupload = () => {
     navigate('/task');
@@ -28,13 +40,45 @@ const BuildPage = () => {
     navigate('/');
   };
 
-  const handleContinue = () => {
-    // Placeholder for future backend integration
-    toast({
-      title: "Processing Started",
-      description: "Your newsletter is being generated",
-    });
-    navigate('/download');
+  const handleContinue = async () => {
+    if (!markdownFile || !zipFile) {
+      toast({
+        title: "Missing Files",
+        description: "Please upload both markdown and image files",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsGenerating(true);
+    
+    try {
+      toast({
+        title: "Processing Started",
+        description: "Your newsletter is being generated",
+      });
+      
+      const result = await generatePDF(markdownFile, zipFile, customUrl);
+      
+      // Navigate to download page with the result data
+      navigate('/download', { 
+        state: { 
+          pdfUrl: result.pdf_url,
+          filename: result.filename,
+          size: result.size,
+          createdAt: new Date().toISOString()
+        } 
+      });
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      toast({
+        title: "Generation Failed",
+        description: "There was an error generating your newsletter. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   // Show a message if no files are uploaded yet
@@ -98,8 +142,13 @@ const BuildPage = () => {
                 </Button>
               </div>
               
-              <Button onClick={handleContinue} className="w-full sm:w-auto">
-                Continue <ArrowRight className="ml-2 h-4 w-4" />
+              <Button 
+                onClick={handleContinue} 
+                className="w-full sm:w-auto"
+                disabled={isGenerating}
+              >
+                {isGenerating ? "Generating..." : "Continue"} 
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
