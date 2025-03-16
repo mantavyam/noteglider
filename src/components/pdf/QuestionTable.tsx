@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface QuestionTableProps {
@@ -5,18 +6,16 @@ interface QuestionTableProps {
   questions: string[];
 }
 
-export const QuestionTable: React.FC<QuestionTableProps> = ({ title, questions }) => {
+const QuestionTable: React.FC<QuestionTableProps> = ({ title, questions }) => {
   return (
-    <div className="w-[60mm] border border-black p-[5px] box-border text-center">
-      <div className="text-[10px] text-black mb-[5px] font-bold">{title}</div>
-      <div className="w-[57mm] border border-black p-0 box-border mx-auto">
-        <table className="w-full border-separate border-spacing-0">
+    <div className="outer-container">
+      <div className="table-title">{title}</div>
+      <div className="inner-table-container">
+        <table className="question-table" cellSpacing="0">
           <tbody>
             {questions.map((question, index) => (
               <tr key={index}>
-                <td className="text-[10px] p-[12px] border-b border-black text-left last:border-b-0">
-                  {question}
-                </td>
+                <td>{question}</td>
               </tr>
             ))}
           </tbody>
@@ -25,3 +24,5 @@ export const QuestionTable: React.FC<QuestionTableProps> = ({ title, questions }
     </div>
   );
 };
+
+export default QuestionTable;

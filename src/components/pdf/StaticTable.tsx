@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface StaticTableProps {
@@ -6,30 +7,24 @@ interface StaticTableProps {
   rows: string[][];
 }
 
-export const StaticTable: React.FC<StaticTableProps> = ({ descriptiveRow, headers, rows }) => {
+const StaticTable: React.FC<StaticTableProps> = ({ descriptiveRow, headers, rows }) => {
   return (
-    <table className="w-[60mm] border-collapse border border-[#c8daea] text-[8px]">
+    <table className="static-table">
       <tbody>
-        <tr className="bg-[#1d93d2] text-white font-bold">
-          <td colSpan={headers ? headers.length : 2} className="p-[4px] border border-[#c8daea] text-left">
-            {descriptiveRow}
-          </td>
+        <tr className="descriptive-row">
+          <td colSpan={headers ? headers.length : rows[0].length}>{descriptiveRow}</td>
         </tr>
         {headers && (
-          <tr className="bg-[#1d93d2] text-white font-bold">
+          <tr className="header-row">
             {headers.map((header, index) => (
-              <th key={index} className="p-[4px] border border-[#c8daea] text-left">
-                {header}
-              </th>
+              <th key={index}>{header}</th>
             ))}
           </tr>
         )}
         {rows.map((row, rowIndex) => (
           <tr key={rowIndex}>
             {row.map((cell, cellIndex) => (
-              <td key={cellIndex} className="p-[4px] border border-[#c8daea] text-left">
-                {cell}
-              </td>
+              <td key={cellIndex}>{cell}</td>
             ))}
           </tr>
         ))}
@@ -37,3 +32,5 @@ export const StaticTable: React.FC<StaticTableProps> = ({ descriptiveRow, header
     </table>
   );
 };
+
+export default StaticTable;

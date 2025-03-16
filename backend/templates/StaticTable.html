@@ -1,27 +1,22 @@
-<table class="w-[60mm] border-collapse border border-[#c8daea] text-[8px]">
-    <tbody>
-      <tr class="bg-[#1d93d2] text-white font-bold">
-        <td colspan="{{ headers|length if headers else 2 }}" class="p-[4px] border border-[#c8daea] text-left">
-          {{ descriptive_row }}
-        </td>
-      </tr>
-      {% if headers %}
-        <tr class="bg-[#1d93d2] text-white font-bold">
-          {% for header in headers %}
-            <th class="p-[4px] border border-[#c8daea] text-left">
-              {{ header }}
-            </th>
-          {% endfor %}
-        </tr>
-      {% endif %}
-      {% for row in rows %}
-        <tr>
-          {% for cell in row %}
-            <td class="p-[4px] border border-[#c8daea] text-left">
-              {{ cell }}
-            </td>
-          {% endfor %}
-        </tr>
+
+<table class="static-table">
+  <tbody>
+    <tr class="descriptive-row">
+      <td colspan="{{ headers|length if headers else rows[0]|length }}">{{ descriptive_row }}</td>
+    </tr>
+    {% if headers %}
+    <tr class="header-row">
+      {% for header in headers %}
+      <th>{{ header }}</th>
       {% endfor %}
-    </tbody>
-  </table>
+    </tr>
+    {% endif %}
+    {% for row in rows %}
+    <tr>
+      {% for cell in row %}
+      <td>{{ cell }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

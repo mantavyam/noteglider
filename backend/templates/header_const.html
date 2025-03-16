@@ -1,18 +1,21 @@
-<div class="w-[210mm] h-[15mm] bg-[#0097b2] text-white text-[8px] font-sans flex justify-center items-center p-[0_5mm]">
-    <div class="flex items-center gap-[5mm]">
-      <a href="{{ link_url }}" target="_blank">
-        <img src="/static/youtube.png" alt="YouTube" class="w-[6.74mm] h-[4.67mm]" />
-      </a>
-      <div class="flex flex-col items-center text-center leading-none">
-        <p class="text-[7px] font-bold">{{ title }}</p>
-        <p class="font-bold text-[8px]">
-          <a href="{{ link_url }}" target="_blank" class="text-white no-underline">
-            {{ link_text }}
-          </a>
-        </p>
-      </div>
-      <a href="{{ link_url }}" target="_blank">
-        <img src="/static/youtube.png" alt="YouTube" class="w-[6.74mm] h-[4.67mm]" />
-      </a>
+
+<div id="header">
+  <div class="header-content">
+    <a href="{{ link_url }}" target="_blank">
+      <img src="/static/youtube.png" alt="YouTube" class="icon-youtube">
+    </a>
+
+    <div class="header-text">
+      <p class="header-title">{{ title }}</p>
+      <p class="header-link">
+        <a href="{{ link_url }}" target="_blank">
+          {{ link_text }}
+        </a>
+      </p>
     </div>
+
+    <a href="{{ link_url }}" target="_blank">
+      <img src="/static/youtube.png" alt="YouTube" class="icon-youtube">
+    </a>
   </div>
+</div>

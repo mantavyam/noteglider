@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface NewsImageProps {
@@ -5,12 +6,14 @@ interface NewsImageProps {
   alt: string;
 }
 
-export const NewsImage: React.FC<NewsImageProps> = ({ src, alt }) => {
+const NewsImage: React.FC<NewsImageProps> = ({ src, alt }) => {
   return (
-    <div className="w-[60mm] flex flex-col gap-0">
-      <div className="w-[60mm] h-[22mm] bg-gray-200 flex items-center justify-center text-[12px] text-gray-600 overflow-hidden">
-        <img src={src} alt={alt} className="w-full h-full object-cover" />
+    <div className="image-block">
+      <div className="image-placeholder">
+        <img src={src} alt={alt} />
       </div>
     </div>
   );
 };
+
+export default NewsImage;

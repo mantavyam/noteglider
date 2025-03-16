@@ -1,16 +1,13 @@
-<div class="w-[60mm] border border-black p-[5px] box-border text-center">
-    <div class="text-[10px] text-black mb-[5px] font-bold">{{ title }}</div>
-    <div class="w-[57mm] border border-black p-0 box-border mx-auto">
-      <table class="w-full border-separate border-spacing-0">
-        <tbody>
-          {% for question in questions %}
-            <tr>
-              <td class="text-[10px] p-[12px] border-b border-black text-left {{ 'last:border-b-0' if loop.last }}">
-                {{ question }}
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+
+<div class="outer-container">
+  <div class="table-title">Important Q&amp;A</div>
+  <div class="inner-table-container">
+    <table class="question-table" cellspacing="0">
+      <tbody>
+        {% for question in questions %}
+          <tr><td>{{ question }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
+</div>

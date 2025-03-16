@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,11 +48,11 @@
             z-index: 1;
         }
 
-        .header-line {
+        .line {
             position: absolute;
             top: 8mm;
             left: 36mm;
-            right: 26mm;
+            right: 36mm;
             height: 0;
             border-top: 3px solid white;
         }
@@ -71,12 +72,12 @@
             background: black;
             color: white;
             font-size: 14px;
-            padding: 4px 5px;
+            padding: 2px 5px;
         }
 
         .youtube-link {
             position: absolute;
-            top: 14mm;
+            top: 12mm;
             left: 8mm;
             display: flex;
             align-items: flex-start;
@@ -126,8 +127,8 @@
             right: 8mm;
             background: black;
             color: white;
-            font-size: 16px;
-            padding: 4px 5px;
+            font-size: 18px;
+            padding: 2px 5px;
         }
 
         .author {
@@ -139,7 +140,7 @@
         }
 
         /* Header Styles - Constant Pages */
-        #header-constant {
+        #header {
             position: running(header);
             width: 210mm;
             height: 15mm;
@@ -159,7 +160,7 @@
             gap: 5mm;
         }
 
-        .header-icon-youtube {
+        .icon-youtube {
             width: 6.74mm;
             height: 4.67mm;
             flex-shrink: 0;
@@ -318,6 +319,229 @@
             top: 15mm;
             height: 267mm;
         }
+
+        /* Component Styles */
+        /* Question Table */
+        .outer-container {
+            width: 60mm;
+            border: 1px solid black;
+            padding: 5px;
+            box-sizing: border-box;
+            text-align: center;
+            margin-bottom: 2mm;
+        }
+
+        .table-title {
+            font-size: 10px;
+            color: black;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .inner-table-container {
+            width: 57mm;
+            border: 1px solid black;
+            padding: 0px;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+
+        .question-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .question-table td {
+            font-size: 10px;
+            padding: 12px;
+            border-bottom: 1px solid black;
+            text-align: left;
+        }
+
+        .question-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Answer Table */
+        .answer-table-outer {
+            width: 60mm;
+            background-color: #f5f0e6;
+            padding: 5px;
+            box-sizing: border-box;
+            text-align: center;
+            border: 0px solid black;
+            margin-bottom: 2mm;
+        }
+
+        .answer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .answer-table td {
+            font-size: 10px;
+            padding: 12px;
+            border-bottom: 1px solid black;
+            text-align: left;
+        }
+
+        .answer-table td:first-child {
+            width: 0mm;
+            border-right: 1px solid black;
+            text-align: center;
+        }
+
+        .answer-table td:last-child {
+            width: 37mm;
+        }
+
+        .answer-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Category Separator */
+        .separator-container {
+            display: flex;
+            align-items: center;
+            width: 63.33mm;
+            justify-content: center;
+            margin-bottom: 2mm;
+        }
+
+        .separator-line {
+            flex-grow: 1;
+            height: 4px;
+            background: linear-gradient(90deg, #004aad, #5de0e6);
+        }
+
+        .separator-text {
+            background: #0097b2;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            padding: 2px 8px;
+            height: 4mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            margin: 0px;
+        }
+
+        /* News Components */
+        .heading-block {
+            width: 60mm;
+            display: flex;
+            flex-direction: column;
+            gap: 0mm;
+        }
+
+        .news-heading {
+            width: 60mm;
+            font-size: 10px;
+            padding: 0mm;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        .image-block {
+            width: 60mm;
+            display: flex;
+            flex-direction: column;
+            gap: 0mm;
+        }
+
+        .image-placeholder {
+            width: 60mm;
+            height: 22mm;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+            overflow: hidden;
+        }
+
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .descriptive-block {
+            width: 60mm;
+            display: flex;
+            flex-direction: column;
+            gap: 0mm;
+        }
+
+        .descriptive-info {
+            width: 60mm;
+            font-size: 8px;
+            padding: 1mm;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        .descriptive-info ul, .descriptive-info ol {
+            padding-left: 3mm;
+            margin: 0.5mm 0;
+        }
+
+        .descriptive-info li {
+            margin-bottom: 0.5mm;
+        }
+
+        .descriptive-info strong, .descriptive-info b {
+            font-weight: bold;
+        }
+
+        .descriptive-info em, .descriptive-info i {
+            font-style: italic;
+        }
+
+        .descriptive-info p {
+            margin: 0.5mm 0;
+        }
+
+        /* Static Table */
+        .static-table {
+            width: 60mm;
+            border-collapse: collapse;
+            border-spacing: 0;
+            border: 1px solid #c8daea;
+            font-size: 8px;
+            margin-bottom: 2mm;
+        }
+
+        .static-table td, .static-table th {
+            padding: 4px;
+            border: 1px solid #c8daea;
+            text-align: left;
+        }
+
+        .static-table .descriptive-row {
+            background-color: #1d93d2;
+            color: white;
+            font-weight: bold;
+        }
+
+        .static-table .header-row th {
+            color: white;
+            background-color: #1d93d2;
+            font-weight: bold;
+        }
+
+        .static-table .descriptive-row td {
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -354,7 +578,7 @@
     </div>
 
     <!-- Constant Header for Subsequent Pages -->
-    <div id="header-constant">
+    <div id="header">
         {% include 'header_const.html' %}
     </div>
 </body>
