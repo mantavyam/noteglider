@@ -1,8 +1,50 @@
 
+<style>
+  .outer-container {
+    width: 60mm;
+    border: 1px solid black;
+    padding: 5px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  
+  .table-title {
+    font-size: 10px;
+    color: black;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .inner-table-container {
+    width: 57mm;
+    border: 1px solid black;
+    padding: 0px;
+    box-sizing: border-box;
+    margin: 0 auto;
+  }
+
+  .question-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .question-table td {
+    font-size: 10px;
+    padding: 12px;
+    border-bottom: 1px solid black;
+    text-align: left;
+  }
+
+  .question-table tr:last-child td {
+    border-bottom: none;
+  }
+</style>
+
 <div class="outer-container">
   <div class="table-title">Important Q&amp;A</div>
   <div class="inner-table-container">
-    <table class="question-table" cellspacing="0">
+    <table class="question-table" cellspacing="12">
       <tbody>
         {% for question in questions %}
           <tr><td>{{ question }}</td></tr>

@@ -1,0 +1,32 @@
+<!-- 
+  News Block Container - Combines NewsHeading, NewsDescription and NewsImage
+  This acts as a wrapper component for news items
+-->
+<style>
+  .news-block-container {
+    width: 63.33mm;
+    margin: 2mm 0;
+    box-sizing: border-box;
+  }
+</style>
+
+<div class="news-block-container">
+  <!-- NewsHeading component rendered internally -->
+  <div class="news-heading">
+    <h3>{{ heading }}</h3>
+  </div>
+  
+  <!-- Content section -->
+  {% if content %}
+  <div class="news-content">
+    {{ content|safe }}
+  </div>
+  {% endif %}
+  
+  <!-- Image section if available -->
+  {% if image_path %}
+  <div class="news-image">
+    <img src="{{ image_path }}" alt="{{ heading }}">
+  </div>
+  {% endif %}
+</div>

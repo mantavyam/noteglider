@@ -10,18 +10,6 @@
         @page {
             size: A4 portrait;
             margin: 0;
-            @top-center {
-                content: element(header);
-            }
-            @bottom-center {
-                content: element(footer);
-            }
-        }
-
-        @page :first {
-            @top-center {
-                content: none;
-            }
         }
 
         body {
@@ -37,7 +25,59 @@
             box-sizing: border-box;
         }
 
-        /* Header Styles - First Page */
+        /* Content Area */
+        .content-area {
+            position: absolute;
+            top: 24mm; /* First page header height */
+            left: 10mm;
+            width: 190mm; /* 210mm - (2 * 10mm margin) */
+            height: 258mm; /* 297mm - 24mm - 15mm */
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .content-area-other {
+            top: 15mm; /* Constant header height */
+            height: 267mm; /* 297mm - 15mm - 15mm */
+        }
+
+        .column {
+            width: 63.33mm; /* 190mm / 3 */
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Vertical Dividers */
+        .divider {
+            position: absolute;
+            width: 1px;
+            background-color: #000;
+        }
+
+        .divider-1 {
+            left: 73.33mm;
+            top: 15mm;
+            height: 267mm;
+        }
+
+        .divider-2 {
+            left: 136.66mm;
+            top: 15mm;
+            height: 267mm;
+        }
+
+        /* First Page Specific */
+        .first-page .divider-1,
+        .first-page .divider-2 {
+            top: 24mm;
+            height: 258mm;
+        }
+
+        /* Headers */
         #header-first-pg {
             width: 210mm;
             height: 24mm;
@@ -45,137 +85,70 @@
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 1;
         }
 
-        .line {
-            position: absolute;
-            top: 8mm;
-            left: 36mm;
-            right: 36mm;
-            height: 0;
-            border-top: 3px solid white;
-        }
-
-        .brand-name {
-            position: absolute;
-            top: 2mm;
-            left: 8mm;
-            font-size: 14px;
-            color: white;
-        }
-
-        .doc-type {
-            position: absolute;
-            top: 7mm;
-            left: 8mm;
-            background: black;
-            color: white;
-            font-size: 14px;
-            padding: 2px 5px;
-        }
-
-        .youtube-link {
-            position: absolute;
-            top: 12mm;
-            left: 8mm;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .youtube-icon {
-            margin-right: 2mm;
-        }
-
-        .youtube-icon img {
-            width: 9.37mm;
-            height: 6.48mm;
-        }
-
-        .youtube-text a {
-            color: white;
-            text-decoration: underline;
-            font-size: 10px;
-            line-height: 1.2;
-            display: block;
-        }
-
-        .tagline {
-            position: absolute;
-            top: 3mm;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            color: white;
-            text-align: center;
-        }
-
-        .brand-heading {
-            position: absolute;
-            top: 10mm;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 36px;
-            font-family: 'Ahsing', sans-serif;
-            color: white;
-            text-align: center;
-        }
-
-        .date {
-            position: absolute;
-            top: 8mm;
-            right: 8mm;
-            background: black;
-            color: white;
-            font-size: 18px;
-            padding: 2px 5px;
-        }
-
-        .author {
-            position: absolute;
-            top: 18mm;
-            right: 8mm;
-            font-size: 14px;
-            color: white;
-        }
-
-        /* Header Styles - Constant Pages */
-        #header {
-            position: running(header);
+        #header-const {
             width: 210mm;
             height: 15mm;
             background-color: #0097b2;
-            color: #ffffff;
-            font-size: 8px;
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0 5mm;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
-        .header-content {
-            display: flex;
-            align-items: center;
-            gap: 5mm;
+        /* Footer */
+        #footer {
+            width: 210mm;
+            height: 15mm;
+            background-color: #0097b2;
+            position: absolute;
+            bottom: 0;
+            left: 0;
         }
+    </style>
+</head>
+<body>
+    <!-- First Page Template -->
+    <div class="page first-page">
+        <!-- Include header-main.html -->
+        {% include 'header_main.html' %}
 
-        .icon-youtube {
-            width: 6.74mm;
-            height: 4.67mm;
-            flex-shrink: 0;
-        }
+        <div class="content-area">
+            <div class="column column-1">{{ column1_content|safe }}</div>
+            <div class="column column-2">{{ column2_content|safe }}</div>
+            <div class="column column-3">{{ column3_content|safe }}</div>
+        </div>
 
-        .header-text {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            line-height: 1.2;
-        }
+        <!-- Include footer.html -->
+        {% include 'footer.html' %}
 
-        .header-title {
-            font-size: 7px;
+        <!-- Dividers -->
+        <div class="divider divider-1"></div>
+        <div class="divider divider-2"></div>
+    </div>
+
+    <!-- Other Pages Template -->
+    {% for page in other_pages %}
+    <div class="page other-page">
+        <!-- Include header-const.html -->
+        {% include 'header_const.html' %}
+
+        <div class="content-area content-area-other">
+            <div class="column column-1">{{ page.column1_content|safe }}</div>
+            <div class="column column-2">{{ page.column2_content|safe }}</div>
+            <div class="column column-3">{{ page.column3_content|safe }}</div>
+        </div>
+
+        <!-- Include footer.html -->
+        {% include 'footer.html' %}
+
+        <!-- Dividers -->
+        <div class="divider divider-1"></div>
+        <div class="divider divider-2"></div>
+    </div>
+    {% endfor %}
+</body>
+</html>
             font-weight: bold;
         }
 
@@ -546,6 +519,30 @@
 </head>
 <body>
     <div class="page">
+        <!-- Content Container -->
+        <div class="content-container">
+            <!-- Column 1 -->
+            <div class="column">
+                {{ column1_content | safe }}
+            </div>
+            
+            <!-- Vertical Divider 1 -->
+            <div class="vertical-divider" style="left: 73.33mm;"></div>
+            
+            <!-- Column 2 -->
+            <div class="column">
+                {{ column2_content | safe }}
+            </div>
+            
+            <!-- Vertical Divider 2 -->
+            <div class="vertical-divider" style="left: 136.66mm;"></div>
+            
+            <!-- Column 3 -->
+            <div class="column">
+                {{ column3_content | safe }}
+            </div>
+        </div>
+
         <!-- First Page Header -->
         <div id="header-first-pg">
             {% include 'header_main.html' %}

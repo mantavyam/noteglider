@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Layout</title>
+    <style>
+        /* Define A4 page size and margins for subsequent pages */
+        @page {
+            size: A4 portrait; /* 210mm × 297mm */
+            margin-top: 15mm; /* Space for header on subsequent pages */
+            margin-bottom: 15mm; /* Space for footer on all pages */
+            margin-left: 0;
+            margin-right: 0;
+            @top-center {
+                content: element(header);
+            }
+            @bottom-center {
+                content: element(footer);
+            }
+        }
+
+        /* First page with larger header */
+        @page :first {
+            margin-top: 24mm; /* Space for 24mm header on first page */
+            margin-bottom: 15mm; /* Space for footer */
+            @top-center {
+                content: element(first-header);
+            }
+            @bottom-center {
+                content: element(footer);
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            font-size: 9pt;
+            line-height: 1.4;
+            text-align: justify;
+            widows: 2;
+            orphans: 2;
+        }
+
+        /* First page header */
+        .first-header {
+            position: running(first-header);
+            width: 210mm;
+            height: 24mm;
+            background-color: #0097b2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Regular header for subsequent pages */
+        .header {
+            position: running(header);
+            width: 210mm;
+            height: 15mm;
+            background-color: #0097b2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Footer for all pages */
+        .footer {
+            position: running(footer);
+            width: 210mm;
+            height: 15mm;
+            background-color: #0097b2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main content container */
+        .container {
+            padding-left: 10mm; /* Left margin */
+            padding-right: 10mm; /* Right margin */
+            box-sizing: border-box;
+        }
+
+        /* Content area with three columns */
+        .content-area {
+            width: 190mm;
+            column-count: 3;
+            column-gap: 5mm;
+            column-rule: 1px solid #999;
+            column-fill: auto;
+            margin: 0 auto;
+        }
+
+        /* Ensure content fits within columns */
+        h1, h2, h3, h4 {
+            break-after: avoid;
+            margin-top: 2pt;
+            margin-bottom: 2pt;
+            text-align: justify;
+        }
+
+        p {
+            margin-top: 2pt;
+            margin-bottom: 2pt;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-top: 2pt;
+            margin-bottom: 2pt;
+            padding-left: 15pt;
+            text-align: justify;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2pt 0;
+            break-inside: avoid-column;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 4pt;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            max-width: 60mm;
+            height: auto;
+            display: block;
+            margin: 2pt auto;
+        }
+
+        .qa-section {
+            margin-bottom: 4pt;
+        }
+    </style>
+</head>
+<body>
+    <!-- First page header -->
+    <div class="first-header">
+        <div>{{ date }}</div>
+    </div>
+
+    <!-- Regular header for subsequent pages -->
+    <div class="header">
+        <div>{{ date }}</div>
+    </div>
+
+    <!-- Footer for all pages -->
+    <div class="footer">
+        <div>© 2025 Newsletter</div>
+    </div>
+
+    <!-- Main content container -->
+    <div class="container">
+        <div class="content-area">
+            {{ content | safe }}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+
+<style>
+  .separator-container {
+    display: flex;
+    align-items: center;
+    width: 63.33mm;
+    justify-content: center;
+  }
+
+  .separator-line {
+    flex-grow: 1;
+    height: 4px;
+    background: linear-gradient(90deg, #004aad, #5de0e6);
+  }
+
+  .separator-text {
+    background: linear-gradient(90deg, #004aad, #5de0e6);
+    color: white;
+    font-size: 8px;
+    font-weight: bold;
+    text-align: center;
+    padding: 2px 8px;
+    height: 4mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    margin: 0px;
+  }
+</style>
+
+<div class="separator-container">
+  <div class="separator-line"></div>
+  <div class="separator-text">{{ title }}</div>
+  <div class="separator-line"></div>
+</div>

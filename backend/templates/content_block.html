@@ -1,0 +1,17 @@
+<div class="content-wrapper">
+    {% if title %}
+    <h3 style="color: #0097b2; margin-bottom: 5px;">{{ title }}</h3>
+    {% endif %}
+    
+    {% if content %}
+    <div class="content">
+        {{ content|safe }}
+    </div>
+    {% endif %}
+    
+    {% if image_path %}
+    <div class="image-container">
+        <img src="{{ image_path }}" alt="{{ title|default('Image') }}">
+    </div>
+    {% endif %}
+</div>
