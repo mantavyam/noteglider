@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 120000, // Increased timeout for large file processing
+  timeout: 180000, // Increased timeout to 3 minutes for large file processing
 });
 
 export const generatePDF = async (
@@ -22,7 +22,9 @@ export const generatePDF = async (
 
   try {
     console.log('Starting PDF generation with:', {
+      markdownName: markdownFile.name,
       markdownSize: markdownFile.size,
+      zipName: imagesZip.name,
       zipSize: imagesZip.size,
       hasCustomUrl: !!customUrl
     });

@@ -38,8 +38,99 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 env = Environment(loader=FileSystemLoader("templates"))
 
 def parse_markdown(md_content: str):
-    # ... keep existing code (markdown parsing function)
-    return data
+    """
+    Parse markdown content to extract structured data for the newsletter.
+    Returns a dictionary with date, news categories and items, QA table data.
+    """
+    try:
+        logging.debug("Starting markdown parsing")
+        
+        # Initialize the data structure
+        parsed_data = {
+            'date': None,
+            'news': [],
+            'qa_table': {
+                'questions': [],
+                'answers': []
+            }
+        }
+        
+        # Split content by lines
+        lines = md_content.split('\n')
+        
+        # Extract date from the first line if it matches a date pattern
+        if lines and lines[0].strip().startswith('Date:'):
+            parsed_data['date'] = lines[0].replace('Date:', '').strip()
+            lines = lines[1:]  # Remove the date line from further processing
+        
+        # Process the rest of the content
+        current_category = None
+        current_news_items = []
+        
+        # Simple state machine to track what we're parsing
+        in_qa_table = False
+        qa_rows = []
+        
+        for line in lines:
+            # Check for category headers (all caps followed by "NEWS")
+            if line.strip().upper().endswith(' NEWS') and line.strip().isupper():
+                # If we were collecting news items for a previous category, add them
+                if current_category and current_news_items:
+                    parsed_data['news'].append({
+                        'title': current_category,
+                        'items': current_news_items
+                    })
+                
+                # Start a new category
+                current_category = line.strip()
+                current_news_items = []
+                in_qa_table = False
+                
+            # Check for QA table section
+            elif line.strip().startswith('|') and line.strip().endswith('|'):
+                in_qa_table = True
+                qa_rows.append(line.strip())
+                
+            # Process news items when not in QA table
+            elif not in_qa_table and line.strip() and current_category:
+                # Assume this is a news headline if it doesn't start with a special character
+                if not line.strip().startswith(('-', '*', '>', '#')):
+                    current_news_items.append({
+                        'headline': line.strip(),
+                        'content': [],
+                        'image_index': None  # Will be populated if images are referenced
+                    })
+                # If it's a content line for the current news item
+                elif current_news_items and line.strip().startswith(('-', '*')):
+                    content_text = line.strip().lstrip('-* ')
+                    if content_text:
+                        current_news_items[-1]['content'].append(content_text)
+        
+        # Add the last category if there is one
+        if current_category and current_news_items:
+            parsed_data['news'].append({
+                'title': current_category,
+                'items': current_news_items
+            })
+        
+        # Process QA table rows if any were collected
+        if qa_rows:
+            # Skip the header and separator rows
+            data_rows = [row for row in qa_rows if '---' not in row][1:]
+            
+            for row in data_rows:
+                cells = [cell.strip() for cell in row.split('|') if cell.strip()]
+                if len(cells) >= 2:
+                    parsed_data['qa_table']['questions'].append(cells[0])
+                    parsed_data['qa_table']['answers'].append(cells[1])
+        
+        logging.debug(f"Parsed data: {parsed_data}")
+        return parsed_data
+        
+    except Exception as e:
+        logging.error(f"Error parsing markdown: {str(e)}")
+        logging.error(traceback.format_exc())
+        raise ValueError(f"Failed to parse markdown: {str(e)}")
 
 @app.post("/api/generate-pdf")
 async def generate_pdf(
@@ -66,18 +157,24 @@ async def generate_pdf(
         with open(zip_path, "wb") as f:
             shutil.copyfileobj(images_zip.file, f)
         
+        # Get image filenames (initialize as empty list)
+        image_files = []
+        
+        # Extract ZIP file
         try:
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 zip_ref.extractall(images_dir)
+                
+            # After successful extraction, get the image files
+            if os.path.exists(images_dir):
+                image_files = sorted([f for f in os.listdir(images_dir) 
+                                if os.path.isfile(os.path.join(images_dir, f))])
+        except zipfile.BadZipFile:
+            logging.error(f"Bad ZIP file: {zip_path}")
+            raise HTTPException(status_code=400, detail="The uploaded file is not a valid ZIP archive")
         except Exception as zip_error:
             logging.error(f"Error extracting ZIP file: {str(zip_error)}")
             raise HTTPException(status_code=400, detail=f"Unable to extract ZIP file: {str(zip_error)}")
-        
-        # Get image filenames
-        image_files = []
-        if os.path.exists(images_dir):
-            image_files = sorted([f for f in os.listdir(images_dir) 
-                                if os.path.isfile(os.path.join(images_dir, f))])  # Sort to match index order
         
         logging.debug(f"Found image files: {image_files}")
         
@@ -95,6 +192,7 @@ async def generate_pdf(
             parsed_data = parse_markdown(md_content)
         except Exception as md_error:
             logging.error(f"Error parsing markdown: {str(md_error)}")
+            logging.error(traceback.format_exc())
             raise HTTPException(status_code=400, detail=f"Error parsing markdown: {str(md_error)}")
         
         # Render news content for columns
@@ -125,8 +223,8 @@ async def generate_pdf(
                 
                 # Render image if available
                 image_html = ""
-                image_index = getattr(item, 'image_index', None)
-                if image_index is not None and image_index < len(image_files):
+                image_index = item.get('image_index')
+                if image_index is not None and len(image_files) > 0 and image_index < len(image_files):
                     image_path = os.path.join("images", image_files[image_index])
                     image_html = env.get_template("NewsImage.html").render(image_path=image_path)
                 
@@ -195,3 +293,4 @@ async def generate_pdf(
         raise HTTPException(status_code=500, detail=str(e))
 
 # ... keep existing code (the rest of the API endpoints and functions)
+
