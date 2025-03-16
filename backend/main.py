@@ -36,6 +36,8 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Set up Jinja2 environment
 env = Environment(loader=FileSystemLoader("templates"))
+# Add zip function to template globals
+env.globals['zip'] = zip
 
 def parse_markdown(md_content: str):
     """
@@ -292,5 +294,27 @@ async def generate_pdf(
         logging.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
 
-# ... keep existing code (the rest of the API endpoints and functions)
+@app.get("/api/download/{filename}")
+async def download_pdf(filename: str):
+    file_path = os.path.join(OUTPUT_DIR, filename)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    return FileResponse(
+        file_path,
+        media_type="application/pdf",
+        filename="newsletter.pdf",
+        headers={"Content-Disposition": "inline; filename=newsletter.pdf"}
+    )
 
+@app.get("/api/status")
+async def get_status():
+    return {"status": "online", "message": "Backend service is running"}
+
+@app.on_event("startup")
+async def startup_event():
+    print("Newsletter API started")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
