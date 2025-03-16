@@ -159,21 +159,27 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
             const match = /language-(\w+)/.exec(className || '');
             const isInline = !match;
             
-            return !isInline ? (
-              <SyntaxHighlighter
-                style={oneDark as any}
-                language={match?.[1]}
-                PreTag="div"
-                className="rounded-md my-4 shadow-md"
-                {...props}
-              >
-                {String(children).replace(/\n$/, '')}
-              </SyntaxHighlighter>
-            ) : (
-              <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground" {...props}>
-                {children}
-              </code>
-            );
+            if (!isInline) {
+              // Remove any props that might cause type issues
+              const syntaxProps = {
+                style: oneDark as any,
+                language: match ? match[1] : '',
+                PreTag: "div" as const,
+                className: "rounded-md my-4 shadow-md"
+              };
+              
+              return (
+                <SyntaxHighlighter {...syntaxProps}>
+                  {String(children).replace(/\n$/, '')}
+                </SyntaxHighlighter>
+              );
+            } else {
+              return (
+                <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground" {...props}>
+                  {children}
+                </code>
+              );
+            }
           },
           img: ({ node, src, alt, ...props }) => (
             <figure className="my-6">
