@@ -1,3 +1,4 @@
+
 import logging
 logging.basicConfig(level=logging.DEBUG)
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
@@ -149,10 +150,17 @@ async def generate_pdf(
                 # Render news heading
                 heading_html = env.get_template("NewsHeading.html").render(heading=item['headline'])
                 
+                # Convert content array to HTML for the description
+                content_html = ""
+                if item['content']:
+                    paragraphs = []
+                    for content_item in item['content']:
+                        paragraphs.append(f"<p>{content_item}</p>")
+                    content_html = "".join(paragraphs)
+                
                 # Render news description (content and tables)
                 description_html = env.get_template("NewsDescription.html").render(
-                    content=item['content'],
-                    tables=item['tables']
+                    content=content_html
                 )
                 
                 # Render image if available
@@ -174,17 +182,30 @@ async def generate_pdf(
         news_content_column_2 = "\n".join(column2_html)
         news_content_column_3 = "\n".join(column3_html)
         
+        # Prepare data for templates
+        template_data = {
+            'date': parsed_data['date'].replace('-', '/') if parsed_data['date'] else "DD/MM/YY",
+            'brand_name': "Learning Niti",
+            'doc_type': "DAILY NEWSLETTER",
+            'youtube_link': custom_url or "https://www.youtube.com/@Studyniti/streams",
+            'youtube_text': "[CLICK] to WATCH Today's<br>NEWS Analysis + Current Affairs",
+            'tagline': "ONE STOP SOLUTION FOR ALL BANKING EXAMS",
+            'brand_heading': "CROSSWORD",
+            'author': "By: Kapil Kathpal",
+            'title': "IMPORTANT NEWS COVERAGE FOR ALL BANK EXAMS",
+            'link_text': "[CLICK] to WATCH Today's NEWS Analysis + Current Affairs",
+            'link_url': custom_url or "https://www.youtube.com/@Studyniti/streams",
+            'questions': parsed_data['qa_table']['questions'],
+            'answers': parsed_data['qa_table']['answers'],
+            'news_content_column_2': news_content_column_2,
+            'news_content_column_3': news_content_column_3,
+            'images': [os.path.join("images", img) for img in image_files],
+            'custom_url': custom_url or "https://www.youtube.com/@Studyniti/streams"
+        }
+        
         # Render templates
         main_template = env.get_template("pdf_layout.html")
-        full_html = main_template.render(
-            date=parsed_data['date'].replace('-', '/'),  # Format DD-MM-YY to DD/MM/YY
-            questions=parsed_data['qa_table']['questions'],
-            answers=parsed_data['qa_table']['answers'],
-            news_content_column_2=news_content_column_2,
-            news_content_column_3=news_content_column_3,
-            images=[os.path.join("images", img) for img in image_files],
-            custom_url=custom_url or "https://www.youtube.com/@Studyniti/streams"
-        )
+        full_html = main_template.render(**template_data)
         logging.debug(f"Rendered HTML: {full_html}")
         
         # Generate PDF

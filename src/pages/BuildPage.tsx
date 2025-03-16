@@ -10,6 +10,7 @@ import Layout from '@/components/Layout';
 import PageTransition from '@/components/PageTransition';
 import { generatePDF } from '@/services/api';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 interface LocationState {
   markdownFile: File;
@@ -22,6 +23,7 @@ const BuildPage = () => {
   const location = useLocation();
   const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   // Get state from navigation or use default empty values
   const state = location.state as LocationState | null;
@@ -52,6 +54,7 @@ const BuildPage = () => {
     }
     
     setIsGenerating(true);
+    setError(null);
     
     try {
       toast({
@@ -72,6 +75,7 @@ const BuildPage = () => {
       });
     } catch (error) {
       console.error('PDF generation error:', error);
+      setError("PDF generation failed. Please check your files and try again.");
       toast({
         title: "Generation Failed",
         description: "There was an error generating your newsletter. Please try again.",
@@ -112,6 +116,14 @@ const BuildPage = () => {
             <p className="text-muted-foreground">
               Review your content and images before generating the final newsletter
             </p>
+            
+            {error && (
+              <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             
             {/* Preview Container */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[60vh]">
