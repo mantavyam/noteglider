@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm'; // Replaces remark-footnotes and adds table support
+import remarkGfm from 'remark-gfm'; 
 import rehypeRaw from 'rehype-raw';
 import { motion } from 'framer-motion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -86,7 +87,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
       className="prose prose-sm max-w-none p-6 bg-card rounded-lg shadow-lg border"
     >
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]} // Use GFM for tables and other features
+        remarkPlugins={[remarkGfm]} 
         rehypePlugins={[rehypeRaw]}
         components={{
           table: ({ node, children, ...props }) => (
@@ -112,33 +113,20 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
             <TableCell className="p-3" {...props}>{children}</TableCell>
           ),
           
-          ul: ({ node, ...props }) => (
-            <motion.ul
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ staggerChildren: 0.1 }}
-              className="list-disc pl-6 my-4 space-y-2"
-              {...props}
-            />
+          ul: ({ node, children, ...props }) => (
+            <ul className="list-disc pl-6 my-4 space-y-2" {...props}>
+              {children}
+            </ul>
           ),
-          ol: ({ node, ...props }) => (
-            <motion.ol
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ staggerChildren: 0.1 }}
-              className="list-decimal pl-6 my-4 space-y-2"
-              {...props}
-            />
+          ol: ({ node, children, ...props }) => (
+            <ol className="list-decimal pl-6 my-4 space-y-2" {...props}>
+              {children}
+            </ol>
           ),
           li: ({ node, children, ...props }) => (
-            <motion.li
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              className="my-1"
-              {...props}
-            >
+            <li className="my-1" {...props}>
               {children}
-            </motion.li>
+            </li>
           ),
           
           blockquote: ({ node, ...props }) => (
@@ -167,24 +155,22 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
           em: ({ node, ...props }) => (
             <em className="italic text-foreground/90" {...props} />
           ),
-          code: ({ node, inline, className, children, ...props }) => {
+          code: ({ node, className, children, ...props }) => {
             const match = /language-(\w+)/.exec(className || '');
-            return !inline && match ? (
+            const isInline = !match;
+            
+            return !isInline ? (
               <SyntaxHighlighter
-                style={oneDark}
-                language={match[1]}
+                style={oneDark as any}
+                language={match?.[1]}
                 PreTag="div"
                 className="rounded-md my-4 shadow-md"
                 {...props}
               >
                 {String(children).replace(/\n$/, '')}
               </SyntaxHighlighter>
-            ) : inline ? (
-              <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground" {...props}>
-                {children}
-              </code>
             ) : (
-              <code className="block bg-muted p-3 rounded-md text-sm font-mono text-foreground my-4" {...props}>
+              <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground" {...props}>
                 {children}
               </code>
             );
@@ -199,12 +185,6 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
               />
               {alt && <figcaption className="text-center text-sm text-muted-foreground mt-2">{alt}</figcaption>}
             </figure>
-          ),
-          footnoteReference: ({ node, ...props }) => (
-            <sup className="text-blue-600 hover:underline cursor-pointer" {...props} />
-          ),
-          footnoteDefinition: ({ node, ...props }) => (
-            <div className="text-sm text-muted-foreground mt-2" {...props} />
           ),
         }}
       >
