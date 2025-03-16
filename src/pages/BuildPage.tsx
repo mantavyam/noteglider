@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, UploadCloud, AlertTriangle, ArrowRight } from 'lucide-react';
+import { ArrowLeft, UploadCloud, AlertTriangle, ArrowRight, Loader2 } from 'lucide-react';
 import MarkdownPreview from '@/components/MarkdownPreview';
 import ImageGrid from '@/components/ImageGrid';
 import Layout from '@/components/Layout';
@@ -59,10 +59,15 @@ const BuildPage = () => {
     try {
       toast({
         title: "Processing Started",
-        description: "Your newsletter is being generated",
+        description: "Your newsletter is being generated. This may take a moment...",
       });
       
       const result = await generatePDF(markdownFile, zipFile, customUrl);
+      
+      toast({
+        title: "Generation Complete",
+        description: "Your newsletter has been successfully generated!",
+      });
       
       // Navigate to download page with the result data
       navigate('/download', { 
@@ -75,7 +80,19 @@ const BuildPage = () => {
       });
     } catch (error) {
       console.error('PDF generation error:', error);
-      setError("PDF generation failed. Please check your files and try again.");
+      let errorMessage = "PDF generation failed. Please check your files and try again.";
+      
+      // Try to extract more detailed error message if available
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        const anyError = error as any;
+        if (anyError.response?.data?.detail) {
+          errorMessage = anyError.response.data.detail;
+        }
+      }
+      
+      setError(errorMessage);
       toast({
         title: "Generation Failed",
         description: "There was an error generating your newsletter. Please try again.",
@@ -155,10 +172,10 @@ const BuildPage = () => {
             {/* Bottom action buttons */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4 mt-8 border-t">
               <div className="flex space-x-4">
-                <Button variant="outline" onClick={handleReupload}>
+                <Button variant="outline" onClick={handleReupload} disabled={isGenerating}>
                   <UploadCloud className="mr-2 h-4 w-4" /> Reupload
                 </Button>
-                <Button variant="destructive" onClick={handleAbort}>
+                <Button variant="destructive" onClick={handleAbort} disabled={isGenerating}>
                   <AlertTriangle className="mr-2 h-4 w-4" /> Abort
                 </Button>
               </div>
@@ -168,8 +185,15 @@ const BuildPage = () => {
                 className="w-full sm:w-auto"
                 disabled={isGenerating}
               >
-                {isGenerating ? "Generating..." : "Continue"} 
-                <ArrowRight className="ml-2 h-4 w-4" />
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...
+                  </>
+                ) : (
+                  <>
+                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                  </>
+                )}
               </Button>
             </div>
           </div>

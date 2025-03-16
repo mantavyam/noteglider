@@ -1,5 +1,6 @@
 
 import logging
+import traceback
 logging.basicConfig(level=logging.DEBUG)
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -123,7 +124,12 @@ async def generate_pdf(
             zip_ref.extractall(images_dir)
         
         # Get image filenames
-        image_files = sorted(os.listdir(images_dir))  # Sort to match index order
+        image_files = []
+        if os.path.exists(images_dir):
+            image_files = sorted([f for f in os.listdir(images_dir) 
+                                 if os.path.isfile(os.path.join(images_dir, f))])  # Sort to match index order
+        
+        logging.debug(f"Found image files: {image_files}")
         
         # Copy static assets (e.g., icons) to temp directory
         shutil.copytree(
@@ -203,49 +209,35 @@ async def generate_pdf(
             'custom_url': custom_url or "https://www.youtube.com/@Studyniti/streams"
         }
         
-        # Render templates
-        main_template = env.get_template("pdf_layout.html")
-        full_html = main_template.render(**template_data)
-        logging.debug(f"Rendered HTML: {full_html}")
-        
-        # Generate PDF
-        pdf_filename = f"newsletter_{request_id}.pdf"
-        pdf_path = os.path.join(OUTPUT_DIR, pdf_filename)
-        HTML(string=full_html, base_url=request_dir).write_pdf(pdf_path)
-        
-        return {
-            "success": True,
-            "message": "PDF generated successfully",
-            "pdf_url": f"/api/download/{pdf_filename}",
-            "filename": "newsletter.pdf",
-            "size": os.path.getsize(pdf_path) / 1024  # Size in KB
-        }
+        try:
+            # Render templates
+            main_template = env.get_template("pdf_layout.html")
+            full_html = main_template.render(**template_data)
+            logging.debug(f"Rendered HTML length: {len(full_html)}")
+            # logging.debug(f"Rendered HTML start: {full_html[:500]}...")  # Log only part of the HTML for debugging
+            
+            # Generate PDF
+            pdf_filename = f"newsletter_{request_id}.pdf"
+            pdf_path = os.path.join(OUTPUT_DIR, pdf_filename)
+            
+            # Pass the base path to WeasyPrint
+            HTML(string=full_html, base_url=request_dir).write_pdf(pdf_path)
+            
+            return {
+                "success": True,
+                "message": "PDF generated successfully",
+                "pdf_url": f"/api/download/{pdf_filename}",
+                "filename": "newsletter.pdf",
+                "size": os.path.getsize(pdf_path) / 1024  # Size in KB
+            }
+        except Exception as template_error:
+            logging.error(f"Template rendering or PDF generation error: {str(template_error)}")
+            logging.error(traceback.format_exc())
+            raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(template_error)}")
     
     except Exception as e:
-        logging.error(f"Error: {str(e)}")
+        logging.error(f"Error during PDF generation: {str(e)}")
+        logging.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/download/{filename}")
-async def download_pdf(filename: str):
-    file_path = os.path.join(OUTPUT_DIR, filename)
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="File not found")
-    
-    return FileResponse(
-        file_path,
-        media_type="application/pdf",
-        filename="newsletter.pdf",
-        headers={"Content-Disposition": "inline; filename=newsletter.pdf"}
-    )
-
-@app.get("/api/status")
-async def get_status():
-    return {"status": "online", "message": "Backend service is running"}
-
-@app.on_event("startup")
-async def startup_event():
-    print("Newsletter API started")
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# ... keep existing code (the rest of the API endpoints and functions)

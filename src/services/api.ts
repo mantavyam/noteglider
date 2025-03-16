@@ -1,9 +1,11 @@
+
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
   baseURL: API_URL,
+  timeout: 60000, // Increased timeout for large file processing
 });
 
 export const generatePDF = async (
@@ -19,10 +21,21 @@ export const generatePDF = async (
   }
 
   try {
-    const response = await api.post('/generate-pdf', formData);
+    const response = await api.post('/generate-pdf', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        console.log('Upload progress:', progressEvent.loaded / (progressEvent.total || 1) * 100);
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error generating PDF:', error);
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage = error.response.data.detail || 'Unknown server error';
+      throw new Error(`PDF generation failed: ${errorMessage}`);
+    }
     throw error;
   }
 };
