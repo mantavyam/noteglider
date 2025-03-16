@@ -38,61 +38,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 env = Environment(loader=FileSystemLoader("templates"))
 
 def parse_markdown(md_content: str):
-    logging.debug(f"Raw Markdown: {md_content}")
-    html = markdown.markdown(md_content, extensions=['tables', 'fenced_code'])
-    soup = BeautifulSoup(html, 'html.parser')
-    data = {
-        'date': None,
-        'qa_table': {'questions': [], 'answers': []},
-        'news': []
-    }
-    current_category = None
-    current_item = None
-    news_index = 0
-    in_news_item = False  # Track if we're inside a news item
-
-    for tag in soup.children:
-        if tag.name == 'h1':
-            if not data['date']:
-                data['date'] = tag.text.strip()
-            elif tag.text.strip() == 'CURRENT AFFAIRS':
-                table = tag.find_next('table')
-                if table:
-                    for row in table.find_all('tr')[1:]:
-                        cols = row.find_all('td')
-                        if len(cols) == 2:
-                            data['qa_table']['questions'].append(cols[0].text.strip())
-                            data['qa_table']['answers'].append(cols[1].text.strip())
-            elif tag.text.strip() != 'OUTLINE':
-                current_category = {'title': tag.text.strip(), 'items': []}
-                data['news'].append(current_category)
-                current_item = None
-        elif tag.name == 'h2':  # Skip repeated dates
-            continue
-        elif current_category and tag.name == 'h3':
-            current_item = {
-                'headline': tag.text.strip(),
-                'content': [],
-                'tables': [],
-                'image_index': news_index
-            }
-            current_category['items'].append(current_item)
-            news_index += 1
-            in_news_item = True  # Start capturing content
-        elif in_news_item:
-            if tag.name == 'p':
-                current_item['content'].append(tag.text.strip())
-            elif tag.name in ['ul', 'ol']:
-                list_items = [li.text.strip() for li in tag.find_all('li')]
-                current_item['content'].extend(list_items)
-            elif tag.name == 'table':
-                rows = [[td.text.strip() for td in tr.find_all('td')] 
-                       for tr in tag.find_all('tr')]
-                current_item['tables'].append(rows)
-            elif tag.name in ['h1', 'h2', 'h3']:
-                in_news_item = False  # Stop at next heading
-
-    logging.debug(f"Parsed Data: {data}")
+    # ... keep existing code (markdown parsing function)
     return data
 
 @app.post("/api/generate-pdf")
@@ -120,14 +66,18 @@ async def generate_pdf(
         with open(zip_path, "wb") as f:
             shutil.copyfileobj(images_zip.file, f)
         
-        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-            zip_ref.extractall(images_dir)
+        try:
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(images_dir)
+        except Exception as zip_error:
+            logging.error(f"Error extracting ZIP file: {str(zip_error)}")
+            raise HTTPException(status_code=400, detail=f"Unable to extract ZIP file: {str(zip_error)}")
         
         # Get image filenames
         image_files = []
         if os.path.exists(images_dir):
             image_files = sorted([f for f in os.listdir(images_dir) 
-                                 if os.path.isfile(os.path.join(images_dir, f))])  # Sort to match index order
+                                if os.path.isfile(os.path.join(images_dir, f))])  # Sort to match index order
         
         logging.debug(f"Found image files: {image_files}")
         
@@ -139,9 +89,13 @@ async def generate_pdf(
         )
         
         # Read and parse markdown content
-        with open(md_path, "r", encoding="utf-8") as f:
-            md_content = f.read()
-        parsed_data = parse_markdown(md_content)
+        try:
+            with open(md_path, "r", encoding="utf-8") as f:
+                md_content = f.read()
+            parsed_data = parse_markdown(md_content)
+        except Exception as md_error:
+            logging.error(f"Error parsing markdown: {str(md_error)}")
+            raise HTTPException(status_code=400, detail=f"Error parsing markdown: {str(md_error)}")
         
         # Render news content for columns
         column2_html = []
@@ -171,8 +125,9 @@ async def generate_pdf(
                 
                 # Render image if available
                 image_html = ""
-                if item['image_index'] < len(image_files):
-                    image_path = os.path.join("images", image_files[item['image_index']])
+                image_index = getattr(item, 'image_index', None)
+                if image_index is not None and image_index < len(image_files):
+                    image_path = os.path.join("images", image_files[image_index])
                     image_html = env.get_template("NewsImage.html").render(image_path=image_path)
                 
                 # Combine elements
@@ -214,7 +169,6 @@ async def generate_pdf(
             main_template = env.get_template("pdf_layout.html")
             full_html = main_template.render(**template_data)
             logging.debug(f"Rendered HTML length: {len(full_html)}")
-            # logging.debug(f"Rendered HTML start: {full_html[:500]}...")  # Log only part of the HTML for debugging
             
             # Generate PDF
             pdf_filename = f"newsletter_{request_id}.pdf"

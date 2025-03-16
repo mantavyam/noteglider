@@ -24,6 +24,7 @@ const BuildPage = () => {
   const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   
   // Get state from navigation or use default empty values
   const state = location.state as LocationState | null;
@@ -55,11 +56,21 @@ const BuildPage = () => {
     
     setIsGenerating(true);
     setError(null);
+    setUploadProgress(0);
     
     try {
       toast({
         title: "Processing Started",
         description: "Your newsletter is being generated. This may take a moment...",
+      });
+      
+      // For debugging, log the file sizes
+      console.log('Sending files to server:', {
+        markdownName: markdownFile.name,
+        markdownSize: markdownFile.size,
+        zipName: zipFile.name,
+        zipSize: zipFile.size,
+        customUrl
       });
       
       const result = await generatePDF(markdownFile, zipFile, customUrl);
@@ -95,11 +106,12 @@ const BuildPage = () => {
       setError(errorMessage);
       toast({
         title: "Generation Failed",
-        description: "There was an error generating your newsletter. Please try again.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
       setIsGenerating(false);
+      setUploadProgress(0);
     }
   };
 

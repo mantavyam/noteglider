@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 60000, // Increased timeout for large file processing
+  timeout: 120000, // Increased timeout for large file processing
 });
 
 export const generatePDF = async (
@@ -21,6 +21,12 @@ export const generatePDF = async (
   }
 
   try {
+    console.log('Starting PDF generation with:', {
+      markdownSize: markdownFile.size,
+      zipSize: imagesZip.size,
+      hasCustomUrl: !!customUrl
+    });
+    
     const response = await api.post('/generate-pdf', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -35,8 +41,10 @@ export const generatePDF = async (
     if (axios.isAxiosError(error) && error.response) {
       const errorMessage = error.response.data.detail || 'Unknown server error';
       throw new Error(`PDF generation failed: ${errorMessage}`);
+    } else if (error instanceof Error) {
+      throw new Error(`PDF generation failed: ${error.message}`);
     }
-    throw error;
+    throw new Error('PDF generation failed: Unknown error occurred');
   }
 };
 
