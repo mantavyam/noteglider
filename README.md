@@ -4,6 +4,9 @@
 
 **About**
 A SaaS web application that automates the creation of dynamically designed PDF newsletters by processing a Markdown document and associated image assets.
+![Noteglider Logo](public/noteglider-logo.png)
+![Noteglider Description](public/og-image.png)
+![Noteglider Examples](public/landing-assets/landing-1.png)
 
 ## How can I edit this code?
 
@@ -26,9 +29,9 @@ npm i
 # Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 
-# Step 5: Start the Backend Service in separate terminal. (Note: Use Python@3.11 )
+# Step 5: Start the Backend Service in separate terminal.
 cd backend
-python3.11 -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
@@ -60,5 +63,5 @@ This project is built with .
 - Pydantic: For data validation
 
 **Communication**
-REST API: For communication between frontend and backend
-FormData: For sending files from frontend to backend
+- REST API: For communication between frontend and backend
+- FormData: For sending files from frontend to backend
