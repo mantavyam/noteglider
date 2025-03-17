@@ -29,44 +29,45 @@ const HaqqNavbar: React.FC = () => {
             <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center">
               <img 
                 src="/placeholder.svg" 
-                alt="HAQQ" 
+                alt="EduPDF" 
                 className="h-6 w-6"
               />
             </div>
+            <span className="ml-2 text-white font-bold">EduPDF</span>
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">
             <div className="relative group">
               <button className="flex items-center text-white/80 hover:text-white transition-colors py-2">
-                Discover
+                Features
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </div>
             
             <div className="relative group">
               <button className="flex items-center text-white/80 hover:text-white transition-colors py-2">
-                Business
+                How It Works
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </div>
             
             <div className="relative group">
               <button className="flex items-center text-white/80 hover:text-white transition-colors py-2">
-                Builders
+                Pricing
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </div>
             
             <div className="relative group">
               <button className="flex items-center text-white/80 hover:text-white transition-colors py-2">
-                Community
+                Testimonials
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </div>
             
             <div className="relative group">
               <button className="flex items-center text-white/80 hover:text-white transition-colors py-2">
-                About
+                FAQ
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </div>
@@ -78,14 +79,14 @@ const HaqqNavbar: React.FC = () => {
             variant="outline" 
             className="rounded-full border-white/20 hover:bg-white/10 text-white"
           >
-            SHELL
+            LOGIN
           </Button>
           
           <Button 
             variant="outline" 
             className="rounded-full border-white/20 hover:bg-white/10 text-white"
           >
-            HAQQ WALLET
+            SIGN UP
           </Button>
         </div>
       </div>

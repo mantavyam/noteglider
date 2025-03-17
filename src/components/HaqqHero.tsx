@@ -13,27 +13,27 @@ const HaqqHero: React.FC = () => {
       
       <div className="container relative z-10 mx-auto px-4 md:px-6 text-center">
         <h1 className="text-5xl md:text-7xl font-bold mb-6">
-          Ethical<br />Web3 for All
+          Effortless PDF Creation<br />for Live Educators
         </h1>
         
         <p className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto mb-12">
-          Blockchain that meets Shariah values. For builders and 
-          end users in mind. Designed for ease of use and financial
-          well-being
+          Transform your YouTube live classes into beautifully designed study materials 
+          without the hassle. Create daily newsletters, weekly compilations, and monthly 
+          magazines to boost student success.
         </p>
         
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Button 
             className="bg-white text-black hover:bg-white/90 rounded-full px-8 py-6 text-lg font-medium"
           >
-            EXPLORE PLATFORM
+            GET STARTED NOW
           </Button>
           
           <Button 
             variant="link" 
             className="text-white/80 hover:text-white text-lg"
           >
-            View all Products
+            How It Works
           </Button>
         </div>
       </div>
