@@ -18,7 +18,7 @@ const ScrollRevealSection: React.FC<ScrollRevealSectionProps> = ({
   threshold = 0.1
 }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, threshold });
+  const isInView = useInView(ref, { once: true, amount: threshold });
   const controls = useAnimation();
 
   // Set initial animation states based on direction

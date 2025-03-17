@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import {
   Accordion,
   AccordionContent,
@@ -20,11 +19,11 @@ const FAQItem: React.FC<FAQItemProps> = ({
   value
 }) => {
   return (
-    <AccordionItem value={value}>
-      <AccordionTrigger className="text-lg font-medium text-left">
+    <AccordionItem value={value} className="border-b border-zinc-800">
+      <AccordionTrigger className="text-lg font-medium text-left py-6 text-zinc-100">
         {question}
       </AccordionTrigger>
-      <AccordionContent className="text-muted-foreground">
+      <AccordionContent className="text-zinc-400 pb-6">
         {answer}
       </AccordionContent>
     </AccordionItem>

@@ -10,7 +10,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, showLogo = true }) => {
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden">
+    <div className="min-h-screen bg-black text-white overflow-hidden">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -18,7 +18,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showLogo = true }) => {
         className="min-h-screen"
       >
         {showLogo && (
-          <div className="flex justify-center py-12">
+          <div className="flex justify-center py-6">
             <Link to="/">
               <motion.div
                 initial={{ y: -20, opacity: 0 }}
@@ -27,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showLogo = true }) => {
                 className="text-2xl font-medium tracking-tight"
               >
                 <span className="font-bold">note</span>
-                <span className="text-primary">glider</span>
+                <span className="text-amber-300">glider</span>
               </motion.div>
             </Link>
           </div>

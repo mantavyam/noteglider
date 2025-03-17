@@ -70,6 +70,9 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+			},
 			keyframes: {
 				'accordion-down': {
 					from: { height: '0' },
@@ -106,6 +109,10 @@ export default {
 				'spin-slow': {
 					from: { transform: 'rotate(0deg)' },
 					to: { transform: 'rotate(360deg)' }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
 				}
 			},
 			animation: {
@@ -117,7 +124,8 @@ export default {
 				'slide-out-left': 'slide-out-left 0.5s ease-out',
 				'slide-up': 'slide-up 0.5s ease-out',
 				'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',
-				'spin-slow': 'spin-slow 3s linear infinite'
+				'spin-slow': 'spin-slow 3s linear infinite',
+				'float': 'float 6s ease-in-out infinite'
 			},
 			backdropFilter: {
 				'none': 'none',
@@ -125,7 +133,8 @@ export default {
 			},
 			boxShadow: {
 				'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
-				'neo': '5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff'
+				'neo': '5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff',
+				'glow': '0 0 20px rgba(250, 204, 21, 0.3)'
 			}
 		}
 	},
