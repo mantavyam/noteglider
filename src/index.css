@@ -14,7 +14,7 @@
     --popover: 0 0% 4%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 38 92% 50%;
+    --primary: 0 0% 100%;
     --primary-foreground: 0 0% 0%;
 
     --secondary: 240 5% 10%;
@@ -23,7 +23,7 @@
     --muted: 240 4% 16%;
     --muted-foreground: 240 5% 65%;
 
-    --accent: 38 92% 50%;
+    --accent: 0 0% 100%;
     --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84% 60%;
@@ -54,7 +54,7 @@
   }
   
   .crypto-card {
-    @apply relative overflow-hidden rounded-xl bg-card border border-white/5 hover:border-primary/20 transition-all duration-300;
+    @apply relative overflow-hidden rounded-xl bg-card border border-white/5 hover:border-white/20 transition-all duration-300;
   }
 
   .button-glow {
@@ -63,7 +63,7 @@
   
   .button-glow::after {
     content: '';
-    @apply absolute inset-0 bg-primary/20 scale-x-0 origin-left transition-transform duration-300;
+    @apply absolute inset-0 bg-white/20 scale-x-0 origin-left transition-transform duration-300;
   }
   
   .button-glow:hover::after {
@@ -103,10 +103,11 @@
   }
   
   .section-white {
-    @apply bg-white/5 rounded-3xl px-8 py-16 my-16 backdrop-blur-sm;
+    @apply bg-white text-black rounded-none px-8 py-16 my-16;
   }
   
   .section-dark {
     @apply bg-black/80 rounded-none py-16 my-8;
   }
 }
+
