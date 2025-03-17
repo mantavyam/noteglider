@@ -15,10 +15,10 @@ const Layout: React.FC<LayoutProps> = ({ children, showLogo = true }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="page-container"
+        className="min-h-screen"
       >
         {showLogo && (
-          <div className="flex justify-center mb-12">
+          <div className="flex justify-center py-12">
             <Link to="/">
               <motion.div
                 initial={{ y: -20, opacity: 0 }}
