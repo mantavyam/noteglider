@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Palette, 
@@ -9,6 +8,8 @@ import {
   Share 
 } from 'lucide-react';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface Feature {
   icon: React.ReactNode;
@@ -18,6 +19,7 @@ interface Feature {
 }
 
 const FeatureGrid: React.FC = () => {
+  const navigate = useNavigate();
   const features: Feature[] = [
     {
       icon: <Youtube size={32} className="text-blue-400" />,
@@ -87,7 +89,7 @@ const FeatureGrid: React.FC = () => {
         
         <div className="text-center mt-16">
           <Button 
-            onClick={() => window.location.href = '/task'} 
+            onClick={() => navigate('/task')} 
             className="bg-white text-black hover:bg-white/90 px-8 py-6 h-auto rounded-lg shadow-lg"
           >
             CREATE YOUR FIRST PDF NOW
