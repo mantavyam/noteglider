@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   Palette, 
@@ -8,8 +9,6 @@ import {
   Share 
 } from 'lucide-react';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
 
 interface Feature {
   icon: React.ReactNode;
@@ -19,7 +18,6 @@ interface Feature {
 }
 
 const FeatureGrid: React.FC = () => {
-  const navigate = useNavigate();
   const features: Feature[] = [
     {
       icon: <Youtube size={32} className="text-blue-400" />,
@@ -60,7 +58,7 @@ const FeatureGrid: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 bg-black">
+    <section className="py-24 bg-white text-black">
       <div className="container mx-auto px-4 md:px-6">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">One Platform for All Your PDF Needs</h2>
         
@@ -68,32 +66,23 @@ const FeatureGrid: React.FC = () => {
           {features.map((feature, index) => (
             <div 
               key={index} 
-              className="bg-zinc-900 feature-card-hover relative rounded-3xl p-8 transition-all duration-300 overflow-hidden group"
+              className="bg-gray-50 feature-card-hover relative rounded-3xl p-8 transition-all duration-300 overflow-hidden group border border-gray-100"
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
               <GlowingEffect disabled={false} glow={true} />
               <div className="relative z-10">
-                <div className="mb-6 bg-zinc-800 p-4 rounded-full inline-block group-hover:bg-zinc-700 transition-colors">
+                <div className="mb-6 bg-white p-4 rounded-full inline-block group-hover:bg-gray-50 transition-colors shadow-sm">
                   {feature.icon}
                 </div>
-                <h3 className="text-2xl font-bold mb-2">
+                <h3 className="text-2xl font-bold mb-2 text-gray-900">
                   {feature.title}
                 </h3>
-                <p className="text-white/70">
+                <p className="text-gray-700">
                   {feature.description}
                 </p>
               </div>
             </div>
           ))}
-        </div>
-        
-        <div className="text-center mt-16">
-          <Button 
-            onClick={() => navigate('/task')} 
-            className="bg-white text-black hover:bg-white/90 px-8 py-6 h-auto rounded-lg shadow-lg"
-          >
-            CREATE YOUR FIRST PDF NOW
-          </Button>
         </div>
       </div>
     </section>

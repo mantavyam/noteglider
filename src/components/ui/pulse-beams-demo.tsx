@@ -130,10 +130,10 @@ const beams: Beam[] = [
         y2: "180%",
       },
       animate: {
-        x1: ["0%"], // Fixed: Changed from string to string array
-        x2: ["10%"], // Fixed: Changed from string to string array
-        y1: ["-40%"], // Fixed: Changed from string to string array
-        y2: ["-20%"], // Fixed: Changed from string to string array
+        x1: ["0%"],
+        x2: ["10%"],
+        y1: ["-40%"],
+        y2: ["-20%"],
       },
       transition: {
         duration: 2,
@@ -191,14 +191,14 @@ export const PulseBeamsFirstDemo = () => {
     <PulseBeams
       beams={beams}
       gradientColors={gradientColors}
-      className="h-72 bg-slate-950"
+      className="h-72 bg-white"
     >
-      <button className="bg-slate-800 w-[320px] z-40 h-[120px] no-underline group cursor-pointer relative shadow-2xl shadow-zinc-900 rounded-full p-px text-xs font-semibold leading-6 text-white inline-block">
+      <button className="bg-white w-[320px] z-40 h-[120px] no-underline group cursor-pointer relative shadow-xl shadow-gray-200 rounded-full p-px text-xs font-semibold leading-6 text-black inline-block border border-gray-200">
         <span className="absolute inset-0 overflow-hidden rounded-full">
-          <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.3)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         </span>
-        <div className="relative flex justify-center w-[320px] text-center space-x-2 h-[120px] items-center z-10 rounded-full bg-zinc-950 py-0.5 px-4 ring-1 ring-white/10 ">
-          <span className="md:text-4xl text-base inline-block bg-clip-text text-transparent bg-gradient-to-r from-neutral-300 via-neutral-600 to-neutral-300">
+        <div className="relative flex justify-center w-[320px] text-center space-x-2 h-[120px] items-center z-10 rounded-full bg-white py-0.5 px-4 ring-1 ring-gray-200 ">
+          <span className="md:text-4xl text-base inline-block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-blue-800 to-blue-600">
             Connect
           </span>
         </div>
