@@ -3,7 +3,36 @@
 
 import { PulseBeams } from "@/components/ui/pulse-beams";
 
-const beams = [
+type GradientTransition = {
+  duration: number;
+  repeat: number;
+  repeatType: "loop" | "reverse" | "mirror";
+  ease: string;
+  repeatDelay: number;
+  delay: number;
+};
+
+type Beam = {
+  path: string;
+  gradientConfig: {
+    initial: {
+      x1: string;
+      x2: string;
+      y1: string;
+      y2: string;
+    };
+    animate: {
+      x1: string[];
+      x2: string[];
+      y1: string[];
+      y2: string[];
+    };
+    transition: GradientTransition;
+  };
+  connectionPoints: { cx: number; cy: number; r: number }[];
+};
+
+const beams: Beam[] = [
   {
     path: "M269 220.5H16.5C10.9772 220.5 6.5 224.977 6.5 230.5V398.5",
     gradientConfig: {

@@ -39,18 +39,18 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border font-sans;
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 @layer components {
   .glass-panel {
-    @apply bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg;
+    @apply bg-white/20 backdrop-blur-lg border border-white/20 shadow-glass;
   }
   
   .crypto-card {
@@ -109,5 +109,17 @@
   .section-dark {
     @apply bg-black/80 rounded-none py-16 my-8;
   }
-}
 
+  .feature-card-hover {
+    @apply transition-all duration-300 overflow-hidden relative;
+  }
+
+  .feature-card-hover::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20;
+  }
+
+  .feature-card-hover:hover::before {
+    @apply opacity-100;
+  }
+}
