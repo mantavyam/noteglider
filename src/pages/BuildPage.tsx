@@ -141,8 +141,8 @@ const BuildPage = () => {
       <PageTransition>
         <div className="container mx-auto px-4">
           <div className="flex flex-col space-y-6">
-            <h1 className="text-3xl font-bold">Preview Your Design</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-3xl font-bold text-black">Preview Your Design</h1>
+            <p className="text-zinc-600">
               Review your content and images before generating the final newsletter
             </p>
             
@@ -157,8 +157,8 @@ const BuildPage = () => {
             {/* Preview Container */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[60vh]">
               {/* Left side - Markdown Preview */}
-              <div className="bg-white rounded-lg shadow-sm border p-4 overflow-hidden flex flex-col">
-                <h2 className="text-lg font-medium mb-4 sticky top-0 bg-white pb-2 z-10">Markdown Content</h2>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col">
+                <h2 className="text-lg font-medium mb-4 sticky top-0 bg-white pb-2 z-10 text-black">Markdown Content</h2>
                 <div className="flex-1 overflow-hidden">
                   <ScrollArea className="h-[60vh]">
                     <div className="bg-gray-50 rounded p-4">
@@ -169,8 +169,8 @@ const BuildPage = () => {
               </div>
               
               {/* Right side - Image Grid */}
-              <div className="bg-white rounded-lg shadow-sm border p-4 overflow-hidden flex flex-col">
-                <h2 className="text-lg font-medium mb-4 sticky top-0 bg-white pb-2 z-10">Image Assets</h2>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col">
+                <h2 className="text-lg font-medium mb-4 sticky top-0 bg-white pb-2 z-10 text-black">Image Assets</h2>
                 <div className="flex-1 overflow-hidden">
                   <ScrollArea className="h-[60vh]">
                     <div className="bg-gray-50 rounded p-4">
@@ -182,12 +182,22 @@ const BuildPage = () => {
             </div>
             
             {/* Bottom action buttons */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4 mt-8 border-t">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4 mt-8 border-t border-gray-200">
               <div className="flex space-x-4">
-                <Button variant="outline" onClick={handleReupload} disabled={isGenerating} className="border-gray-300 hover:bg-gray-50 text-black">
+                <Button 
+                  variant="outline" 
+                  onClick={handleReupload} 
+                  disabled={isGenerating} 
+                  className="bg-white text-black border-gray-300 hover:bg-gray-50"
+                >
                   <UploadCloud className="mr-2 h-4 w-4" /> Reupload
                 </Button>
-                <Button variant="destructive" onClick={handleAbort} disabled={isGenerating}>
+                <Button 
+                  variant="destructive" 
+                  onClick={handleAbort} 
+                  disabled={isGenerating}
+                  className="bg-red-500 hover:bg-red-600 text-white"
+                >
                   <AlertTriangle className="mr-2 h-4 w-4" /> Abort
                 </Button>
               </div>

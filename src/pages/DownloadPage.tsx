@@ -120,7 +120,7 @@ const DownloadPage = () => {
         <PageTransition>
           <div className="container mx-auto px-4 py-8">
             <div className="max-w-lg mx-auto">
-              <Card className="shadow-lg border-red-200 bg-white">
+              <Card className="shadow-lg border border-red-200 bg-white">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center text-red-600">
                     <AlertTriangle className="mr-2" />
@@ -154,7 +154,7 @@ const DownloadPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {showPreview && (
               <div className="lg:col-span-2">
-                <Card className="shadow-lg h-full flex flex-col bg-white">
+                <Card className="shadow-lg h-full flex flex-col bg-white border border-gray-200">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xl flex items-center text-black">
                       <FileText className="mr-2 h-5 w-5" />
@@ -172,7 +172,7 @@ const DownloadPage = () => {
                           <p className="text-center text-sm text-gray-500 mb-4">
                             This might be due to network issues or file unavailability.
                           </p>
-                          <Button onClick={handleDownload} variant="outline" size="sm" className="border-gray-300 text-black">
+                          <Button onClick={handleDownload} variant="outline" size="sm" className="bg-white border-gray-300 text-black">
                             <Download className="mr-2 h-4 w-4" />
                             Download to View
                           </Button>
@@ -194,7 +194,7 @@ const DownloadPage = () => {
               </div>
             )}
             <div className={`${showPreview ? 'lg:col-span-1' : 'lg:col-span-3'}`}>
-              <Card className="shadow-lg h-full bg-white">
+              <Card className="shadow-lg h-full bg-white border border-gray-200">
                 <CardHeader>
                   <CardTitle className="flex items-center text-black">
                     <File className="mr-2 h-5 w-5" />
@@ -225,7 +225,7 @@ const DownloadPage = () => {
                       <Button
                         variant="outline"
                         onClick={handleTogglePreview}
-                        className="w-full border-gray-300 text-black"
+                        className="w-full bg-white border-gray-300 text-black hover:bg-gray-50"
                       >
                         {showPreview ? 'Hide Preview' : 'Show Preview'}
                       </Button>
@@ -238,7 +238,7 @@ const DownloadPage = () => {
                         Create New Newsletter
                       </Button>
                     </div>
-                    <div className="rounded-lg border bg-white p-4">
+                    <div className="rounded-lg border border-gray-200 bg-white p-4">
                       <h4 className="font-medium mb-2 text-black">Next Steps</h4>
                       <ul className="text-sm space-y-2 text-gray-600">
                         <li className="flex items-start">
