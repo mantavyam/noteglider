@@ -1,8 +1,12 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { Youtube, FileUp } from 'lucide-react';
 
 const WalletSection: React.FC = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="py-24 bg-white text-black">
       <div className="container mx-auto px-4 md:px-6 text-center">
@@ -15,15 +19,21 @@ const WalletSection: React.FC = () => {
           channel and Google Drive uploads, we automate the tedious conversion process.
         </p>
         
-        <div className="flex justify-center space-x-8 mb-16">
-          <Button className="bg-black hover:bg-black/90 text-white rounded-lg">
-            <img src="/placeholder.svg" alt="YouTube" className="w-5 h-5 mr-2" />
+        <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-8 mb-16">
+          <Button 
+            className="bg-black hover:bg-black/90 text-white rounded-lg"
+            onClick={() => navigate('/task')}
+          >
+            <Youtube className="w-5 h-5 mr-2" />
             Connect Your<br />YouTube Channel
           </Button>
           
-          <Button className="bg-black hover:bg-black/90 text-white rounded-lg">
-            <img src="/placeholder.svg" alt="Google Drive" className="w-5 h-5 mr-2" />
-            CONNECT<br />Google Drive
+          <Button 
+            className="bg-black hover:bg-black/90 text-white rounded-lg"
+            onClick={() => navigate('/task')}
+          >
+            <FileUp className="w-5 h-5 mr-2" />
+            UPLOAD<br />PPTX Files
           </Button>
         </div>
         

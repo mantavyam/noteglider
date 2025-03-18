@@ -1,13 +1,14 @@
 
 import React from 'react';
 import { 
-  Wallet, 
-  Star, 
-  Globe, 
-  TrendingUp, 
-  RefreshCcw, 
-  CircleDollarSign 
+  Palette, 
+  Calendar, 
+  FileEdit, 
+  Youtube, 
+  FileText, 
+  Share 
 } from 'lucide-react';
+import { GlowingEffect } from '@/components/ui/glowing-effect';
 
 interface Feature {
   icon: React.ReactNode;
@@ -18,34 +19,34 @@ interface Feature {
 const FeatureGrid: React.FC = () => {
   const features: Feature[] = [
     {
-      icon: <Wallet size={32} />,
-      title: "Crypto for everyday",
-      description: "use with smooth and safe transactions"
+      icon: <Youtube size={32} />,
+      title: "YouTube Integration",
+      description: "Automatic video content conversion from your channel"
     },
     {
-      icon: <Star size={32} />,
-      title: "Halal yield",
-      description: "that aligns with your ethical values"
+      icon: <Calendar size={32} />,
+      title: "Scheduled Documents",
+      description: "Daily, weekly, and monthly formats available"
     },
     {
-      icon: <Globe size={32} />,
-      title: "Send and receive money globally",
-      description: "with low fees and high speed"
+      icon: <FileEdit size={32} />,
+      title: "PPTX Conversion",
+      description: "Quick transformation of presentation files"
     },
     {
-      icon: <TrendingUp size={32} />,
-      title: "Staking",
-      description: "opportunities to earn rewards"
+      icon: <Palette size={32} />,
+      title: "Beautiful Templates",
+      description: "Professional designs for engaging materials"
     },
     {
-      icon: <RefreshCcw size={32} />,
-      title: "P2P lending",
-      description: "while complying with Shariah laws"
+      icon: <FileText size={32} />,
+      title: "Complete PDF Solutions",
+      description: "From creation to distribution in one platform"
     },
     {
-      icon: <CircleDollarSign size={32} />,
-      title: "Integrated Zakat & Charity",
-      description: "donation services"
+      icon: <Share size={32} />,
+      title: "Easy Sharing",
+      description: "Directly distribute to your student networks"
     }
   ];
 
@@ -56,8 +57,9 @@ const FeatureGrid: React.FC = () => {
           {features.map((feature, index) => (
             <div 
               key={index} 
-              className="bg-zinc-900 rounded-3xl p-8 hover:bg-zinc-800 transition-colors"
+              className="bg-zinc-900 relative rounded-3xl p-8 hover:bg-zinc-800 transition-colors overflow-hidden"
             >
+              <GlowingEffect disabled={false} glow={true} />
               <div className="mb-6">
                 {feature.icon}
               </div>
@@ -72,7 +74,7 @@ const FeatureGrid: React.FC = () => {
         </div>
         
         <div className="text-center mt-16 text-zinc-500">
-          COMING IN Q3 2024
+          CREATE YOUR FIRST PDF NOW
         </div>
       </div>
     </section>

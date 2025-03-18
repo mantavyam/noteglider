@@ -1,8 +1,12 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { PulseBeamsFirstDemo } from '@/components/ui/pulse-beams-demo';
 
 const HaqqHero: React.FC = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="relative pt-32 pb-40 md:py-48 overflow-hidden">
       {/* Background with curved lines */}
@@ -22,19 +26,10 @@ const HaqqHero: React.FC = () => {
           magazines to boost student success.
         </p>
         
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button 
-            className="bg-white text-black hover:bg-white/90 rounded-full px-8 py-6 text-lg font-medium"
-          >
-            GET STARTED NOW
-          </Button>
-          
-          <Button 
-            variant="link" 
-            className="text-white/80 hover:text-white text-lg"
-          >
-            How It Works
-          </Button>
+        <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-center gap-4">
+          <div onClick={() => navigate('/task')} className="cursor-pointer">
+            <PulseBeamsFirstDemo />
+          </div>
         </div>
       </div>
     </section>
