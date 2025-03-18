@@ -130,10 +130,10 @@ const beams: Beam[] = [
         y2: "180%",
       },
       animate: {
-        x1: ["0%"],
-        x2: ["10%"],
-        y1: ["-40%"],
-        y2: ["-20%"],
+        x1: ["0%"], // Fixed: Changed from string to string array
+        x2: ["10%"], // Fixed: Changed from string to string array
+        y1: ["-40%"], // Fixed: Changed from string to string array
+        y2: ["-20%"], // Fixed: Changed from string to string array
       },
       transition: {
         duration: 2,
