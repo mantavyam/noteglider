@@ -77,7 +77,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
       {!value ? (
         <motion.div
           className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center text-center transition-colors cursor-pointer
-            ${isDragging ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-secondary/50'}`}
+            ${isDragging ? 'border-primary bg-blue-50' : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'}`}
           whileHover={{ scale: 1.005 }}
           whileTap={{ scale: 0.995 }}
           onDragOver={handleDragOver}
@@ -85,30 +85,30 @@ const FileUpload: React.FC<FileUploadProps> = ({
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
         >
-          <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
+          <Upload className="w-8 h-8 mb-2 text-gray-500" />
           <p className="text-sm font-medium">Drag & drop or click to browse</p>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-gray-500 mt-1">
             {accept.split(',').map(type => type.trim()).join(', ')}
           </p>
         </motion.div>
       ) : (
         <motion.div 
-          className="border rounded-lg p-4 flex items-center justify-between bg-card"
+          className="border rounded-lg p-4 flex items-center justify-between bg-white shadow-sm"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex items-center">
-            <File className="w-5 h-5 mr-3 text-primary" />
+            <File className="w-5 h-5 mr-3 text-blue-500" />
             <div>
               <p className="text-sm font-medium truncate max-w-[200px] sm:max-w-xs">{value.name}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs text-gray-500 mt-0.5">
                 {(value.size / 1024 / 1024).toFixed(2)} MB
               </p>
             </div>
           </div>
           <motion.button
             type="button"
-            className="p-1 rounded-full hover:bg-secondary"
+            className="p-1 rounded-full hover:bg-gray-100"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleRemove}

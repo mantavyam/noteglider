@@ -21,7 +21,7 @@ const WalletSection: React.FC = () => {
         
         <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-8 mb-16">
           <Button 
-            className="bg-white text-black border border-gray-300 hover:bg-gray-50 rounded-lg"
+            className="bg-white text-black border border-gray-300 hover:bg-gray-50 rounded-lg shadow-sm"
             onClick={() => navigate('/task')}
           >
             <Youtube className="w-5 h-5 mr-2" />
@@ -29,7 +29,7 @@ const WalletSection: React.FC = () => {
           </Button>
           
           <Button 
-            className="bg-white text-black border border-gray-300 hover:bg-gray-50 rounded-lg"
+            className="bg-white text-black border border-gray-300 hover:bg-gray-50 rounded-lg shadow-sm"
             onClick={() => navigate('/task')}
           >
             <FileUp className="w-5 h-5 mr-2" />

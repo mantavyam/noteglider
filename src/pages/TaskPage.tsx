@@ -211,8 +211,8 @@ const TaskPage = () => {
             <motion.div variants={itemVariants} className="pt-6">
               <motion.button
                 type="submit"
-                className={`w-full text-primary-foreground rounded-md px-4 py-3 font-medium relative overflow-hidden group ${
-                  backendConnected ? "bg-primary hover:bg-primary/90" : "bg-gray-400 cursor-not-allowed"
+                className={`w-full text-white rounded-md px-4 py-3 font-medium relative overflow-hidden group ${
+                  backendConnected ? "bg-black hover:bg-black/90" : "bg-gray-400 cursor-not-allowed"
                 }`}
                 whileHover={backendConnected ? { scale: 1.01 } : {}}
                 whileTap={backendConnected ? { scale: 0.98 } : {}}
@@ -223,7 +223,7 @@ const TaskPage = () => {
                 </span>
                 {backendConnected && (
                   <motion.span
-                    className="absolute inset-0 bg-primary-foreground/10"
+                    className="absolute inset-0 bg-white/10"
                     initial={{ scaleX: 0 }}
                     whileHover={{ 
                       scaleX: 1, 

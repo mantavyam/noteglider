@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -119,7 +120,7 @@ const DownloadPage = () => {
         <PageTransition>
           <div className="container mx-auto px-4 py-8">
             <div className="max-w-lg mx-auto">
-              <Card className="shadow-lg border-red-200">
+              <Card className="shadow-lg border-red-200 bg-white">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center text-red-600">
                     <AlertTriangle className="mr-2" />
@@ -127,13 +128,13 @@ const DownloadPage = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-gray-600">
                     It seems you haven't generated a newsletter yet or the session has expired.
                     Please return to the task page to upload your files and generate a newsletter.
                   </p>
                 </CardContent>
                 <CardFooter>
-                  <Button onClick={handleNewNewsletter} className="w-full">
+                  <Button onClick={handleNewNewsletter} className="w-full bg-black text-white">
                     Create a Newsletter
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -153,25 +154,25 @@ const DownloadPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {showPreview && (
               <div className="lg:col-span-2">
-                <Card className="shadow-lg h-full flex flex-col">
+                <Card className="shadow-lg h-full flex flex-col bg-white">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-xl flex items-center">
+                    <CardTitle className="text-xl flex items-center text-black">
                       <FileText className="mr-2 h-5 w-5" />
                       PDF Preview
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex-1 overflow-hidden p-4">
-                    <div className="w-full h-[70vh] rounded-md border border-gray-200 overflow-hidden">
+                    <div className="w-full h-[70vh] rounded-md border border-gray-200 overflow-hidden bg-white">
                       {pdfError || !pdfBlobUrl ? (
                         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 p-6">
                           <AlertTriangle className="h-12 w-12 text-orange-500 mb-4" />
-                          <p className="text-center text-muted-foreground mb-2">
+                          <p className="text-center text-gray-600 mb-2">
                             The PDF preview cannot be displayed.
                           </p>
-                          <p className="text-center text-sm text-muted-foreground mb-4">
+                          <p className="text-center text-sm text-gray-500 mb-4">
                             This might be due to network issues or file unavailability.
                           </p>
-                          <Button onClick={handleDownload} variant="outline" size="sm">
+                          <Button onClick={handleDownload} variant="outline" size="sm" className="border-gray-300 text-black">
                             <Download className="mr-2 h-4 w-4" />
                             Download to View
                           </Button>
@@ -193,9 +194,9 @@ const DownloadPage = () => {
               </div>
             )}
             <div className={`${showPreview ? 'lg:col-span-1' : 'lg:col-span-3'}`}>
-              <Card className="shadow-lg h-full">
+              <Card className="shadow-lg h-full bg-white">
                 <CardHeader>
-                  <CardTitle className="flex items-center">
+                  <CardTitle className="flex items-center text-black">
                     <File className="mr-2 h-5 w-5" />
                     Your Newsletter is Ready
                   </CardTitle>
@@ -204,10 +205,10 @@ const DownloadPage = () => {
                   <div className="space-y-6">
                     <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100 text-center">
                       <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center mx-auto mb-3">
-                        <File className="h-8 w-8 text-primary" />
+                        <File className="h-8 w-8 text-blue-500" />
                       </div>
-                      <h3 className="text-lg font-medium mb-1">{state.filename}</h3>
-                      <div className="text-sm text-muted-foreground">
+                      <h3 className="text-lg font-medium mb-1 text-gray-900">{state.filename}</h3>
+                      <div className="text-sm text-gray-600">
                         <p>Generated {relativeTime}</p>
                         <p>Size: {formattedSize}</p>
                       </div>
@@ -215,7 +216,7 @@ const DownloadPage = () => {
                     <div className="space-y-3">
                       <Button
                         onClick={handleDownload}
-                        className="w-full"
+                        className="w-full bg-black text-white"
                         disabled={isDownloading}
                       >
                         <Download className="mr-2 h-4 w-4" />
@@ -224,32 +225,32 @@ const DownloadPage = () => {
                       <Button
                         variant="outline"
                         onClick={handleTogglePreview}
-                        className="w-full"
+                        className="w-full border-gray-300 text-black"
                       >
                         {showPreview ? 'Hide Preview' : 'Show Preview'}
                       </Button>
                       <Button
                         variant="secondary"
                         onClick={handleNewNewsletter}
-                        className="w-full"
+                        className="w-full bg-gray-100 text-black hover:bg-gray-200"
                       >
                         <RefreshCcw className="mr-2 h-4 w-4" />
                         Create New Newsletter
                       </Button>
                     </div>
-                    <div className="rounded-lg border bg-card p-4">
-                      <h4 className="font-medium mb-2">Next Steps</h4>
-                      <ul className="text-sm space-y-2 text-muted-foreground">
+                    <div className="rounded-lg border bg-white p-4">
+                      <h4 className="font-medium mb-2 text-black">Next Steps</h4>
+                      <ul className="text-sm space-y-2 text-gray-600">
                         <li className="flex items-start">
-                          <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full bg-primary/10 text-primary text-xs mr-2">1</span>
+                          <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full bg-blue-50 text-blue-600 text-xs mr-2">1</span>
                           <span>Download your newsletter PDF</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full bg-primary/10 text-primary text-xs mr-2">2</span>
+                          <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full bg-blue-50 text-blue-600 text-xs mr-2">2</span>
                           <span>Share it with your audience via email or social media</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full bg-primary/10 text-primary text-xs mr-2">3</span>
+                          <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full bg-blue-50 text-blue-600 text-xs mr-2">3</span>
                           <span>Create another newsletter whenever you need</span>
                         </li>
                       </ul>

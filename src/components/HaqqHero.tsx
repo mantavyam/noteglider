@@ -23,15 +23,15 @@ const HaqqHero: React.FC = () => {
             <source src="https://cdn.prod.website-files.com/66eade0c3f9fa1dbb50d7697%2F66fecb2829b0adf0d9648871_1_4_herou-3okt-transcode.webm" type="video/webm" />
           </video>
         </div>
-        <div className="absolute w-full h-40 bottom-0 bg-gradient-to-t from-white to-transparent"></div>
+        {/* Removed the gradient overlay to show video as-is */}
       </div>
       
       <div className="container relative z-10 mx-auto px-4 md:px-6 text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-black">
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
           Effortless PDF Creation<br />for Live Educators
         </h1>
         
-        <p className="text-xl md:text-2xl text-gray-800 max-w-2xl mx-auto mb-12">
+        <p className="text-xl md:text-2xl text-white max-w-2xl mx-auto mb-12">
           Transform your YouTube live classes into beautifully designed study materials 
           without the hassle. Create daily newsletters, weekly compilations, and monthly 
           magazines to boost student success.

@@ -184,7 +184,7 @@ const BuildPage = () => {
             {/* Bottom action buttons */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4 mt-8 border-t">
               <div className="flex space-x-4">
-                <Button variant="outline" onClick={handleReupload} disabled={isGenerating}>
+                <Button variant="outline" onClick={handleReupload} disabled={isGenerating} className="border-gray-300 hover:bg-gray-50 text-black">
                   <UploadCloud className="mr-2 h-4 w-4" /> Reupload
                 </Button>
                 <Button variant="destructive" onClick={handleAbort} disabled={isGenerating}>
@@ -194,7 +194,7 @@ const BuildPage = () => {
               
               <Button 
                 onClick={handleContinue} 
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto bg-black text-white hover:bg-black/90"
                 disabled={isGenerating}
               >
                 {isGenerating ? (
