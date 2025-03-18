@@ -7,10 +7,10 @@ const CommunitySection: React.FC = () => {
     <section className="pt-24 pb-0 bg-black border-t border-white/10">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
-          <div className="mb-4 text-sm font-medium">HAQQ UNITES 2 MILLION MUSLIMS ONLINE</div>
+          <div className="mb-4 text-sm font-medium">NOTEGLIDER PROCESSES 100+ DOCUMENTS DAILY</div>
           <h2 className="text-4xl md:text-5xl font-bold">
-            Join the largest Muslim<br />
-            community in Web3
+            Integrate NoteGlider's Document<br />
+            Content Automation System
           </h2>
           
           <div className="flex justify-center mt-16 space-x-12">

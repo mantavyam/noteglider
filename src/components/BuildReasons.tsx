@@ -6,7 +6,7 @@ const BuildReasons: React.FC = () => {
     <section className="py-24 bg-black">
       <div className="container mx-auto px-4 md:px-6">
         <h2 className="text-3xl md:text-4xl font-bold mb-16">
-          Why build on HAQQ?
+          Why to choose NoteGlider?
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -20,13 +20,11 @@ const BuildReasons: React.FC = () => {
             
             <div className="relative z-10">
               <h3 className="text-2xl font-bold mb-5">
-                HAQQ brings together the most reputable actors of Ethical 
-                Finance
+              Smart Conversion & Processing
               </h3>
               <p className="text-white/70">
-                to promote community-driven decentralized
-                technologies worldwide. HAQQ is an EVM-equivalent chain,
-                built using Cosmos SDK.
+              Our backend engine converts your PPTX into a structured Google Docs format.
+              Dynamic Template Application:
               </p>
             </div>
           </div>
@@ -46,11 +44,10 @@ const BuildReasons: React.FC = () => {
             
             <div className="relative z-10">
               <h3 className="text-2xl font-bold mb-5">
-                The technology behind HAQQ makes it possible for any
-                smart contract created on other EVM chains to be deployed
+              Instant Delivery & Tracking
               </h3>
               <p className="text-white/70">
-                onto the new network without any changes needed.
+              Real-Time Dashboard to Monitor every stage of your document’s journey—from processing to final delivery.
               </p>
             </div>
           </div>

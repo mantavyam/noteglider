@@ -29,11 +29,11 @@ const HaqqNavbar: React.FC = () => {
             <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center">
               <img 
                 src="/placeholder.svg" 
-                alt="EduPDF" 
+                alt="NoteGlider" 
                 className="h-6 w-6"
               />
             </div>
-            <span className="ml-2 text-white font-bold">EduPDF</span>
+            <span className="ml-2 text-white font-bold">NoteGlider</span>
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">

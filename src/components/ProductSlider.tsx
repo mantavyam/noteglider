@@ -41,28 +41,27 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 const ProductSlider: React.FC = () => {
   const products: Product[] = [
     {
-      title: "ISLM",
-      description: "HAQQ ecosystem utility token with full Shariah-compliance built-in for staking, yield generation, funds transfer through HAQQ wallet.",
-      image: "/lovable-uploads/4c0d18b2-f25c-49b0-9dce-842bd2760824.png",
+      title: "Newsletter",
+      description: "Daily Newsletters: Quick, up-to-date documents with essential question's highlights",
+      image: "/landing-assets/landing-4.png",
       action: {
-        text: "BUY ISLM",
+        text: "GET STARTED",
         link: "#"
       },
-      bgColor: "bg-gradient-to-br from-black to-amber-950/50"
     },
     {
-      title: "Debit card",
-      description: "Spend ISLM and other crypto easy everytime with debit card.",
-      image: "/lovable-uploads/61a13eb4-ba7a-4a85-9344-ba68454d9192.png",
+      title: "Compilation",
+      description: "Weekly Compilations: A curated document covering review of past week’s lessons",
+      image: "/landing-assets/landing-3.png",
       action: {
         text: "GET STARTED",
         link: "#"
       }
     },
     {
-      title: "HAQQ Wallet",
-      description: "A community-governed dApp marketplace for all ethical products, designed to meet the needs of the modern, conscientious users. Your gateway to halal finance.",
-      image: "/lovable-uploads/9cbb9e19-dbc2-47ed-8335-0ab77c310b58.png",
+      title: "Magazine",
+      description: "Monthly Magazines: A comprehensive document grouping an entire month’s data",
+      image: "/landing-assets/landing-2.png",
       action: {
         text: "GET STARTED",
         link: "#"
@@ -75,8 +74,8 @@ const ProductSlider: React.FC = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex justify-between items-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold">
-            Explore the products powered by<br />
-            HAQQ Network
+            Explore the Documents offered by<br />
+            NoteGlider
           </h2>
           
           <div className="flex space-x-4">
