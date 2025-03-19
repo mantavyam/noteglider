@@ -26,9 +26,9 @@ const HaqqNavbar: React.FC = () => {
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <div className="flex items-center space-x-12">
           <Link to="/" className="flex items-center">
-            <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center">
+            <div className="h-10 w-10 bg-black rounded-full flex items-center justify-center">
               <img 
-                src="/placeholder.svg" 
+                src="/noteglider-logo-dark.png" 
                 alt="NoteGlider" 
                 className="h-6 w-6"
               />

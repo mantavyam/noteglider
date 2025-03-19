@@ -53,7 +53,7 @@ const HaqqLayout: React.FC<HaqqLayoutProps> = ({
           </div>
           
           <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-white/50 text-sm">© 2023 NoteGlider. All rights reserved.</p>
+            <p className="text-white/50 text-sm">© 2025 NoteGlider. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <Link to="/" className="text-white/50 hover:text-white">Terms</Link>
               <Link to="/" className="text-white/50 hover:text-white">Privacy</Link>

@@ -119,7 +119,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({ zipFile }) => {
               alt={image.displayName}
               className="w-full h-full object-cover" 
             />
-            <div className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded-full">
+            <div className="absolute top-2 left-2 bg-primary text-black text-xs px-2 py-1 rounded-full">
               #{image.sortOrder}
             </div>
           </div>

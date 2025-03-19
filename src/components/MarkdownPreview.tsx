@@ -92,7 +92,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
         components={{
           table: ({ node, children, ...props }) => (
             <div className="my-6 w-full overflow-x-auto">
-              <Table className="border rounded-lg shadow-sm">
+              <Table className="border rounded-lg shadow-sm bg-white">
                 {children}
               </Table>
             </div>
@@ -104,13 +104,13 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
             <TableBody {...props}>{children}</TableBody>
           ),
           tr: ({ node, children, ...props }) => (
-            <TableRow className="hover:bg-muted/50" {...props}>{children}</TableRow>
+            <TableRow className="hover:bg-gray-50" {...props}>{children}</TableRow>
           ),
           th: ({ node, children, ...props }) => (
-            <TableHead className="font-bold bg-muted/50 p-3" {...props}>{children}</TableHead>
+            <TableHead className="font-bold bg-gray-100 p-3 text-gray-900" {...props}>{children}</TableHead>
           ),
           td: ({ node, children, ...props }) => (
-            <TableCell className="p-3" {...props}>{children}</TableCell>
+            <TableCell className="p-3 text-gray-700" {...props}>{children}</TableCell>
           ),
           
           ul: ({ node, children, ...props }) => (
@@ -134,13 +134,13 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
           ),
           hr: () => <Separator className="my-6 bg-gradient-to-r from-transparent via-primary to-transparent h-0.5" />,
           h1: ({ node, ...props }) => (
-            <h1 className="text-3xl font-bold mt-8 mb-4 text-primary bg-gradient-to-r from-primary/10 to-transparent pr-4 rounded-lg" {...props} />
+            <h1 className="text-3xl font-bold mt-8 mb-4 text-gray-900 bg-gradient-to-r from-gray-50 to-transparent pr-4 rounded-lg" {...props} />
           ),
           h2: ({ node, ...props }) => (
-            <h2 className="text-2xl font-bold mt-6 mb-3 text-primary/90 border-b border-primary/20 pb-1" {...props} />
+            <h2 className="text-2xl font-bold mt-6 mb-3 text-gray-800 border-b border-gray-200 pb-1" {...props} />
           ),
           h3: ({ node, ...props }) => (
-            <h3 className="text-xl font-bold mt-4 mb-2 text-primary/80" {...props} />
+            <h3 className="text-xl font-bold mt-4 mb-2 text-gray-700" {...props} />
           ),
           p: ({ node, children, ...props }) => {
             const youtubeEmbed = renderYouTubeEmbed(children?.toString() || '');
@@ -150,7 +150,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ file }) => {
             <a href={href} className="text-blue-600 hover:underline hover:text-blue-800 transition-colors" {...props} />
           ),
           strong: ({ node, ...props }) => (
-            <strong className="font-bold text-foreground" {...props} />
+            <strong className="font-bold text-foreground-black" {...props} />
           ),
           em: ({ node, ...props }) => (
             <em className="italic text-foreground/90" {...props} />

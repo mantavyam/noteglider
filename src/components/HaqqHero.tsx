@@ -23,24 +23,22 @@ const HaqqHero: React.FC = () => {
             <source src="https://cdn.prod.website-files.com/66eade0c3f9fa1dbb50d7697%2F66fecb2829b0adf0d9648871_1_4_herou-3okt-transcode.webm" type="video/webm" />
           </video>
         </div>
-        {/* Removed the gradient overlay to show video as-is */}
       </div>
       
       <div className="container relative z-10 mx-auto px-4 md:px-6 text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
-          Effortless PDF Creation<br />for Live Educators
+        <h1 className="text-4xl md:text-5xl font-medium mb-5 text-white">
+          Effortless<br />Notes Automation
         </h1>
         
         <p className="text-xl md:text-2xl text-white max-w-2xl mx-auto mb-12">
           Transform your YouTube live classes into beautifully designed study materials 
-          without the hassle. Create daily newsletters, weekly compilations, and monthly 
-          magazines to boost student success.
+          without the hassle. 
         </p>
         
         <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-center gap-4">
           <Button 
             onClick={() => navigate('/task')} 
-            className="bg-white text-black border border-gray-300 hover:bg-gray-50 text-lg px-8 py-6 h-auto rounded-full shadow-xl"
+            className="bg-white text-black border border-gray-300 hover:bg-gray-50 text-lg px-8 py-6 h-6 rounded-full shadow-xl"
           >
             Start Building
           </Button>
