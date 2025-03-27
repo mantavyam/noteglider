@@ -4,11 +4,38 @@
     <meta charset="UTF-8">
     <title>PDF Layout</title>
     <style>
-        /* Define A4 page size and margins for subsequent pages */
+        /* Font definitions for SVGs */
+        @font-face {
+            font-family: 'Afacad';
+            src: url('static/fonts/Afacad-Regular.ttf') format('truetype');
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: 'Afacad';
+            src: url('static/fonts/Afacad-Bold.ttf') format('truetype');
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: 'Afacad';
+            src: url('static/fonts/Afacad-Medium.ttf') format('truetype');
+            font-weight: 500;
+        }
+        @font-face {
+            font-family: 'Afacad';
+            src: url('static/fonts/Afacad-SemiBold.ttf') format('truetype');
+            font-weight: 600;
+        }
+        @font-face {
+            font-family: 'Ahsing';
+            src: url('static/fonts/Ahsing-Regular.otf') format('opentype');
+            font-weight: normal;
+        }
+
+        /* A4 page setup for subsequent pages */
         @page {
             size: A4 portrait;
-            margin-top: 15mm; /* Space for header on subsequent pages */
-            margin-bottom: 15mm; /* Space for footer on all pages */
+            margin-top: 15mm; /* Space for 15mm header */
+            margin-bottom: 15mm; /* Space for 15mm footer */
             margin-left: 0;
             margin-right: 0;
             @top-center {
@@ -21,8 +48,8 @@
 
         /* First page with larger header */
         @page :first {
-            margin-top: 24mm; /* Space for 24mm header on first page */
-            margin-bottom: 15mm; /* Space for footer */
+            margin-top: 24mm; /* Space for 24mm first header */
+            margin-bottom: 15mm;
             @top-center {
                 content: element(first-header);
             }
@@ -31,6 +58,7 @@
             }
         }
 
+        /* Base styles */
         body {
             margin: 0;
             padding: 0;
@@ -45,217 +73,52 @@
         /* First page header (24mm) */
         .first-header {
             position: running(first-header);
-            width: 210mm;
             height: 24mm;
-            background-color: #0097b2;
-            color: white;
-            font-family: sans-serif;
-            position: relative;
+            width: 210mm;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            border: 1px solid red;
         }
-
-        .first-header .line {
-            position: absolute;
-            top: 8mm;
-            left: 36mm;
-            right: 36mm;
-            height: 0;
-            border-top: 3px solid white;
-        }
-
-        .first-header .brand-name {
-            position: absolute;
-            top: 2mm;
-            left: 8mm;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .first-header .doc-type {
-            position: absolute;
-            top: 7mm;
-            left: 8mm;
-            background: black;
-            color: white;
-            font-size: 14px;
-            padding: 2px 5px;
-        }
-
-        .first-header .youtube-link {
-            position: absolute;
-            top: 12mm;
-            left: 8mm;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .first-header .youtube-icon img {
-            width: 9.37mm;
-            height: 6.48mm;
-            margin-right: 2mm;
-        }
-
-        .first-header .youtube-text a {
-            color: white;
-            text-decoration: underline;
-            font-size: 10px;
-            line-height: 1.2;
+        .first-header svg {
+            width: 100%;
+            height: 100%;
             display: block;
         }
 
-        .first-header .tagline {
-            position: absolute;
-            top: 3mm;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .first-header .brand-heading {
-            position: absolute;
-            top: 10mm;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 36px;
-            font-family: 'Ahsing', sans-serif;
-            text-align: center;
-        }
-
-        .first-header .date {
-            position: absolute;
-            top: 8mm;
-            right: 8mm;
-            background: black;
-            color: white;
-            font-size: 18px;
-            padding: 2px 5px;
-        }
-
-        .first-header .author {
-            position: absolute;
-            top: 18mm;
-            right: 8mm;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        /* Regular header for subsequent pages (15mm) */
-        .header {
+        /* Header for subsequent pages (15mm) */
+        #header {
             position: running(header);
-            width: 210mm;
             height: 15mm;
-            background-color: #0097b2;
-            color: white;
-            font-size: 8px;
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0 5mm;
+            width: 210mm;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            border: 1px solid red;
         }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            gap: 5mm;
-        }
-
-        .header .icon-youtube {
-            width: 6.74mm;
-            height: 4.67mm;
-        }
-
-        .header-text {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            line-height: 0;
-        }
-
-        .header-title {
-            font-size: 7px;
-            font-weight: bold;
-        }
-
-        .header-link a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 8px;
+        #header svg {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         /* Footer for all pages (15mm) */
-        .footer {
+        #footer {
             position: running(footer);
-            width: 210mm;
             height: 15mm;
-            background-color: #0097b2;
-            color: white;
-            font-size: 7.5px;
-            font-family: sans-serif;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 0 15mm;
+            width: 210mm;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            border: 1px solid red;
         }
-
-        .footer-block {
-            width: 33%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .footer-title {
-            font-weight: bold;
-            margin: 0 0 2px 0;
-            line-height: 1.2em;
-        }
-
-        .block-1-row {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-bottom: 2px;
-        }
-
-        .icon-instagram, .icon-youtube, .icon-telegram {
-            width: 4.17mm;
-            height: 4.17mm;
-        }
-
-        .block-2-content {
-            display: flex;
-            align-items: flex-start;
-            gap: 5px;
-        }
-
-        .icon-brand {
-            width: 7mm;
-            height: 7mm;
-        }
-
-        .block-2-links {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            align-items: flex-start;
-        }
-
-        .footer-line {
-            margin: 2px 0;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-
-        a {
-            color: white;
-            text-decoration: none;
+        #footer svg {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         /* Main content container */
@@ -275,142 +138,58 @@
             margin: 0 auto;
         }
 
-        /* Content styling */
+        /* Basic content styling */
         h1, h2, h3, h4 {
             break-after: avoid;
             margin-top: 2pt;
             margin-bottom: 2pt;
             text-align: justify;
         }
-
         p {
             margin-top: 2pt;
             margin-bottom: 2pt;
             text-align: justify;
         }
-
         ul, ol {
             margin-top: 2pt;
             margin-bottom: 2pt;
             padding-left: 15pt;
             text-align: justify;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 2pt 0;
             break-inside: avoid-column;
         }
-
         th, td {
             border: 1px solid #ddd;
             padding: 4pt;
             text-align: left;
         }
-
         th {
-            background-color: #f2f2f2;
+            background-color: #0097b2;
+            color: white;
         }
-
         img {
             max-width: 60mm;
             height: auto;
             display: block;
             margin: 2pt auto;
         }
-
-        .qa-section {
-            margin-bottom: 4pt;
-        }
     </style>
 </head>
 <body>
-    <!-- First page header -->
-    <div class="first-header">
-        <div class="line"></div>
-        <div class="brand-name">Learning Niti</div>
-        <div class="doc-type">DAILY NEWSLETTER</div>
-        <div class="youtube-link">
-            <div class="youtube-icon">
-                <a href="https://www.youtube.com/@Studyniti/streams" target="_blank">
-                    <img src="youtube-icon.png" alt="YouTube">
-                </a>
-            </div>
-            <div class="youtube-text">
-                <a href="https://youtube.com/video" target="_blank">[CLICK] to WATCH Today’s<br>NEWS Analysis + Current Affairs</a>
-            </div>
-        </div>
-        <div class="tagline">ONE STOP SOLUTION FOR ALL BANKING EXAMS</div>
-        <div class="brand-heading">CROSSWORD</div>
-        <div class="date">{{ date }}</div>  <!-- Dynamic date -->
-        <div class="author">By: Kapil Kathpal</div>
-    </div>
+    <!-- First page header (24mm) -->
+    <div class="first-header">{{ first_header_svg | safe }}</div>
 
-    <!-- Regular header for subsequent pages -->
-    <div class="header">
-        <div class="header-content">
-            <a href="https://www.youtube.com/@Studyniti/streams" target="_blank">
-                <img src="youtube.png" alt="YouTube" class="icon-youtube">
-            </a>
-            <div class="header-text">
-                <p class="header-title">IMPORTANT NEWS COVERAGE FOR ALL BANK EXAMS</p>
-                <p class="header-link">
-                    <a href="https://www.youtube.com/@Studyniti/streams" target="_blank">
-                        [CLICK] to WATCH Today's NEWS Analysis + Current Affairs
-                    </a>
-                </p>
-            </div>
-            <a href="https://www.youtube.com/@Studyniti/streams" target="_blank">
-                <img src="youtube.png" alt="YouTube" class="icon-youtube">
-            </a>
-        </div>
-    </div>
+    <!-- Header for subsequent pages (15mm) -->
+    <div id="header">{{ header_svg | safe }}</div>
 
-    <!-- Footer for all pages -->
-    <div class="footer">
-        <div class="footer-block">
-            <div class="block-1-row">
-                <span class="footer-title">Connect with Kapil Sir</span>
-                <a href="https://www.youtube.com/@Studyniti/featured" target="_blank">
-                    <img src="youtube.png" alt="YouTube" class="icon-youtube" />
-                    <u>@Studyniti</u>
-                </a>
-            </div>
-            <div class="block-1-row">
-                <a href="https://www.instagram.com/iamkapilkathpal/" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="icon-instagram" />
-                    <u>@iamkapilkathpal</u>
-                </a>
-                <a href="https://t.me/kkathpal" target="_blank">
-                    <img src="telegram.png" alt="Telegram" class="icon-telegram" />
-                    <u>@kkathpal</u>
-                </a>
-            </div>
-        </div>
-        <div class="footer-block">
-            <p class="footer-title">Level Up Your Preparation with:</p>
-            <div class="block-2-content">
-                <img src="brand-icon.png" alt="Brand Icon" class="icon-brand" />
-                <div class="block-2-links">
-                    <a href="https://play.google.com/store/apps/details?id=co.rios.czhgm" target="_blank"><u>“Learning Niti” App (Click to View)</u></a>
-                    <a href="https://www.learningniti.com" target="_blank"><u>“Learning Niti” Website (Click to View)</u></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-block">
-            <p class="footer-title">Get Crossword Current Affairs Package:</p>
-            <div class="footer-line">
-                <a href="https://www.learningniti.com/courses/399651" target="_blank"><u>https://www.learningniti.com/courses/399651</u></a>
-            </div>
-            <div class="footer-line">
-                For Enquiry Mail at:
-                <a href="mailto:inquiry.learningniti@gmail.com"><u>inquiry.learningniti@gmail.com</u></a>
-            </div>
-        </div>
-    </div>
+    <!-- Footer for all pages (15mm) -->
+    <div id="footer">{{ footer_svg | safe }}</div>
 
-    <!-- Main content container -->
+    <!-- Main content -->
     <div class="container">
         <div class="content-area">
             {{ content | safe }}

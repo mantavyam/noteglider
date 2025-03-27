@@ -161,7 +161,7 @@ const BuildPage = () => {
                 <h2 className="text-lg font-medium mb-4 sticky top-0 bg-white pb-2 z-10 text-black">Markdown Content</h2>
                 <div className="flex-1 overflow-hidden">
                   <ScrollArea className="h-[60vh]">
-                    <div className="bg-black-50 rounded p-4">
+                    <div className="bg-gray-50 rounded p-4">
                       <MarkdownPreview file={markdownFile} />
                     </div>
                   </ScrollArea>

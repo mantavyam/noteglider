@@ -8,6 +8,7 @@ from fastapi.responses import FileResponse
 import os
 import re
 import shutil
+import tempfile
 import zipfile
 import markdown
 import uuid
@@ -15,6 +16,9 @@ from weasyprint import HTML
 from typing import Optional
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Newsletter Generator API")
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -188,27 +192,6 @@ def parse_markdown(md_content: str):
         logging.error(traceback.format_exc())
         raise ValueError(f"Failed to parse markdown: {str(e)}")
 
-def estimate_height(html):
-    """Estimate the height of HTML content in mm based on simple_layout.html."""
-    if html.startswith('<h1'):
-        return 12  # 14pt + margins
-    elif html.startswith('<h2'):
-        return 10  # 12pt + margins
-    elif html.startswith('<h3'):
-        return 8   # 10pt + margins
-    elif html.startswith('<table'):
-        rows = html.count('<tr>')
-        return 5 + rows * 3  # Base height + 3mm per row
-    elif html.startswith('<ul'):
-        items = html.count('<li>')
-        return items * 4     # 4mm per list item
-    elif html.startswith('<p'):
-        match = re.search(r'<p>(.*?)</p>', html)
-        content = match.group(1) if match else html
-        words = len(content.split())
-        lines = max(1, words // 5)  # ~10 words per line in 61.33mm width
-        return lines * 4            # 4mm per line
-    return 4  # Default fallback
 
 def split_paragraph(html, remaining_space):
     """Split paragraphs or lists to fit within remaining_space (in mm)."""
@@ -260,12 +243,14 @@ async def generate_pdf(
         request_id = str(uuid.uuid4())
         request_dir = os.path.join(TEMP_DIR, request_id)
         os.makedirs(request_dir, exist_ok=True)
-        
+        logger.info(f"Created request directory: {request_dir}")
+
         # Save uploaded markdown file
         md_path = os.path.join(request_dir, markdown_file.filename)
         with open(md_path, "wb") as f:
             shutil.copyfileobj(markdown_file.file, f)
-        
+        logger.info(f"Saved markdown file: {md_path}")
+
         # Extract images from zip
         images_dir = os.path.join(request_dir, "images")
         os.makedirs(images_dir, exist_ok=True)
@@ -273,7 +258,8 @@ async def generate_pdf(
         
         with open(zip_path, "wb") as f:
             shutil.copyfileobj(images_zip.file, f)
-        
+        logger.info(f"Saved ZIP file: {zip_path}")
+
         image_files = []
         try:
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
@@ -281,37 +267,87 @@ async def generate_pdf(
             if os.path.exists(images_dir):
                 image_files = sorted([f for f in os.listdir(images_dir) 
                                     if os.path.isfile(os.path.join(images_dir, f))])
+            logger.debug(f"Extracted image files: {image_files}")
         except zipfile.BadZipFile:
-            logging.error(f"Bad ZIP file: {zip_path}")
+            logger.error(f"Bad ZIP file: {zip_path}")
             raise HTTPException(status_code=400, detail="The uploaded file is not a valid ZIP archive")
         except Exception as zip_error:
-            logging.error(f"Error extracting ZIP file: {str(zip_error)}")
+            logger.error(f"Error extracting ZIP file: {str(zip_error)}")
             raise HTTPException(status_code=400, detail=f"Unable to extract ZIP file: {str(zip_error)}")
-        
-        logging.debug(f"Found image files: {image_files}")
-        
+
         # Copy static assets
-        shutil.copytree(
-            os.path.abspath('static'), 
-            os.path.join(request_dir, 'static'), 
-            dirs_exist_ok=True
-        )
-        
+        static_source = os.path.abspath('static')
+        static_dest = os.path.join(request_dir, 'static')
+        shutil.copytree(static_source, static_dest, dirs_exist_ok=True)
+        logger.info(f"Copied static assets from {static_source} to {static_dest}")
+
         # Parse markdown content
         try:
             with open(md_path, "r", encoding="utf-8") as f:
                 md_content = f.read()
             parsed_data = parse_markdown(md_content)
+            logger.info(f"Successfully parsed markdown content. Date: {parsed_data.get('date', 'Not found')}")
         except Exception as md_error:
-            logging.error(f"Error parsing markdown: {str(md_error)}")
-            logging.error(traceback.format_exc())
+            logger.error(f"Error parsing markdown: {str(md_error)}")
+            logger.error(traceback.format_exc())
             raise HTTPException(status_code=400, detail=f"Error parsing markdown: {str(md_error)}")
+
+        # Load and process SVG files
+        svg_dir = 'templates'
         
-        # Define helper function to generate HTML for content items
+        # First page header (Header-Main.svg)
+        first_header_path = os.path.join(svg_dir, 'Header-Main.svg')
+        if os.path.exists(first_header_path):
+            try:
+                with open(first_header_path, 'r', encoding='utf-8') as f:
+                    first_header_svg = f.read()
+                soup = BeautifulSoup(first_header_svg, 'xml')
+                date_label = soup.find('text', {'id': 'date-label'})
+                if date_label:
+                    actual_date = parsed_data.get('date', 'DD/MM/YY')  # Fallback if date not found
+                    date_label.string = actual_date
+                    logger.debug(f"Updated date in Header-Main.svg to: {actual_date}")
+                else:
+                    logger.warning("Could not find 'date-label' in Header-Main.svg")
+                first_header_svg = str(soup)
+            except Exception as e:
+                logger.error(f"Failed to process Header-Main.svg: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Failed to process Header-Main.svg: {str(e)}")
+        else:
+            logger.error(f"Header-Main.svg not found at {first_header_path}")
+            raise HTTPException(status_code=500, detail="Header-Main.svg is missing")
+
+        # Subsequent pages header (Header-Constant.svg)
+        header_path = os.path.join(svg_dir, 'Header-Constant.svg')
+        if os.path.exists(header_path):
+            try:
+                with open(header_path, 'r', encoding='utf-8') as f:
+                    header_svg = f.read()
+                logger.debug("Loaded Header-Constant.svg successfully")
+            except Exception as e:
+                logger.error(f"Failed to load Header-Constant.svg: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Failed to load Header-Constant.svg: {str(e)}")
+        else:
+            logger.error(f"Header-Constant.svg not found at {header_path}")
+            raise HTTPException(status_code=500, detail="Header-Constant.svg is missing")
+
+        # Footer for all pages (Footer-Constant.svg)
+        footer_path = os.path.join(svg_dir, 'Footer-Constant.svg')
+        if os.path.exists(footer_path):
+            try:
+                with open(footer_path, 'r', encoding='utf-8') as f:
+                    footer_svg = f.read()
+                logger.debug("Loaded Footer-Constant.svg successfully")
+            except Exception as e:
+                logger.error(f"Failed to load Footer-Constant.svg: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Failed to load Footer-Constant.svg: {str(e)}")
+        else:
+            logger.error(f"Footer-Constant.svg not found at {footer_path}")
+            raise HTTPException(status_code=500, detail="Footer-Constant.svg is missing")
+
+        # Define helper function to generate HTML for content items (unchanged)
         def generate_html_for_content(item, image_files):
             content_html = ""
-            
-            # Skip date lines
             date_pattern = re.compile(r'^\s*\*?\*?(\d{1,2}(\+\d{1,2})?-\d{1,2}-\d{2,4})\*?\*?\s*$')
             content_to_check = item['content'] if item['type'] in ['text', 'heading'] else ""
             if date_pattern.match(content_to_check):
@@ -328,26 +364,21 @@ async def generate_pdf(
                     return f"<h3>{content}</h3>"
                 else:
                     return f"<h4>{content}</h4>"
-            
             elif item['type'] == 'text':
                 content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
                 return f"<p>{content}</p>"
-            
             elif item['type'] == 'bullet':
                 content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
                 return f"<li>{content}</li>"
-            
             elif item['type'] == 'table':
                 table_data = item['content']
                 table_html = "<table class='content-table'>"
-                
                 if table_data['headers']:
                     table_html += "<thead><tr>"
                     for header in table_data['headers']:
                         header = re.sub(r'\*\*(.*?)\*\*', r'\1', header)
                         table_html += f"<th>{header}</th>"
                     table_html += "</tr></thead>"
-                
                 table_html += "<tbody>"
                 for row in table_data['rows']:
                     table_html += "<tr>"
@@ -356,16 +387,12 @@ async def generate_pdf(
                         table_html += f"<td>{cell}</td>"
                     table_html += "</tr>"
                 table_html += "</tbody>"
-                
                 table_html += "</table>"
                 return table_html
-            
             return content_html
-        
-        # Generate all content HTML as a list
+
+        # Generate all content HTML as a list (unchanged)
         all_content_html = []
-        
-        # Handle CURRENT AFFAIRS section
         if parsed_data['current_affairs']['questions']:
             qa_html = ["<div class='qa-section'>"]
             qa_html.append("<h2>Questions</h2>")
@@ -377,28 +404,24 @@ async def generate_pdf(
                     qa_html.append(f"<p><strong>A{i+1}.</strong> {answer}</p>")
             qa_html.append("</div>")
             all_content_html.append("".join(qa_html))
-        
-        # Process all content items
+
         skip_first_heading = True
         current_section = None
         in_bullet_list = False
         bullet_items = []
-        
+
         for i, item in enumerate(parsed_data['all_content']):
             if skip_first_heading and item['type'] == 'heading' and item['level'] == 1:
                 skip_first_heading = False
                 continue
-                
             if current_section == 'CURRENT AFFAIRS' and item['type'] == 'table':
                 continue
-                
             if item['type'] == 'heading' and item['level'] == 1:
                 if in_bullet_list:
                     all_content_html.append("<ul>" + "".join(bullet_items) + "</ul>")
                     bullet_items = []
                     in_bullet_list = False
                 current_section = item['content']
-            
             if item['type'] == 'bullet':
                 if not in_bullet_list:
                     in_bullet_list = True
@@ -415,32 +438,34 @@ async def generate_pdf(
                 html = generate_html_for_content(item, image_files)
                 if html:
                     all_content_html.append(html)
-        
-        # Combine all HTML content into a single string
+
         content_html = "".join(all_content_html)
-        
-        # Prepare template data with single content string
+        logger.debug(f"Generated content HTML length: {len(content_html)}")
+
+        # Prepare template data with SVG content
         template_data = {
             'content': content_html,
-            'date': parsed_data['date'] or 'Newsletter'
+            'first_header_svg': first_header_svg,
+            'header_svg': header_svg,
+            'footer_svg': footer_svg,
         }
-        
+
         # Render template and generate PDF
         try:
             main_template = env.get_template("simple_layout.html")
             full_html = main_template.render(template_data)
-            logging.debug(f"Rendered HTML length: {len(full_html)}")
-            
+            logger.debug(f"Rendered HTML length: {len(full_html)}")
+
             html_path = os.path.join(OUTPUT_DIR, f"debug_{request_id}.html")
-            with open(html_path, 'w') as f:
+            with open(html_path, 'w', encoding='utf-8') as f:
                 f.write(full_html)
-            logging.debug(f"Saved debug HTML to {html_path}")
-            
+            logger.info(f"Saved debug HTML to {html_path}")
+
             pdf_filename = f"newsletter_{request_id}.pdf"
             pdf_path = os.path.join(OUTPUT_DIR, pdf_filename)
-            
             HTML(string=full_html, base_url=request_dir).write_pdf(pdf_path)
-            
+            logger.info(f"Generated PDF at {pdf_path}")
+
             return {
                 "success": True,
                 "message": "PDF generated successfully",
@@ -449,13 +474,13 @@ async def generate_pdf(
                 "size": os.path.getsize(pdf_path) / 1024
             }
         except Exception as template_error:
-            logging.error(f"Template rendering or PDF generation error: {str(template_error)}")
-            logging.error(traceback.format_exc())
+            logger.error(f"Template rendering or PDF generation error: {str(template_error)}")
+            logger.error(traceback.format_exc())
             raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(template_error)}")
-    
+
     except Exception as e:
-        logging.error(f"Error during PDF generation: {str(e)}")
-        logging.error(traceback.format_exc())
+        logger.error(f"Error during PDF generation: {str(e)}")
+        logger.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/download/{filename}")
