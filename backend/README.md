@@ -20,6 +20,10 @@ This is a FastAPI backend service that generates PDF newsletters from Markdown a
    ```
    python main.py
    ```
+   or for backend in reload mode
+   ```
+   uvicorn main:app --reload --host 0.0.0.0 --port 8000
+   ```
 
 The API will be available at http://localhost:8000
 

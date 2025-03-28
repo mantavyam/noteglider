@@ -1,7 +1,7 @@
-<svg width="794" height="95" viewBox="0 0 794 95" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<rect width="794" height="95" fill="#1E1E1E"/>
+<svg width="800" height="95" viewBox="0 0 800 95" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect width="800" height="95" fill="#1E1E1E"/>
 <g id="Header-Main" clip-path="url(#clip0_1_2)">
-<rect x="0" y="0" width="794" height="95" fill="#0097B2"/>
+<rect width="800" height="95" fill="#0097B2"/>
 <line id="Connecting Line" x1="66" y1="29.5" x2="635" y2="29.5" stroke="white" stroke-width="3"/>
 <g id="Author" filter="url(#filter0_d_1_2)">
 <text fill="white" xml:space="preserve" style="white-space: pre" font-family="Afacad" font-size="20" font-weight="600" letter-spacing="0em"><tspan x="635" y="79.1667">By: Kapil Kathpal</tspan></text>
@@ -10,12 +10,12 @@
 <rect width="135" height="29" transform="translate(635 12)" fill="black"/>
 <text id="date-label" fill="white" xml:space="preserve" style="white-space: pre" font-family="Afacad" font-size="20" font-weight="600" letter-spacing="0px"><tspan x="657.91" y="33.1667">DD/MM/YY</tspan></text>
 </g>
-<text id="Branding" fill="white" xml:space="preserve" style="white-space: pre" font-family="Ahsing" font-size="64" letter-spacing="0em"><tspan x="208" y="81">CROSSWORD</tspan></text>
+<text id="Branding" fill="white" xml:space="preserve" style="white-space: pre" font-family="Ahsing" font-size="64" letter-spacing="0em"><tspan x="211" y="81">CROSSWORD</tspan></text>
 <g id="Tagline-Primary" filter="url(#filter1_d_1_2)">
-<text fill="white" xml:space="preserve" style="white-space: pre" font-family="Afacad" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="243.75" y="18.8333">ONE STOP SOLUTION FOR ALL BANKING EXAMS</tspan></text>
+<text fill="white" xml:space="preserve" style="white-space: pre" font-family="Afacad" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="246.75" y="18.8333">ONE STOP SOLUTION FOR ALL BANKING EXAMS</tspan></text>
 </g>
 <g id="Live Class Link Embed" filter="url(#filter2_d_1_2)">
-<text fill="white" xml:space="preserve" style="white-space: pre" font-family="Afacad" font-size="12" font-weight="500" letter-spacing="0em" text-decoration="underline"><tspan x="48" y="64"><a href="https://www.youtube.com/@Studyniti/featured">[CLICK] to WATCH Today&#x2019;s &#10;</a></tspan><tspan x="48" y="80"><a href="https://www.youtube.com/@Studyniti/featured">NEWS Analysis + Current Affairs</a></tspan></text>
+<text fill="white" xml:space="preserve" style="white-space: pre" font-family="Afacad" font-size="12" font-weight="500" letter-spacing="0em" text-decoration="underline"><tspan x="51" y="64"><a href="https://www.youtube.com/@Studyniti/featured">[CLICK] to WATCH Today&#x2019;s &#10;</a></tspan><tspan x="51" y="80"><a href="https://www.youtube.com/@Studyniti/featured">NEWS Analysis + Current Affairs</a></tspan></text>
 </g>
 <g id="icon-yt">
 <rect id="bg-fill-yt-icon" x="16" y="63" width="21" height="15" fill="white"/>
@@ -40,7 +40,7 @@
 <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_2"/>
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_2" result="shape"/>
 </filter>
-<filter id="filter1_d_1_2" x="240.372" y="8.65552" width="313.394" height="18.6779" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter1_d_1_2" x="243.372" y="8.65552" width="313.394" height="18.6779" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
 <feOffset dy="4"/>
@@ -50,7 +50,7 @@
 <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_2"/>
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_2" result="shape"/>
 </filter>
-<filter id="filter2_d_1_2" x="44" y="56" width="157.165" height="34.5" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter2_d_1_2" x="47" y="56" width="157.165" height="34.5" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
 <feOffset dy="4"/>
@@ -74,7 +74,7 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_2" result="shape"/>
 </filter>
 <clipPath id="clip0_1_2">
-<rect x="0" y="0" width="794" height="95" fill="white"/>
+<rect width="800" height="95" fill="white"/>
 </clipPath>
 <image id="image0_1_2" data-name="youtube.png" width="512" height="512" preserveAspectRatio="none" xlink:href="static/icons/youtube.png"/>
 </defs>

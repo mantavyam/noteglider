@@ -1,21 +1,21 @@
 import logging
 import traceback
-logging.basicConfig(level=logging.DEBUG)
+import os
+import re
+import shutil
+import zipfile
+import tempfile
+import markdown
+import uuid
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-import os
-import re
-import shutil
-import tempfile
-import zipfile
-import markdown
-import uuid
 from weasyprint import HTML
 from typing import Optional
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup
+logging.basicConfig(level=logging.DEBUG)
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -193,46 +193,6 @@ def parse_markdown(md_content: str):
         raise ValueError(f"Failed to parse markdown: {str(e)}")
 
 
-def split_paragraph(html, remaining_space):
-    """Split paragraphs or lists to fit within remaining_space (in mm)."""
-    if not html.startswith('<p>') and not html.startswith('<ul>'):
-        return None, html
-
-    if html.startswith('<p>'):
-        match = re.search(r'<p>(.*?)</p>', html)
-        if not match:
-            return None, html
-        content = match.group(1)
-        words = content.split()
-        if len(words) <= 3:  # Don't split very short paragraphs
-            return None, html
-
-        lines_possible = remaining_space // 4  # 4mm per line
-        words_per_line = 10
-        words_to_fit = lines_possible * words_per_line
-
-        if words_to_fit >= len(words):
-            return html, None
-
-        first_part = ' '.join(words[:words_to_fit])
-        second_part = ' '.join(words[words_to_fit:])
-        return f"<p>{first_part}</p>", f"<p>{second_part}</p>"
-
-    elif html.startswith('<ul>'):
-        list_items = re.findall(r'<li>(.*?)</li>', html)
-        if not list_items:
-            return None, html
-
-        items_possible = remaining_space // 4  # 4mm per item
-        if items_possible >= len(list_items):
-            return html, None
-
-        first_list = "<ul>" + "".join([f"<li>{item}</li>" for item in list_items[:items_possible]]) + "</ul>"
-        second_list = "<ul>" + "".join([f"<li>{item}</li>" for item in list_items[items_possible:]]) + "</ul>"
-        return first_list, second_list
-
-    return None, html
-
 @app.post("/api/generate-pdf")
 async def generate_pdf(
     markdown_file: UploadFile = File(...),
@@ -251,7 +211,7 @@ async def generate_pdf(
             shutil.copyfileobj(markdown_file.file, f)
         logger.info(f"Saved markdown file: {md_path}")
 
-        # Extract images from zip
+        # Extract and sort images from zip
         images_dir = os.path.join(request_dir, "images")
         os.makedirs(images_dir, exist_ok=True)
         zip_path = os.path.join(request_dir, images_zip.filename)
@@ -265,9 +225,11 @@ async def generate_pdf(
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 zip_ref.extractall(images_dir)
             if os.path.exists(images_dir):
-                image_files = sorted([f for f in os.listdir(images_dir) 
-                                    if os.path.isfile(os.path.join(images_dir, f))])
-            logger.debug(f"Extracted image files: {image_files}")
+                image_files = [f for f in os.listdir(images_dir) 
+                              if os.path.isfile(os.path.join(images_dir, f))]
+                image_files.sort(key=lambda x: int(re.match(r'^(\d+)-', x).group(1)) 
+                               if re.match(r'^(\d+)-', x) else float('inf'))
+            logger.debug(f"Sorted image files by index: {image_files}")
         except zipfile.BadZipFile:
             logger.error(f"Bad ZIP file: {zip_path}")
             raise HTTPException(status_code=400, detail="The uploaded file is not a valid ZIP archive")
@@ -291,6 +253,15 @@ async def generate_pdf(
             logger.error(f"Error parsing markdown: {str(md_error)}")
             logger.error(traceback.format_exc())
             raise HTTPException(status_code=400, detail=f"Error parsing markdown: {str(md_error)}")
+
+        # Assign images to level 3 headings
+        h3_index = 0
+        for item in parsed_data['all_content']:
+            if item['type'] == 'heading' and item['level'] == 3:
+                if h3_index < len(image_files):
+                    item['image'] = image_files[h3_index]
+                    h3_index += 1
+        logger.debug(f"Assigned {h3_index} images to level 3 headings")
 
         # Load and process SVG files
         svg_dir = 'templates'
@@ -352,18 +323,16 @@ async def generate_pdf(
             content_to_check = item['content'] if item['type'] in ['text', 'heading'] else ""
             if date_pattern.match(content_to_check):
                 return ""
-            
+            # added image tags for heading 3
             if item['type'] == 'heading':
                 level = item['level']
                 content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
-                if level == 1:
-                    return f"<h1>{content}</h1>"
-                elif level == 2:
-                    return f"<h2>{content}</h2>"
-                elif level == 3:
-                    return f"<h3>{content}</h3>"
-                else:
-                    return f"<h4>{content}</h4>"
+                heading_html = f"<h{level}>{content}</h{level}>"
+                if level == 3 and 'image' in item:
+                    image_path = f"images/{item['image']}"
+                    image_html = f'<img src="{image_path}" alt="News Image" style="max-width:60mm; height:auto; margin-top:2pt;">'
+                    return heading_html + image_html
+                return heading_html
             elif item['type'] == 'text':
                 content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
                 return f"<p>{content}</p>"
@@ -449,7 +418,7 @@ async def generate_pdf(
             'header_svg': header_svg,
             'footer_svg': footer_svg,
         }
-
+        #===============================
         # Render template and generate PDF
         try:
             main_template = env.get_template("simple_layout.html")
