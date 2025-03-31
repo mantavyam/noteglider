@@ -15,14 +15,16 @@ from weasyprint import HTML
 from typing import Optional
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup
-logging.basicConfig(level=logging.DEBUG)
 
+# Configure logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+# Initialize FastAPI app
 app = FastAPI(title="Newsletter Generator API")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:8080", "http://localhost:3000"],
@@ -31,11 +33,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Define directories
 TEMP_DIR = "temp"
 os.makedirs(TEMP_DIR, exist_ok=True)
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+# Set up Jinja2 environment
 env = Environment(loader=FileSystemLoader("templates"))
 env.globals['zip'] = zip
 
@@ -54,14 +58,11 @@ def parse_markdown(md_content: str):
         
         lines = md_content.split('\n')
         current_section = None
-        current_subsection = None
-        current_item = None
-        in_qa_table = False
-        table_rows = []
-        table_separator_found = False
+        in_outline = False
         
+        # Date pattern for DD-MM-YY or DD1+DD2-MM-YY
         date_pattern = re.compile(r'^\s*\*?\*?(\d{1,2}(\+\d{1,2})?-\d{1,2}-\d{2,4})\*?\*?\s*$')
-        
+        separator_pattern = re.compile(r'^\s*[:\-]+\s*$')
         i = 0
         while i < len(lines):
             line = lines[i].strip()
@@ -70,7 +71,7 @@ def parse_markdown(md_content: str):
                 i += 1
                 continue
             
-            # Skip lines that are only dates, including headings
+            # Skip dates formatted as headings or standalone lines
             if date_pattern.match(line.lstrip('#')):
                 logging.debug(f"Skipping date line: {line}")
                 i += 1
@@ -83,104 +84,85 @@ def parse_markdown(md_content: str):
                     heading_level += 1
                     heading_text = heading_text[1:]
                 heading_text = heading_text.strip()
+                heading_text_clean = re.sub(r'\*\*(.*?)\*\*', r'\1', heading_text)
                 
-                if heading_level == 1 and parsed_data['date'] is None:
-                    parsed_data['date'] = heading_text
-                    parsed_data['all_content'].append({
-                        'type': 'heading',
-                        'level': heading_level,
-                        'content': heading_text
-                    })
-                elif heading_level == 1:
-                    current_section = heading_text
-                    current_subsection = None
-                    current_item = None
-                    
-                    parsed_data['all_content'].append({
-                        'type': 'heading',
-                        'level': heading_level,
-                        'content': heading_text
-                    })
-                    if heading_text == 'CURRENT AFFAIRS':
-                        in_qa_table = True
-                elif heading_level == 2:
-                    current_subsection = heading_text
-                    current_item = None
-                    
-                    parsed_data['all_content'].append({
-                        'type': 'heading',
-                        'level': heading_level,
-                        'content': heading_text,
-                        'parent': current_section
-                    })
-                elif heading_level == 3:
-                    current_item = heading_text
-                    
-                    parsed_data['all_content'].append({
-                        'type': 'heading',
-                        'level': heading_level,
-                        'content': heading_text,
-                        'parent': current_section
-                    })
-            
-            elif line.startswith('|'):
-                if not table_rows:
-                    table_separator_found = False
-                
-                if ':' in line and '-' in line and line.replace('-', '').replace('|', '').replace(':', '').strip() == "":
-                    table_separator_found = True
-                    i += 1
-                    continue
-                elif line.replace('-', '').replace('|', '').strip() == "":
-                    table_separator_found = True
-                    i += 1
-                    continue
-                
-                cells = [cell.strip() for cell in line.split('|')[1:-1]]
-                if cells:
-                    cleaned_cells = [re.sub(r'\*\*(.*?)\*\*', r'\1', cell) for cell in cells]
-                    table_rows.append(cleaned_cells)
-                
-                if i + 1 >= len(lines) or not lines[i + 1].strip().startswith('|'):
-                    if table_rows:
-                        has_headers = table_separator_found and len(table_rows) > 1
-                        table_data = {
-                            'headers': table_rows[0] if has_headers else None,
-                            'rows': table_rows[1:] if has_headers else table_rows
-                        }
-                        
-                        if in_qa_table and len(parsed_data['current_affairs']['questions']) == 0 and len(table_rows) > 1:
-                            for row in (table_rows[1:] if has_headers else table_rows):
-                                if len(row) >= 2:
-                                    parsed_data['current_affairs']['questions'].append(row[0])
-                                    parsed_data['current_affairs']['answers'].append(row[1])
-                            in_qa_table = False
-                        
+                if heading_level == 1:
+                    if heading_text_clean == 'CURRENT AFFAIRS':
+                        current_section = 'CURRENT AFFAIRS'
+                        in_outline = False
+                        # Skip this heading
+                        i += 1
+                        continue
+                    elif heading_text_clean.strip().upper() == 'OUTLINE':
+                        current_section = 'OUTLINE'
+                        in_outline = True
+                        i += 1
+                        continue
+                    else:
+                        current_section = heading_text
+                        in_outline = False
+                        # Skip the title heading (filename) after storing it
+                        if parsed_data['date'] is None:
+                            parsed_data['date'] = heading_text
+                            i += 1
+                            continue
                         parsed_data['all_content'].append({
-                            'type': 'table',
-                            'content': table_data,
-                            'parent': current_item or current_section
+                            'type': 'heading',
+                            'level': heading_level,
+                            'content': heading_text
                         })
-                        table_rows = []
+                elif heading_level == 2 and not in_outline:
+                    # Skip date headings unless under 'OUTLINE' (already skipped)
+                    i += 1
+                    continue
+                elif not in_outline:
+                    parsed_data['all_content'].append({
+                        'type': 'heading',
+                        'level': heading_level,
+                        'content': heading_text,
+                        'parent': current_section
+                    })
             
-            elif line.startswith('*'):
-                content = line.lstrip('*').strip()
-                content = re.sub(r'\*\*(.*?)\*\*', r'\1', content)
-                
-                parsed_data['all_content'].append({
-                    'type': 'bullet',
-                    'content': content,
-                    'parent': current_item or current_section
-                })
+            elif in_outline:
+                # Skip all content under 'OUTLINE'
+                i += 1
+                continue
             
-            elif not line.startswith('#') and not line.startswith('|'):
-                content = re.sub(r'\*\*(.*?)\*\*', r'\1', line)
-                
-                parsed_data['all_content'].append({
-                    'type': 'text',
-                    'content': content,
-                    'parent': current_item or current_section
-                })
+            elif line.startswith('|') and current_section == 'CURRENT AFFAIRS':
+                # Process Q&A table under 'CURRENT AFFAIRS'
+                table_rows = []
+                while i < len(lines) and lines[i].strip().startswith('|'):
+                    row = lines[i].strip()
+                    cells = [cell.strip() for cell in row.split('|')[1:-1]]
+                    # Skip empty rows or separator rows
+                    if cells and not any(separator_pattern.match(cell) for cell in cells):
+                        table_rows.append(cells)
+                    i += 1
+                if table_rows:
+                    # First row is header: | Q | A |
+                    if len(table_rows) > 1:
+                        for row in table_rows[1:]:  # Skip header row
+                            if len(row) >= 2:
+                                parsed_data['current_affairs']['questions'].append(row[0])
+                                parsed_data['current_affairs']['answers'].append(row[1])
+                continue
+            
+            elif not in_outline:
+                if line.startswith('*'):
+                    content = line.lstrip('*').strip()
+                    content = re.sub(r'\*\*(.*?)\*\*', r'\1', content)
+                    parsed_data['all_content'].append({
+                        'type': 'bullet',
+                        'content': content,
+                        'parent': current_section
+                    })
+                elif not line.startswith('#') and not line.startswith('|'):
+                    content = re.sub(r'\*\*(.*?)\*\*', r'\1', line)
+                    parsed_data['all_content'].append({
+                        'type': 'text',
+                        'content': content,
+                        'parent': current_section
+                    })
             
             i += 1
         
@@ -192,6 +174,57 @@ def parse_markdown(md_content: str):
         logging.error(traceback.format_exc())
         raise ValueError(f"Failed to parse markdown: {str(e)}")
 
+def wrap_h1_with_separator(html):
+    """
+    Replace H1 tags with a separator containing the category name.
+    """
+    soup = BeautifulSoup(html, 'html.parser')
+    h1_count = len(soup.find_all('h1'))
+    logger.debug(f"Found {h1_count} H1 tags to process")
+    for h1 in soup.find_all('h1'):
+        category = h1.text.strip()
+        separator = soup.new_tag('div', **{'class': 'separator-container'})
+        line1 = soup.new_tag('div', **{'class': 'separator-line'})
+        text_div = soup.new_tag('div', **{'class': 'separator-text'})
+        text_div.string = category
+        line2 = soup.new_tag('div', **{'class': 'separator-line'})
+        separator.append(line1)
+        separator.append(text_div)
+        separator.append(line2)
+        h1.replace_with(separator)
+    return str(soup)
+
+def wrap_tables(html):
+    """
+    Wrap tables with custom styling based on header text.
+    """
+    soup = BeautifulSoup(html, 'html.parser')
+    for table in soup.find_all('table'):
+        rows = table.find_all('tr')
+        if rows:
+            first_row = rows[0]
+            cells = first_row.find_all(['th', 'td'])
+            if len(cells) == 1 and cells[0].text.strip() == 'Important Qs':
+                first_row.extract()
+                outer = soup.new_tag('div', **{'class': 'outer-container'})
+                title = soup.new_tag('div', **{'class': 'table-title'})
+                title.string = 'Important Q&A'
+                inner = soup.new_tag('div', **{'class': 'inner-table-container'})
+                table.wrap(inner)
+                inner.wrap(outer)
+                outer.insert(0, title)
+                table['class'] = table.get('class', []) + ['question-table']
+            elif len(cells) == 2 and cells[0].text.strip() == '' and cells[1].text.strip() == 'Answers':
+                first_row.extract()
+                outer = soup.new_tag('div', **{'class': 'outer-container answer'})
+                title = soup.new_tag('div', **{'class': 'table-title'})
+                title.string = 'Answers'
+                inner = soup.new_tag('div', **{'class': 'inner-table-container'})
+                table.wrap(inner)
+                inner.wrap(outer)
+                outer.insert(0, title)
+                table['class'] = table.get('class', []) + ['answer-table']
+    return str(soup)
 
 @app.post("/api/generate-pdf")
 async def generate_pdf(
@@ -199,6 +232,9 @@ async def generate_pdf(
     images_zip: UploadFile = File(...),
     custom_url: Optional[str] = Form(None)
 ):
+    """
+    Generate a PDF from uploaded markdown and images.
+    """
     try:
         request_id = str(uuid.uuid4())
         request_dir = os.path.join(TEMP_DIR, request_id)
@@ -225,11 +261,16 @@ async def generate_pdf(
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 zip_ref.extractall(images_dir)
             if os.path.exists(images_dir):
-                image_files = [f for f in os.listdir(images_dir) 
-                              if os.path.isfile(os.path.join(images_dir, f))]
-                image_files.sort(key=lambda x: int(re.match(r'^(\d+)-', x).group(1)) 
-                               if re.match(r'^(\d+)-', x) else float('inf'))
+                for root, dirs, files in os.walk(images_dir):
+                    for file in files:
+                        if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                            rel_path = os.path.relpath(os.path.join(root, file), images_dir)
+                            image_files.append(rel_path)
+                image_files.sort(key=lambda x: int(re.match(r'^(\d+)-', os.path.basename(x)).group(1)) 
+                                 if re.match(r'^(\d+)-', os.path.basename(x)) else float('inf'))
             logger.debug(f"Sorted image files by index: {image_files}")
+            if not image_files:
+                logger.warning(f"No image files found in {images_dir}")
         except zipfile.BadZipFile:
             logger.error(f"Bad ZIP file: {zip_path}")
             raise HTTPException(status_code=400, detail="The uploaded file is not a valid ZIP archive")
@@ -262,11 +303,12 @@ async def generate_pdf(
                     item['image'] = image_files[h3_index]
                     h3_index += 1
         logger.debug(f"Assigned {h3_index} images to level 3 headings")
+        if h3_index == 0 and any(item['type'] == 'heading' and item['level'] == 3 for item in parsed_data['all_content']):
+            logger.warning("No images assigned to level 3 headings, possibly due to no images found or naming mismatch")
 
         # Load and process SVG files
         svg_dir = 'templates'
         
-        # First page header (Header-Main.svg)
         first_header_path = os.path.join(svg_dir, 'Header-Main.svg')
         if os.path.exists(first_header_path):
             try:
@@ -275,11 +317,9 @@ async def generate_pdf(
                 soup = BeautifulSoup(first_header_svg, 'xml')
                 date_label = soup.find('text', {'id': 'date-label'})
                 if date_label:
-                    actual_date = parsed_data.get('date', 'DD/MM/YY')  # Fallback if date not found
+                    actual_date = parsed_data.get('date', 'DD/MM/YY')
                     date_label.string = actual_date
                     logger.debug(f"Updated date in Header-Main.svg to: {actual_date}")
-                else:
-                    logger.warning("Could not find 'date-label' in Header-Main.svg")
                 first_header_svg = str(soup)
             except Exception as e:
                 logger.error(f"Failed to process Header-Main.svg: {str(e)}")
@@ -288,7 +328,6 @@ async def generate_pdf(
             logger.error(f"Header-Main.svg not found at {first_header_path}")
             raise HTTPException(status_code=500, detail="Header-Main.svg is missing")
 
-        # Subsequent pages header (Header-Constant.svg)
         header_path = os.path.join(svg_dir, 'Header-Constant.svg')
         if os.path.exists(header_path):
             try:
@@ -302,7 +341,6 @@ async def generate_pdf(
             logger.error(f"Header-Constant.svg not found at {header_path}")
             raise HTTPException(status_code=500, detail="Header-Constant.svg is missing")
 
-        # Footer for all pages (Footer-Constant.svg)
         footer_path = os.path.join(svg_dir, 'Footer-Constant.svg')
         if os.path.exists(footer_path):
             try:
@@ -316,21 +354,20 @@ async def generate_pdf(
             logger.error(f"Footer-Constant.svg not found at {footer_path}")
             raise HTTPException(status_code=500, detail="Footer-Constant.svg is missing")
 
-        # Define helper function to generate HTML for content items (unchanged)
+        # Helper function to generate HTML for content items
         def generate_html_for_content(item, image_files):
             content_html = ""
             date_pattern = re.compile(r'^\s*\*?\*?(\d{1,2}(\+\d{1,2})?-\d{1,2}-\d{2,4})\*?\*?\s*$')
             content_to_check = item['content'] if item['type'] in ['text', 'heading'] else ""
             if date_pattern.match(content_to_check):
                 return ""
-            # added image tags for heading 3
             if item['type'] == 'heading':
                 level = item['level']
                 content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
                 heading_html = f"<h{level}>{content}</h{level}>"
                 if level == 3 and 'image' in item:
                     image_path = f"images/{item['image']}"
-                    image_html = f'<img src="{image_path}" alt="News Image" style="max-width:60mm; height:auto; margin-top:2pt;">'
+                    image_html = f'<img src="{image_path}" alt="News Image" style="max-width:60mm; height:20mm; margin-top:2pt;">'
                     return heading_html + image_html
                 return heading_html
             elif item['type'] == 'text':
@@ -360,31 +397,23 @@ async def generate_pdf(
                 return table_html
             return content_html
 
-        # Generate all content HTML as a list (unchanged)
+        # Generate all content HTML
         all_content_html = []
+        
+        # Add Question Table at the beginning
         if parsed_data['current_affairs']['questions']:
-            qa_html = ["<div class='qa-section'>"]
-            qa_html.append("<h2>Questions</h2>")
-            for i, question in enumerate(parsed_data['current_affairs']['questions']):
-                qa_html.append(f"<p><strong>Q{i+1}.</strong> {question}</p>")
-            if parsed_data['current_affairs']['answers']:
-                qa_html.append("<h2>Answers</h2>")
-                for i, answer in enumerate(parsed_data['current_affairs']['answers']):
-                    qa_html.append(f"<p><strong>A{i+1}.</strong> {answer}</p>")
-            qa_html.append("</div>")
-            all_content_html.append("".join(qa_html))
+            question_html = ["<table><tr><th>Important Qs</th></tr>"]
+            for question in parsed_data['current_affairs']['questions']:
+                question_html.append(f"<tr><td>{question}</td></tr>")
+            question_html.append("</table>")
+            all_content_html.append("".join(question_html))
 
-        skip_first_heading = True
+        # Process main content
         current_section = None
         in_bullet_list = False
         bullet_items = []
 
         for i, item in enumerate(parsed_data['all_content']):
-            if skip_first_heading and item['type'] == 'heading' and item['level'] == 1:
-                skip_first_heading = False
-                continue
-            if current_section == 'CURRENT AFFAIRS' and item['type'] == 'table':
-                continue
             if item['type'] == 'heading' and item['level'] == 1:
                 if in_bullet_list:
                     all_content_html.append("<ul>" + "".join(bullet_items) + "</ul>")
@@ -408,17 +437,30 @@ async def generate_pdf(
                 if html:
                     all_content_html.append(html)
 
+        # Add Answer Table at the end
+        if parsed_data['current_affairs']['answers']:
+            answer_html = ["<table><tr><th></th><th>Answers</th></tr>"]
+            for i, answer in enumerate(parsed_data['current_affairs']['answers'], start=1):
+                answer_html.append(f"<tr><td>{i}</td><td>{answer}</td></tr>")
+            answer_html.append("</table>")
+            all_content_html.append("".join(answer_html))
+
         content_html = "".join(all_content_html)
         logger.debug(f"Generated content HTML length: {len(content_html)}")
 
-        # Prepare template data with SVG content
+        content_html = wrap_h1_with_separator(content_html)
+        logger.debug("Applied H1 separator transformation")
+        content_html = wrap_tables(content_html)
+        logger.debug("Applied table wrapping transformation")
+
+        # Prepare template data
         template_data = {
             'content': content_html,
             'first_header_svg': first_header_svg,
             'header_svg': header_svg,
             'footer_svg': footer_svg,
         }
-        #===============================
+
         # Render template and generate PDF
         try:
             main_template = env.get_template("simple_layout.html")
@@ -454,6 +496,9 @@ async def generate_pdf(
 
 @app.get("/api/download/{filename}")
 async def download_pdf(filename: str):
+    """
+    Serve the generated PDF file for download.
+    """
     file_path = os.path.join(OUTPUT_DIR, filename)
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="File not found")
@@ -467,6 +512,9 @@ async def download_pdf(filename: str):
 
 @app.get("/api/status")
 async def get_status():
+    """
+    Check the status of the API.
+    """
     return {"status": "online", "message": "Backend service is running"}
 
 @app.on_event("startup")

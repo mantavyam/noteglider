@@ -79,6 +79,7 @@
             right: 0;
             margin: 0;
             padding: 0;
+            /*To Cover the edges for bleeded padding being left*/
             background-color: #0097b2;
         }
         .first-header svg {
@@ -96,6 +97,7 @@
             right: 0;
             margin: 0;
             padding: 0;
+            /*To Cover the edges for bleeded padding being left*/
             background-color: #0097b2;
         }
         #header svg {
@@ -113,6 +115,7 @@
             right: 0;
             margin: 0;
             padding: 0;
+            /*To Cover the edges for bleeded padding being left*/
             background-color: #0097b2;
         }
         #footer svg {
@@ -133,11 +136,107 @@
             width: 190mm;
             column-count: 3;
             column-gap: 5mm;
-            column-rule: 1px solid #999;
+            column-rule: 1px solid #000000;
             column-fill: auto;
             margin: 0 auto;
         }
 
+        .separator-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+            max-width: 60mm; 
+            margin: 5pt 0; 
+        }
+        .separator-line {
+            flex-grow: 1;
+            height: 4px;
+            background: linear-gradient(90deg, #004aad, #5de0e6);
+            min-width: 0; 
+        }
+        .separator-text {
+            background: #0097b2;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 8px;
+            height: 4mm;
+            display: flex;
+            text-align: center !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap;
+        }
+        .outer-container {
+        width: 60mm;
+            border: 1px solid black;
+            padding: 5px;
+            box-sizing: border-box;
+            text-align: center;
+            break-inside: avoid-column;
+        }
+        .outer-container.answer {
+            background-color: #f5f0e6;
+            border: 0px solid black;
+        }
+        .table-title {
+            font-size: 10px;
+            color: black;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .inner-table-container {
+            width: 57mm;
+            border: 1px solid black;
+            padding: 0px;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+        .question-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .question-table td {
+            font-size: 10px;
+        padding: 12px;
+        border-bottom: 1px solid black;
+            text-align: left;
+        }
+        .question-table tr:last-child td {
+            border-bottom: none;
+        }
+        .answer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .answer-table td {
+            font-size: 10px;
+            padding: 12px;
+            border-bottom: 1px solid black;
+            text-align: left;
+        }
+        .answer-table td:first-child {
+            width: 5mm;  /* Adjusted from 0mm for numbering */
+            border-right: 1px solid black;
+            text-align: center;
+        }
+        .answer-table td:last-child {
+            width: 52mm;  /* Adjusted to fit within 57mm with padding */
+        }
+        .answer-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Image styles */
+        .content-area img {
+            width: 60mm !important;
+            height: 20mm !important;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+        }
         /* Basic content styling */
         h1, h2, h3, h4 {
             break-after: avoid;
@@ -170,12 +269,6 @@
         th {
             background-color: #0097b2;
             color: white;
-        }
-        img {
-            max-width: 60mm;
-            height: 20mm;
-            display: block;
-            margin: 2pt auto;
         }
     </style>
 </head>
