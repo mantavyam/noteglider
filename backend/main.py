@@ -63,6 +63,14 @@ def parse_markdown(md_content: str):
         # Date pattern for DD-MM-YY or DD1+DD2-MM-YY
         date_pattern = re.compile(r'^\s*\*?\*?(\d{1,2}(\+\d{1,2})?-\d{1,2}-\d{2,4})\*?\*?\s*$')
         separator_pattern = re.compile(r'^\s*[:\-]+\s*$')
+        
+        # Capture the first date line for the header
+        for line in lines:
+            stripped_line = line.lstrip('#').strip()
+            if date_pattern.match(stripped_line):
+                parsed_data['date'] = stripped_line
+                break
+        
         i = 0
         while i < len(lines):
             line = lines[i].strip()
@@ -84,16 +92,15 @@ def parse_markdown(md_content: str):
                     heading_level += 1
                     heading_text = heading_text[1:]
                 heading_text = heading_text.strip()
-                heading_text_clean = re.sub(r'\*\*(.*?)\*\*', r'\1', heading_text)
+                heading_text_clean = re.sub(r'\*\*(.*?)\*\*', r'\1', heading_text).strip().upper()
                 
                 if heading_level == 1:
                     if heading_text_clean == 'CURRENT AFFAIRS':
                         current_section = 'CURRENT AFFAIRS'
                         in_outline = False
-                        # Skip this heading
                         i += 1
                         continue
-                    elif heading_text_clean.strip().upper() == 'OUTLINE':
+                    elif heading_text_clean == 'OUTLINE':
                         current_section = 'OUTLINE'
                         in_outline = True
                         i += 1
@@ -101,18 +108,12 @@ def parse_markdown(md_content: str):
                     else:
                         current_section = heading_text
                         in_outline = False
-                        # Skip the title heading (filename) after storing it
-                        if parsed_data['date'] is None:
-                            parsed_data['date'] = heading_text
-                            i += 1
-                            continue
                         parsed_data['all_content'].append({
                             'type': 'heading',
                             'level': heading_level,
                             'content': heading_text
                         })
                 elif heading_level == 2 and not in_outline:
-                    # Skip date headings unless under 'OUTLINE' (already skipped)
                     i += 1
                     continue
                 elif not in_outline:
@@ -124,27 +125,22 @@ def parse_markdown(md_content: str):
                     })
             
             elif in_outline:
-                # Skip all content under 'OUTLINE'
                 i += 1
                 continue
             
             elif line.startswith('|') and current_section == 'CURRENT AFFAIRS':
-                # Process Q&A table under 'CURRENT AFFAIRS'
                 table_rows = []
                 while i < len(lines) and lines[i].strip().startswith('|'):
                     row = lines[i].strip()
                     cells = [cell.strip() for cell in row.split('|')[1:-1]]
-                    # Skip empty rows or separator rows
                     if cells and not any(separator_pattern.match(cell) for cell in cells):
                         table_rows.append(cells)
                     i += 1
-                if table_rows:
-                    # First row is header: | Q | A |
-                    if len(table_rows) > 1:
-                        for row in table_rows[1:]:  # Skip header row
-                            if len(row) >= 2:
-                                parsed_data['current_affairs']['questions'].append(row[0])
-                                parsed_data['current_affairs']['answers'].append(row[1])
+                if table_rows and len(table_rows) > 1:
+                    for row in table_rows[1:]:
+                        if len(row) >= 2:
+                            parsed_data['current_affairs']['questions'].append(row[0])
+                            parsed_data['current_affairs']['answers'].append(row[1])
                 continue
             
             elif not in_outline:
@@ -319,6 +315,7 @@ async def generate_pdf(
                 if date_label:
                     actual_date = parsed_data.get('date', 'DD/MM/YY')
                     date_label.string = actual_date
+                    date_label['fill'] = 'white'
                     logger.debug(f"Updated date in Header-Main.svg to: {actual_date}")
                 first_header_svg = str(soup)
             except Exception as e:
