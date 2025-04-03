@@ -34,8 +34,8 @@
         /* A4 page setup for subsequent pages */
         @page {
             size: A4 portrait;
-            margin-top: 15mm; /* Space for 15mm header */
-            margin-bottom: 15mm; /* Space for 15mm footer */
+            margin-top: 15mm;
+            margin-bottom: 15mm;
             margin-left: 0;
             margin-right: 0;
             @top-center {
@@ -48,7 +48,7 @@
 
         /* First page with larger header */
         @page :first {
-            margin-top: 24mm; /* Space for 24mm first header */
+            margin-top: 24mm;
             margin-bottom: 15mm;
             @top-center {
                 content: element(first-header);
@@ -64,7 +64,7 @@
             padding: 0;
             font-family: Arial, sans-serif;
             font-size: 9pt;
-            line-height: 1.4;
+            line-height: 1.35;
             text-align: justify;
             widows: 2;
             orphans: 2;
@@ -79,7 +79,6 @@
             right: 0;
             margin: 0;
             padding: 0;
-            /*To Cover the edges for bleeded padding being left*/
             background-color: #0097b2;
         }
         .first-header svg {
@@ -97,7 +96,6 @@
             right: 0;
             margin: 0;
             padding: 0;
-            /*To Cover the edges for bleeded padding being left*/
             background-color: #0097b2;
         }
         #header svg {
@@ -115,7 +113,6 @@
             right: 0;
             margin: 0;
             padding: 0;
-            /*To Cover the edges for bleeded padding being left*/
             background-color: #0097b2;
         }
         #footer svg {
@@ -137,23 +134,66 @@
             column-count: 3;
             column-gap: 5mm;
             column-rule: 1px solid #000000;
-            column-fill: auto;
-            margin: 0 auto;
+            column-fill: balance; /* Balances content across columns */
         }
 
+        /* News item styling */
+        .news-item {
+            margin-bottom: 1pt; /* Space between news items */
+        }
+
+        .news-heading-container {
+            break-inside: avoid; /* Keep the heading container intact */
+            break-after: auto; /* Allow break after heading container */
+        }
+        
+        .news-heading {
+            margin-bottom: 1pt;
+            line-height: 1.35;
+            break-inside: avoid; /* Keep the heading intact */
+            break-after: auto; /* Allow break after heading */
+        }
+
+        .news-image-container {
+            break-inside: avoid; /* Keep the image container intact */
+            break-before: auto; /* Allow the image container to start in a new column if needed */
+        }
+        
+        .news-image {
+            width: 60mm !important;
+            height: 20mm !important;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+            padding: 1pt;
+            break-inside: avoid; /* Keep the image intact */
+            break-after: avoid; /* Keep image with following content when possible */
+        }
+
+        .news-description-container {
+            break-inside: auto; /* Allow descriptions to break naturally */
+        }
+        
+        .news-description {
+            margin-top: 1pt;
+            margin-bottom: 1pt;
+            /* No break restrictions, allow natural breaking */
+        }
+
+        /* Separator styling */
         .separator-container {
             display: flex;
             align-items: center;
             width: 100%;
             justify-content: center;
-            max-width: 60mm; 
-            margin: 5pt 0; 
+            max-width: 60mm;
+            margin: 1pt 0;
         }
         .separator-line {
             flex-grow: 1;
             height: 4px;
             background: linear-gradient(90deg, #004aad, #5de0e6);
-            min-width: 0; 
+            min-width: 0;
         }
         .separator-text {
             background: #0097b2;
@@ -168,10 +208,13 @@
             justify-content: center !important;
             white-space: nowrap;
         }
+
+        /* Table styling */
         .outer-container {
-        width: 60mm;
+            width: 60mm;
             border: 1px solid black;
             padding: 5px;
+            padding-top: 5pt;
             box-sizing: border-box;
             text-align: center;
             break-inside: avoid-column;
@@ -199,7 +242,7 @@
             border-spacing: 0;
         }
         .question-table td {
-            font-size: 12px;
+            font-size: 10px;
             padding: 12px;
             border-bottom: 1px solid black;
             text-align: left;
@@ -212,53 +255,48 @@
             border-collapse: collapse;
         }
         .answer-table td {
-            font-size: 12px;
+            font-size: 10px;
             padding: 12px;
             border-bottom: 1px solid black;
             text-align: left;
         }
         .answer-table td:first-child {
-            width: 5mm;  /* Adjusted from 0mm for numbering */
+            width: 5mm;
             border-right: 1px solid black;
             text-align: center;
         }
         .answer-table td:last-child {
-            width: 52mm;  /* Adjusted to fit within 57mm with padding */
+            width: 52mm;
         }
         .answer-table tr:last-child td {
             border-bottom: none;
         }
 
-        /* Image styles */
-        .content-area img {
-            width: 60mm !important;
-            height: 20mm !important;
-            object-fit: cover;
-            display: block;
-            margin: 0 auto;
-        }
         /* Basic content styling */
         h1, h2, h3, h4 {
             break-after: avoid;
-            margin-top: 2pt;
-            margin-bottom: 2pt;
+            margin-top: 1pt;
+            margin-bottom: 1pt;
             text-align: justify;
         }
+        h2{
+            line-height: 1.35;
+        }
         p {
-            margin-top: 2pt;
-            margin-bottom: 2pt;
+            margin-top: 1pt;
+            margin-bottom: 1pt;
             text-align: justify;
         }
         ul, ol {
-            margin-top: 2pt;
-            margin-bottom: 2pt;
+            margin-top: 1pt;
+            margin-bottom: 1pt;
             padding-left: 15pt;
             text-align: justify;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 2pt 0;
+            margin: 1pt 0;
             break-inside: avoid-column;
         }
         th, td {

@@ -79,7 +79,6 @@ def parse_markdown(md_content: str):
                 i += 1
                 continue
             
-            # Skip dates formatted as headings or standalone lines
             if date_pattern.match(line.lstrip('#')):
                 logging.debug(f"Skipping date line: {line}")
                 i += 1
@@ -171,9 +170,6 @@ def parse_markdown(md_content: str):
         raise ValueError(f"Failed to parse markdown: {str(e)}")
 
 def wrap_h1_with_separator(html):
-    """
-    Replace H1 tags with a separator containing the category name.
-    """
     soup = BeautifulSoup(html, 'html.parser')
     h1_count = len(soup.find_all('h1'))
     logger.debug(f"Found {h1_count} H1 tags to process")
@@ -191,9 +187,6 @@ def wrap_h1_with_separator(html):
     return str(soup)
 
 def wrap_tables(html):
-    """
-    Wrap tables with custom styling based on header text.
-    """
     soup = BeautifulSoup(html, 'html.parser')
     for table in soup.find_all('table'):
         rows = table.find_all('tr')
@@ -228,9 +221,6 @@ async def generate_pdf(
     images_zip: UploadFile = File(...),
     custom_url: Optional[str] = Form(None)
 ):
-    """
-    Generate a PDF from uploaded markdown and images.
-    """
     try:
         request_id = str(uuid.uuid4())
         request_dir = os.path.join(TEMP_DIR, request_id)
@@ -315,7 +305,6 @@ async def generate_pdf(
                 if date_label:
                     actual_date = parsed_data.get('date', 'DD/MM/YY')
                     date_label.string = actual_date
-                    date_label['fill'] = 'white'
                     logger.debug(f"Updated date in Header-Main.svg to: {actual_date}")
                 first_header_svg = str(soup)
             except Exception as e:
@@ -361,15 +350,17 @@ async def generate_pdf(
             if item['type'] == 'heading':
                 level = item['level']
                 content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
-                heading_html = f"<h{level}>{content}</h{level}>"
-                if level == 3 and 'image' in item:
-                    image_path = f"images/{item['image']}"
-                    image_html = f'<img src="{image_path}" alt="News Image" style="max-width:60mm; height:20mm; margin-top:2pt;">'
-                    return heading_html + image_html
+                heading_html = f"<h{level} class=\"news-heading\">{content}</h{level}>"
+                if level == 3:
+                    if 'image' in item:
+                        image_path = f"images/{item['image']}"
+                        image_html = f'<img src="{image_path}" class="news-image" alt="News Image">'
+                        return f'<div class="news-item"><div class="news-heading-container">{heading_html}</div><div class="news-image-container">{image_html}</div>'
+                    return f'<div class="news-item">{heading_html}'
                 return heading_html
             elif item['type'] == 'text':
                 content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
-                return f"<p>{content}</p>"
+                return f'<div class="news-description-container"><p class="news-description">{content}</p></div></div>'  # Close news-item div
             elif item['type'] == 'bullet':
                 content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
                 return f"<li>{content}</li>"
@@ -493,9 +484,6 @@ async def generate_pdf(
 
 @app.get("/api/download/{filename}")
 async def download_pdf(filename: str):
-    """
-    Serve the generated PDF file for download.
-    """
     file_path = os.path.join(OUTPUT_DIR, filename)
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="File not found")
@@ -509,9 +497,6 @@ async def download_pdf(filename: str):
 
 @app.get("/api/status")
 async def get_status():
-    """
-    Check the status of the API.
-    """
     return {"status": "online", "message": "Backend service is running"}
 
 @app.on_event("startup")
