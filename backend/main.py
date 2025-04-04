@@ -142,6 +142,42 @@ def parse_markdown(md_content: str):
                             parsed_data['current_affairs']['answers'].append(row[1])
                 continue
             
+            elif line.startswith('|') and not in_outline:
+                # Process tables in other sections
+                table_rows = []
+                headers = []
+                
+                # Process header row
+                row = lines[i].strip()
+                header_cells = [cell.strip() for cell in row.split('|')[1:-1]]
+                if header_cells:
+                    headers = header_cells
+                    i += 1
+                    
+                    # Skip separator row (if present)
+                    if i < len(lines) and lines[i].strip().startswith('|') and '-' in lines[i]:
+                        i += 1
+                
+                # Process table rows
+                while i < len(lines) and lines[i].strip().startswith('|'):
+                    row = lines[i].strip()
+                    cells = [cell.strip() for cell in row.split('|')[1:-1]]
+                    if cells:
+                        table_rows.append(cells)
+                    i += 1
+                
+                # Add table to all_content
+                if table_rows:
+                    parsed_data['all_content'].append({
+                        'type': 'table',
+                        'content': {
+                            'headers': headers,
+                            'rows': table_rows
+                        },
+                        'parent': current_section
+                    })
+                continue
+            
             elif not in_outline:
                 if line.startswith('*'):
                     content = line.lstrip('*').strip()
