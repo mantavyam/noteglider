@@ -331,11 +331,28 @@ async def generate_pdf(
         # Load and process SVG files
         svg_dir = 'templates'
         
+        # Helper function to fix relative icon paths in SVGs
+        def fix_svg_icon_paths(svg_content):
+            soup = BeautifulSoup(svg_content, 'xml')
+            # Find all image elements with xlink:href attributes
+            images = soup.find_all('image')
+            for img in images:
+                href = img.get('xlink:href')
+                if href and href.startswith('static/'):
+                    # Convert to absolute path
+                    absolute_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), href))
+                    # Use file:// URL format for absolute paths
+                    file_url = f"file://{absolute_path}"
+                    img['xlink:href'] = file_url
+                    logger.debug(f"Updated image path from {href} to {file_url}")
+            return str(soup)
+        
         first_header_path = os.path.join(svg_dir, 'Header-Main.svg')
         if os.path.exists(first_header_path):
             try:
                 with open(first_header_path, 'r', encoding='utf-8') as f:
                     first_header_svg = f.read()
+                # First update the date
                 soup = BeautifulSoup(first_header_svg, 'xml')
                 date_label = soup.find('text', {'id': 'date-label'})
                 if date_label:
@@ -343,6 +360,8 @@ async def generate_pdf(
                     date_label.string = actual_date
                     logger.debug(f"Updated date in Header-Main.svg to: {actual_date}")
                 first_header_svg = str(soup)
+                # Then fix the icon paths
+                first_header_svg = fix_svg_icon_paths(first_header_svg)
             except Exception as e:
                 logger.error(f"Failed to process Header-Main.svg: {str(e)}")
                 raise HTTPException(status_code=500, detail=f"Failed to process Header-Main.svg: {str(e)}")
@@ -355,6 +374,8 @@ async def generate_pdf(
             try:
                 with open(header_path, 'r', encoding='utf-8') as f:
                     header_svg = f.read()
+                # Fix icon paths
+                header_svg = fix_svg_icon_paths(header_svg)
                 logger.debug("Loaded Header-Constant.svg successfully")
             except Exception as e:
                 logger.error(f"Failed to load Header-Constant.svg: {str(e)}")
@@ -368,6 +389,8 @@ async def generate_pdf(
             try:
                 with open(footer_path, 'r', encoding='utf-8') as f:
                     footer_svg = f.read()
+                # Fix icon paths
+                footer_svg = fix_svg_icon_paths(footer_svg)
                 logger.debug("Loaded Footer-Constant.svg successfully")
             except Exception as e:
                 logger.error(f"Failed to load Footer-Constant.svg: {str(e)}")
@@ -385,7 +408,12 @@ async def generate_pdf(
                 return ""
             if item['type'] == 'heading':
                 level = item['level']
-                content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
+                # Convert markdown for bold to HTML
+                content = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', item['content'])
+                # Convert markdown for italic to HTML
+                content = re.sub(r'\*(.*?)\*', r'<em>\1</em>', content)
+                # Convert markdown for underline to HTML (using __ for underline)
+                content = re.sub(r'__(.*?)__', r'<u>\1</u>', content)
                 heading_html = f"<h{level} class=\"news-heading\">{content}</h{level}>"
                 if level == 3:
                     if 'image' in item:
@@ -395,34 +423,116 @@ async def generate_pdf(
                     return f'<div class="news-item">{heading_html}'
                 return heading_html
             elif item['type'] == 'text':
-                content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
+                # Convert markdown for bold to HTML
+                content = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', item['content'])
+                # Convert markdown for italic to HTML
+                content = re.sub(r'\*(.*?)\*', r'<em>\1</em>', content)
+                # Convert markdown for underline to HTML (using __ for underline)
+                content = re.sub(r'__(.*?)__', r'<u>\1</u>', content)
                 return f'<div class="news-description-container"><p class="news-description">{content}</p></div></div>'  # Close news-item div
             elif item['type'] == 'bullet':
-                content = re.sub(r'\*\*(.*?)\*\*', r'\1', item['content'])
+                # Convert markdown for bold to HTML
+                content = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', item['content'])
+                # Convert markdown for italic to HTML
+                content = re.sub(r'\*(.*?)\*', r'<em>\1</em>', content)
+                # Convert markdown for underline to HTML (using __ for underline)
+                content = re.sub(r'__(.*?)__', r'<u>\1</u>', content)
                 return f"<li>{content}</li>"
             elif item['type'] == 'table':
                 table_data = item['content']
-                table_html = "<table class='content-table'>"
+                
+                # Check if the table starts with "About"
+                is_about_table = False
+                if table_data['headers'] and len(table_data['headers']) > 0:
+                    first_header = re.sub(r'\*\*(.*?)\*\*', r'\1', table_data['headers'][0])
+                    is_about_table = first_header.strip().startswith('About')
+                
+                # Create table HTML with appropriate class
+                table_class = 'content-table about-table' if is_about_table else 'content-table full-width-table'
+                table_html = f"<table class='{table_class}'>"
+                
+                # Get number of columns in the table
+                num_columns = 0
+                if table_data['rows'] and len(table_data['rows']) > 0:
+                    num_columns = len(table_data['rows'][0])
+                else:
+                    num_columns = len(table_data['headers'])
+                
+                # Start thead section
+                table_html += "<thead>"
+                
+                # Process header row (title row)
                 if table_data['headers']:
-                    table_html += "<thead><tr>"
-                    for header in table_data['headers']:
-                        header = re.sub(r'\*\*(.*?)\*\*', r'\1', header)
-                        table_html += f"<th>{header}</th>"
-                    table_html += "</tr></thead>"
+                    table_html += "<tr>"
+                    
+                    # Process headers
+                    for i, header in enumerate(table_data['headers']):
+                        # Convert markdown for bold to HTML
+                        header = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', header)
+                        # Convert markdown for italic to HTML
+                        header = re.sub(r'\*(.*?)\*', r'<em>\1</em>', header)
+                        # Convert markdown for underline to HTML (using __ for underline)
+                        header = re.sub(r'__(.*?)__', r'<u>\1</u>', header)
+                        
+                        # For first header cell, make it span all columns
+                        if i == 0:
+                            table_html += f"<th colspan=\"{num_columns}\">{header}</th>"
+                            # Skip remaining headers as we've spanned all columns
+                            break
+                    
+                    table_html += "</tr>"
+                
+                # For non-About tables, include the first data row (column headers) in thead
+                # so it repeats when the table breaks across pages
+                if not is_about_table and table_data['rows'] and len(table_data['rows']) > 0:
+                    # First data row with column descriptions
+                    row = table_data['rows'][0]
+                    table_html += '<tr class="highlight-row thead-column-headers">'
+                    for cell in row:
+                        # Convert markdown for bold to HTML
+                        cell = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', cell)
+                        # Convert markdown for italic to HTML
+                        cell = re.sub(r'\*(.*?)\*', r'<em>\1</em>', cell)
+                        # Convert markdown for underline to HTML (using __ for underline)
+                        cell = re.sub(r'__(.*?)__', r'<u>\1</u>', cell)
+                        table_html += f"<th>{cell}</th>"
+                    table_html += "</tr>"
+                
+                # Close thead section
+                table_html += "</thead>"
+                
+                # Start tbody section
                 table_html += "<tbody>"
-                for row in table_data['rows']:
+                
+                # Process remaining data rows
+                start_idx = 1 if not is_about_table else 0  # Skip first row for non-About tables
+                for i, row in enumerate(table_data['rows'][start_idx:], start=start_idx):
                     table_html += "<tr>"
                     for cell in row:
-                        cell = re.sub(r'\*\*(.*?)\*\*', r'\1', cell)
+                        # Convert markdown for bold to HTML
+                        cell = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', cell)
+                        # Convert markdown for italic to HTML
+                        cell = re.sub(r'\*(.*?)\*', r'<em>\1</em>', cell)
+                        # Convert markdown for underline to HTML (using __ for underline)
+                        cell = re.sub(r'__(.*?)__', r'<u>\1</u>', cell)
                         table_html += f"<td>{cell}</td>"
                     table_html += "</tr>"
+                
                 table_html += "</tbody>"
                 table_html += "</table>"
-                return table_html
+                
+                # Return table HTML or add to full-width collection
+                if is_about_table:
+                    return table_html
+                else:
+                    # For full-width tables, add to separate collection and return empty string
+                    full_width_tables_html.append(table_html)
+                    return ""
             return content_html
 
         # Generate all content HTML
         all_content_html = []
+        full_width_tables_html = []
         
         # Add Question Table at the beginning
         if parsed_data['current_affairs']['questions']:
@@ -472,6 +582,12 @@ async def generate_pdf(
         content_html = "".join(all_content_html)
         logger.debug(f"Generated content HTML length: {len(content_html)}")
 
+        # Process full-width tables if any exist
+        full_width_tables_content = ""
+        if full_width_tables_html:
+            full_width_tables_content = "<div class='full-width-tables-container'>" + "".join(full_width_tables_html) + "</div>"
+            logger.debug(f"Generated {len(full_width_tables_html)} full-width tables")
+
         content_html = wrap_h1_with_separator(content_html)
         logger.debug("Applied H1 separator transformation")
         content_html = wrap_tables(content_html)
@@ -480,6 +596,7 @@ async def generate_pdf(
         # Prepare template data
         template_data = {
             'content': content_html,
+            'full_width_tables': full_width_tables_content,
             'first_header_svg': first_header_svg,
             'header_svg': header_svg,
             'footer_svg': footer_svg,
