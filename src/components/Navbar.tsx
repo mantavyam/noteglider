@@ -47,10 +47,10 @@ const Navbar: React.FC = () => {
           <a href="#howItWorks" className="text-foreground/80 hover:text-foreground transition-colors">How It Works</a>
           <a href="#testimonials" className="text-foreground/80 hover:text-foreground transition-colors">Testimonials</a>
           <a href="#faq" className="text-foreground/80 hover:text-foreground transition-colors">FAQ</a>
-          <Button onClick={() => navigate('/task')} variant="ghost">
-            Login
+          <Button onClick={() => navigate('/dashboard')} variant="ghost">
+            Dashboard
           </Button>
-          <Button onClick={() => navigate('/task')}>
+          <Button onClick={() => navigate('/dashboard')}>
             Get Started
           </Button>
         </motion.nav>
@@ -103,10 +103,10 @@ const Navbar: React.FC = () => {
               >
                 FAQ
               </a>
-              <Button onClick={() => navigate('/task')} variant="ghost" className="justify-start">
-                Login
+              <Button onClick={() => navigate('/dashboard')} variant="ghost" className="justify-start">
+                Dashboard
               </Button>
-              <Button onClick={() => navigate('/task')} className="justify-start">
+              <Button onClick={() => navigate('/dashboard')} className="justify-start">
                 Get Started
               </Button>
             </div>

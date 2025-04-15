@@ -8,6 +8,9 @@ import Index from "./pages/Index";
 import TaskPage from "./pages/TaskPage";
 import BuildPage from "./pages/BuildPage";
 import DownloadPage from "./pages/DownloadPage";
+import DashboardPage from "./pages/DashboardPage";
+import CompilationPage from "./pages/CompilationPage";
+import MagazinePage from "./pages/MagazinePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,9 +23,12 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/task" element={<TaskPage />} />
           <Route path="/build" element={<BuildPage />} />
           <Route path="/download" element={<DownloadPage />} />
+          <Route path="/compilation" element={<CompilationPage />} />
+          <Route path="/magazine" element={<MagazinePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
