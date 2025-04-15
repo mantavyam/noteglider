@@ -1,14 +1,14 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Layout from '@/components/Layout';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Search, ArrowLeft, AlertCircle, CheckCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
+// Categories data
 const categories = {
   main: [
     'Appointments & Resignation',
@@ -40,7 +40,9 @@ const categories = {
 
 const MagazinePage: React.FC = () => {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  // Backend connection status - In a real app, this would be determined by API check
+  const [backendConnected, setBackendConnected] = useState(true);
   
   // Filter categories based on search term
   const filterCategories = (items: string[]) => {
@@ -51,9 +53,12 @@ const MagazinePage: React.FC = () => {
 
   const handleSelectCategory = (category: string) => {
     // Here you would navigate to the specific category layout
-    // For now, just go to the task page as a placeholder
     navigate('/task', { state: { category } });
   };
+
+  // Prepare filtered categories
+  const filteredMainCategories = filterCategories(categories.main);
+  const filteredExtraCategories = filterCategories(categories.extras);
 
   return (
     <Layout>
@@ -75,6 +80,21 @@ const MagazinePage: React.FC = () => {
             <h1 className="text-3xl font-bold">Monthly Magazine</h1>
           </div>
 
+          {/* Backend status indicator */}
+          <div className={`text-sm flex items-center gap-2 ${backendConnected ? 'text-green-600' : 'text-red-600'}`}>
+            {backendConnected ? (
+              <>
+                <CheckCircle size={16} />
+                <span>Backend service is connected</span>
+              </>
+            ) : (
+              <>
+                <AlertCircle size={16} />
+                <span>Backend service is not available. Please start the backend server.</span>
+              </>
+            )}
+          </div>
+
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
             <Input 
@@ -86,66 +106,62 @@ const MagazinePage: React.FC = () => {
             />
           </div>
 
-          <Tabs defaultValue="main" className="w-full">
-            <TabsList className="mb-6 w-full justify-start">
-              <TabsTrigger value="main">Main Categories</TabsTrigger>
-              <TabsTrigger value="extras">Extra Categories</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="main">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {filterCategories(categories.main).map((category, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2, delay: index * 0.05 }}
-                  >
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start h-auto py-4 px-5 text-left hover:bg-purple-50 hover:border-purple-300 hover:text-purple-800"
-                      onClick={() => handleSelectCategory(category)}
-                    >
-                      <span className="truncate">{category}</span>
-                    </Button>
-                  </motion.div>
-                ))}
-              </div>
+          {/* Main Categories Section */}
+          <section className="space-y-6">
+            <h2 className="text-xl font-semibold">Main Categories</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {filteredMainCategories.map((category, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: index * 0.05 }}
+                >
+                  <Card className="hover:shadow-md transition-shadow h-full" onClick={() => handleSelectCategory(category)}>
+                    <CardContent className="p-4">
+                      <h3 className="font-medium">{category}</h3>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
               
-              {filterCategories(categories.main).length === 0 && (
-                <div className="text-center py-10 text-gray-500">
-                  No categories match your search
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="extras">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {filterCategories(categories.extras).map((category, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2, delay: index * 0.05 }}
-                  >
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start h-auto py-4 px-5 text-left hover:bg-amber-50 hover:border-amber-300 hover:text-amber-800"
-                      onClick={() => handleSelectCategory(category)}
-                    >
-                      <span className="truncate">{category}</span>
-                    </Button>
-                  </motion.div>
-                ))}
+            {filteredMainCategories.length === 0 && (
+              <div className="text-center py-10 text-gray-500">
+                No main categories match your search
               </div>
+            )}
+          </section>
+
+          {/* Extra Categories Section */}
+          <section className="space-y-6">
+            <h2 className="text-xl font-semibold">Extra Categories</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {filteredExtraCategories.map((category, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: index * 0.05 }}
+                >
+                  <Card 
+                    className="hover:shadow-md transition-shadow h-full bg-amber-50 border-amber-200"
+                    onClick={() => handleSelectCategory(category)}
+                  >
+                    <CardContent className="p-4">
+                      <h3 className="font-medium">{category}</h3>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
               
-              {filterCategories(categories.extras).length === 0 && (
-                <div className="text-center py-10 text-gray-500">
-                  No categories match your search
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
+            {filteredExtraCategories.length === 0 && (
+              <div className="text-center py-10 text-gray-500">
+                No extra categories match your search
+              </div>
+            )}
+          </section>
         </motion.div>
       </div>
     </Layout>

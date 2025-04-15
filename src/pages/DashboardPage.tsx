@@ -3,7 +3,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Layout from '@/components/Layout';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, Calendar, BookOpen } from 'lucide-react';
@@ -38,16 +37,14 @@ const DashboardPage: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="space-y-10"
         >
-          <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
 
-          <Tabs defaultValue="routes" className="w-full">
-            <TabsList className="mb-6">
-              <TabsTrigger value="routes">PDF Types</TabsTrigger>
-              <TabsTrigger value="history">History</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="routes" className="space-y-6">
+          <div className="space-y-8">
+            {/* PDF Types Section */}
+            <div>
+              <h2 className="text-2xl font-semibold mb-6">Build On Demand Documents</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Newsletter Card */}
                 <Card className="hover:shadow-lg transition-shadow">
@@ -58,15 +55,15 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <CardDescription>Daily Content</CardDescription>
                   </CardHeader>
-                  <CardContent className="pt-6 pb-2">
+                  <CardContent className="pt-6 pb-2 bg-white">
                     <p className="text-sm text-gray-600">
                       Transform your teaching content into professional daily newsletters with the
                       current workflow.
                     </p>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="bg-white">
                     <Button 
-                      className="w-full" 
+                      className="w-full bg-black hover:bg-black/80 text-white" 
                       onClick={() => navigateToRoute('/task')}
                     >
                       Create Newsletter
@@ -83,14 +80,14 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <CardDescription>Weekly Content</CardDescription>
                   </CardHeader>
-                  <CardContent className="pt-6 pb-2">
+                  <CardContent className="pt-6 pb-2 bg-white">
                     <p className="text-sm text-gray-600">
                       Create comprehensive weekly compilations with a unique layout and structure.
                     </p>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="bg-white">
                     <Button 
-                      className="w-full" 
+                      className="w-full bg-black hover:bg-black/80 text-white" 
                       onClick={() => navigateToRoute('/compilation')}
                     >
                       Create Compilation
@@ -107,14 +104,14 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <CardDescription>Monthly Content</CardDescription>
                   </CardHeader>
-                  <CardContent className="pt-6 pb-2">
+                  <CardContent className="pt-6 pb-2 bg-white">
                     <p className="text-sm text-gray-600">
                       Build comprehensive monthly magazines with multiple specialized layouts for different sections.
                     </p>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="bg-white">
                     <Button 
-                      className="w-full" 
+                      className="w-full bg-black hover:bg-black/80 text-white" 
                       onClick={() => navigateToRoute('/magazine')}
                     >
                       Create Magazine
@@ -122,10 +119,12 @@ const DashboardPage: React.FC = () => {
                   </CardFooter>
                 </Card>
               </div>
-            </TabsContent>
+            </div>
 
-            <TabsContent value="history">
-              <Card>
+            {/* History Section */}
+            <div>
+              <h2 className="text-2xl font-semibold mb-6">History</h2>
+              <Card className="bg-white">
                 <CardHeader>
                   <CardTitle>Generated PDFs History</CardTitle>
                   <CardDescription>View your recently generated PDF files</CardDescription>
@@ -168,8 +167,8 @@ const DashboardPage: React.FC = () => {
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </motion.div>
       </div>
     </Layout>
