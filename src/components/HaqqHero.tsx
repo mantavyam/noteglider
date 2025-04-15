@@ -37,7 +37,7 @@ const HaqqHero: React.FC = () => {
         
         <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-center gap-4">
           <Button 
-            onClick={() => navigate('/task')} 
+            onClick={() => navigate('/dashboard')} 
             className="bg-white text-black border border-gray-300 hover:bg-gray-50 text-lg px-8 py-6 h-6 rounded-full shadow-xl"
           >
             Start Building

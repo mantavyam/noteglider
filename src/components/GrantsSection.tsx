@@ -24,7 +24,7 @@ const GrantsSection: React.FC = () => {
 
         <Button 
           className="bg-black hover:bg-black/90 text-white rounded-lg px-8 py-6 h-auto"
-          onClick={() => navigate('/task')}
+          onClick={() => navigate('/dashboard')}
         >
           Start Creating Now
         </Button>

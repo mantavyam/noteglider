@@ -2,6 +2,7 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface Product {
   title: string;
@@ -14,31 +15,9 @@ interface Product {
   bgColor?: string;
 }
 
-const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
-  return (
-    <div className={`rounded-3xl overflow-hidden p-8 ${product.bgColor || 'bg-zinc-900'} h-full flex flex-col`}>
-      <h2 className="text-4xl font-bold mb-4">{product.title}</h2>
-      <p className="text-white/70 mb-8">{product.description}</p>
-      
-      <Button 
-        variant="outline" 
-        className="self-start rounded-full border-white/20 hover:bg-white/10 text-white"
-      >
-        {product.action.text}
-      </Button>
-      
-      <div className="mt-auto pt-8">
-        <img 
-          src={product.image} 
-          alt={product.title} 
-          className="max-w-full h-auto object-contain"
-        />
-      </div>
-    </div>
-  );
-};
-
 const ProductSlider: React.FC = () => {
+  const navigate = useNavigate();
+  
   const products: Product[] = [
     {
       title: "Newsletter",
@@ -51,7 +30,7 @@ const ProductSlider: React.FC = () => {
     },
     {
       title: "Compilation",
-      description: "Weekly Compilations: A curated document covering review of past week’s lessons",
+      description: "Weekly Compilations: A curated document covering review of past week's lessons",
       image: "/landing-assets/landing-3.png",
       action: {
         text: "GET STARTED",
@@ -60,7 +39,7 @@ const ProductSlider: React.FC = () => {
     },
     {
       title: "Magazine",
-      description: "Monthly Magazines: A comprehensive document grouping an entire month’s data",
+      description: "Monthly Magazines: A comprehensive document grouping an entire month's data",
       image: "/landing-assets/landing-2.png",
       action: {
         text: "GET STARTED",
@@ -68,6 +47,31 @@ const ProductSlider: React.FC = () => {
       }
     }
   ];
+
+  const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+    return (
+      <div className={`rounded-3xl overflow-hidden p-8 ${product.bgColor || 'bg-zinc-900'} h-full flex flex-col`}>
+        <h2 className="text-4xl font-bold mb-4">{product.title}</h2>
+        <p className="text-white/70 mb-8">{product.description}</p>
+        
+        <Button 
+          variant="outline" 
+          className="self-start rounded-full border-white/20 hover:bg-white/10 text-white"
+          onClick={() => navigate('/dashboard')}
+        >
+          {product.action.text}
+        </Button>
+        
+        <div className="mt-auto pt-8">
+          <img 
+            src={product.image} 
+            alt={product.title} 
+            className="max-w-full h-auto object-contain"
+          />
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section className="py-20 bg-black">
