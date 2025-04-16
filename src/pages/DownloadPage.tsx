@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, ArrowRight, File, RefreshCcw, AlertTriangle, FileText } from 'lucide-react';
-import Layout from '@/components/Layout';
+import Layout from '@/components/landing/Layout';
 import PageTransition from '@/components/PageTransition';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';

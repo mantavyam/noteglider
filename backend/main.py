@@ -328,76 +328,61 @@ async def generate_pdf(
         if h3_index == 0 and any(item['type'] == 'heading' and item['level'] == 3 for item in parsed_data['all_content']):
             logger.warning("No images assigned to level 3 headings, possibly due to no images found or naming mismatch")
 
-        # Load and process SVG files
-        svg_dir = 'templates'
-        
-        # Helper function to fix relative icon paths in SVGs
-        def fix_svg_icon_paths(svg_content):
-            soup = BeautifulSoup(svg_content, 'xml')
-            # Find all image elements with xlink:href attributes
-            images = soup.find_all('image')
-            for img in images:
-                href = img.get('xlink:href')
-                if href and href.startswith('static/'):
-                    # Convert to absolute path
-                    absolute_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), href))
-                    # Use file:// URL format for absolute paths
-                    file_url = f"file://{absolute_path}"
-                    img['xlink:href'] = file_url
-                    logger.debug(f"Updated image path from {href} to {file_url}")
-            return str(soup)
-        
-        first_header_path = os.path.join(svg_dir, 'Header-Main.svg')
+        # Load and process HTML headers and footers
+        # html_dir = 'templates'
+        html_dir = os.path.join('templates', 'brandings')
+
+        # First header (Header-Main.html)
+        first_header_path = os.path.join(html_dir, 'Header-Main.html')
         if os.path.exists(first_header_path):
             try:
                 with open(first_header_path, 'r', encoding='utf-8') as f:
-                    first_header_svg = f.read()
-                # First update the date
-                soup = BeautifulSoup(first_header_svg, 'xml')
-                date_label = soup.find('text', {'id': 'date-label'})
-                if date_label:
-                    actual_date = parsed_data.get('date', 'DD/MM/YY')
-                    date_label.string = actual_date
-                    logger.debug(f"Updated date in Header-Main.svg to: {actual_date}")
-                first_header_svg = str(soup)
-                # Then fix the icon paths
-                first_header_svg = fix_svg_icon_paths(first_header_svg)
+                    header_main_html = f.read()
+                # Render with date and custom_url using Jinja2
+                first_header_template = env.from_string(header_main_html)
+                actual_date = parsed_data.get('date', 'DD/MM/YY').replace('*', '')  # Remove asterisks
+                header_main_html = first_header_template.render(
+                    date=actual_date,
+                    custom_url=custom_url
+                )
+                logger.debug(f"Updated date in Header-Main.html with: {actual_date}")
             except Exception as e:
-                logger.error(f"Failed to process Header-Main.svg: {str(e)}")
-                raise HTTPException(status_code=500, detail=f"Failed to process Header-Main.svg: {str(e)}")
+                logger.error(f"Failed to process Header-Main.html: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Failed to process Header-Main.html: {str(e)}")
         else:
-            logger.error(f"Header-Main.svg not found at {first_header_path}")
-            raise HTTPException(status_code=500, detail="Header-Main.svg is missing")
+            logger.error(f"Header-Main.html not found at {first_header_path}")
+            raise HTTPException(status_code=500, detail="Header-Main.html is missing")
 
-        header_path = os.path.join(svg_dir, 'Header-Constant.svg')
-        if os.path.exists(header_path):
+        # Constant header (Header-Constant.html)
+        header_constant_path = os.path.join(html_dir, 'Header-Constant.html')
+        if os.path.exists(header_constant_path):
             try:
-                with open(header_path, 'r', encoding='utf-8') as f:
-                    header_svg = f.read()
-                # Fix icon paths
-                header_svg = fix_svg_icon_paths(header_svg)
-                logger.debug("Loaded Header-Constant.svg successfully")
+                with open(header_constant_path, 'r', encoding='utf-8') as f:
+                    header_constant_html = f.read()
+                # Render with custom_url using Jinja2
+                constant_header_template = env.from_string(header_constant_html)
+                header_constant_html = constant_header_template.render(custom_url=custom_url)
+                logger.debug("Loaded Header-Constant.html successfully")
             except Exception as e:
-                logger.error(f"Failed to load Header-Constant.svg: {str(e)}")
-                raise HTTPException(status_code=500, detail=f"Failed to load Header-Constant.svg: {str(e)}")
+                logger.error(f"Failed to load Header-Constant.html: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Failed to load Header-Constant.html: {str(e)}")
         else:
-            logger.error(f"Header-Constant.svg not found at {header_path}")
-            raise HTTPException(status_code=500, detail="Header-Constant.svg is missing")
+            logger.error(f"Header-Constant.html not found at {header_constant_path}")
+            raise HTTPException(status_code=500, detail="Header-Constant.html is missing")
 
-        footer_path = os.path.join(svg_dir, 'Footer-Constant.svg')
+        # Footer (Footer.html)
+        footer_path = os.path.join(html_dir, 'Footer.html')
         if os.path.exists(footer_path):
             try:
                 with open(footer_path, 'r', encoding='utf-8') as f:
-                    footer_svg = f.read()
-                # Fix icon paths
-                footer_svg = fix_svg_icon_paths(footer_svg)
-                logger.debug("Loaded Footer-Constant.svg successfully")
+                    footer_html = f.read()
+                logger.debug("Loaded Footer.html successfully")
             except Exception as e:
-                logger.error(f"Failed to load Footer-Constant.svg: {str(e)}")
-                raise HTTPException(status_code=500, detail=f"Failed to load Footer-Constant.svg: {str(e)}")
+                logger.error(f"Failed to load Footer.html: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Failed to load Footer.html: {str(e)}")
         else:
-            logger.error(f"Footer-Constant.svg not found at {footer_path}")
-            raise HTTPException(status_code=500, detail="Footer-Constant.svg is missing")
+            logger.error(f"Footer.html not found at {footer_path}")
+            raise HTTPException(status_code=500, detail="Footer.html is missing")
 
         # Helper function to generate HTML for content items
         def generate_html_for_content(item, image_files):
@@ -597,14 +582,14 @@ async def generate_pdf(
         template_data = {
             'content': content_html,
             'full_width_tables': full_width_tables_content,
-            'first_header_svg': first_header_svg,
-            'header_svg': header_svg,
-            'footer_svg': footer_svg,
+            'header_main_html': header_main_html,
+            'header_constant_html': header_constant_html,
+            'footer_html': footer_html,
         }
 
         # Render template and generate PDF
         try:
-            main_template = env.get_template("simple_layout.html")
+            main_template = env.get_template("newsletterLayout.html")
             full_html = main_template.render(template_data)
             logger.debug(f"Rendered HTML length: {len(full_html)}")
 
@@ -613,7 +598,7 @@ async def generate_pdf(
                 f.write(full_html)
             logger.info(f"Saved debug HTML to {html_path}")
 
-            pdf_filename = f"newsletter_{request_id}.pdf"
+            pdf_filename = f"Newsletter-Daily_{request_id}.pdf"
             pdf_path = os.path.join(OUTPUT_DIR, pdf_filename)
             HTML(string=full_html, base_url=request_dir).write_pdf(pdf_path)
             logger.info(f"Generated PDF at {pdf_path}")
@@ -622,7 +607,7 @@ async def generate_pdf(
                 "success": True,
                 "message": "PDF generated successfully",
                 "pdf_url": f"/api/download/{pdf_filename}",
-                "filename": "newsletter.pdf",
+                "filename": "Newsletter-Daily.pdf",
                 "size": os.path.getsize(pdf_path) / 1024
             }
         except Exception as template_error:
@@ -644,8 +629,8 @@ async def download_pdf(filename: str):
     return FileResponse(
         file_path,
         media_type="application/pdf",
-        filename="newsletter.pdf",
-        headers={"Content-Disposition": "inline; filename=newsletter.pdf"}
+        filename="Newsletter-Daily.pdf",
+        headers={"Content-Disposition": "inline; filename=Newsletter-Daily.pdf"}
     )
 
 @app.get("/api/status")

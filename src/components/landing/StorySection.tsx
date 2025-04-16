@@ -1,6 +1,6 @@
 
 import React from 'react';
-import ScrollRevealSection from './ScrollRevealSection';
+import ScrollRevealSection from '../ScrollRevealSection';
 
 interface StorySectionProps {
   title: string;

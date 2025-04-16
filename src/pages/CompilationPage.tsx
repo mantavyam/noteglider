@@ -1,18 +1,20 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { checkBackendStatus } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import Layout from '@/components/Layout';
+import Layout from '@/components/landing/Layout';
 import FileUpload from '@/components/FileUpload';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, FileText, Image, Youtube, Plus, MinusCircle, AlertCircle, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar as CalendarIcon, Server } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 interface YouTubeUrlEntry {
   id: string;
@@ -22,8 +24,12 @@ interface YouTubeUrlEntry {
 
 const CompilationPage: React.FC = () => {
   const navigate = useNavigate();
+  const [backendConnected, setBackendConnected] = useState(false);
+  const [isCheckingBackend, setIsCheckingBackend] = useState(true);
   const [markdownFile, setMarkdownFile] = useState<File | null>(null);
   const [zipFile, setZipFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imagesZip, setImagesZip] = useState<File | null>(null);
   const [youtubeUrls, setYoutubeUrls] = useState<YouTubeUrlEntry[]>([
     { id: '1', url: '', date: undefined },
     { id: '2', url: '', date: undefined },
@@ -32,15 +38,54 @@ const CompilationPage: React.FC = () => {
     { id: '5', url: '', date: undefined },
     { id: '6', url: '', date: undefined },
   ]);
-  
-  // Backend connection status - In a real app, this would be determined by API check
-  const [backendConnected, setBackendConnected] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would process the files and navigate to a build page
-    navigate('/build');
-  };
+  // Check if backend is available on component mount
+    useEffect(() => {
+      const checkBackend = async () => {
+        try {
+          setIsCheckingBackend(true);
+          const status = await checkBackendStatus();
+          setBackendConnected(status.status === 'online');
+        } catch (error) {
+          setBackendConnected(false);
+        } finally {
+          setIsCheckingBackend(false);
+        }
+      };
+  
+      checkBackend();
+    }, []);
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      
+      if (!backendConnected) {
+        toast.error('Backend service is not available. Please make sure the backend server is running.');
+        return;
+      }
+    
+      if (!markdownFile) {
+        toast.error('Please upload a Markdown file');
+        return;
+      }
+    
+      if (!imagesZip) {
+        toast.error('Please upload a ZIP file with images');
+        return;
+      }
+      setIsSubmitting(true);
+      
+      // Navigate to build page with the files
+      setTimeout(() => {
+        setIsSubmitting(false);
+        navigate('/build', { 
+          state: { 
+            markdownFile,
+            imagesZip,
+          } 
+        });
+      }, 500);
+    };
 
   const handleYoutubeUrlChange = (id: string, value: string) => {
     setYoutubeUrls(prev => 
@@ -84,24 +129,31 @@ const CompilationPage: React.FC = () => {
             <h1 className="text-3xl font-bold">Weekly Compilation</h1>
           </div>
 
-          {/* Backend status indicator */}
-          <div className={`text-sm flex items-center gap-2 ${backendConnected ? 'text-green-600' : 'text-red-600'}`}>
-            {backendConnected ? (
-              <>
-                <CheckCircle size={16} />
-                <span>Backend service is connected</span>
-              </>
-            ) : (
-              <>
-                <AlertCircle size={16} />
-                <span>Backend service is not available. Please start the backend server.</span>
-              </>
-            )}
-          </div>
+          {/* Backend Status */}
+          <motion.div 
+            className={`mb-6 px-4 py-2 rounded-lg flex items-center ${
+              isCheckingBackend 
+              ? "bg-gray-100" 
+              : backendConnected 
+                ? "bg-green-50 text-green-700" 
+                : "bg-red-50 text-red-700"
+            }`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <Server className="w-4 h-4 mr-2" />
+            <span className="text-sm">
+              {isCheckingBackend 
+                ? "Checking backend status..." 
+                : backendConnected 
+                  ? "Backend service is connected" 
+                  : "Backend service is not available. Please start the backend server."}
+            </span>
+          </motion.div>
 
           <Card className="bg-white">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="text-black flex items-center gap-2">
                 <FileText className="h-5 w-5 text-blue-600" />
                 Required Files
               </CardTitle>
@@ -111,7 +163,7 @@ const CompilationPage: React.FC = () => {
                 Upload your content files to create a weekly compilation PDF with specialized layout.
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6 text-black">
                 <div className="space-y-4">
                   <FileUpload
                     label="Markdown Document (.md)"
@@ -129,7 +181,7 @@ const CompilationPage: React.FC = () => {
 
                   <div className="space-y-4 pt-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium">
+                      <label className="text-black text-sm font-medium">
                         YouTube URLs (Optional)
                       </label>
                       <Button
@@ -137,9 +189,9 @@ const CompilationPage: React.FC = () => {
                         variant="outline"
                         size="sm"
                         onClick={addYoutubeUrlField}
-                        className="flex items-center gap-1"
+                        className="flex items-center gap-1 text-white"
                       >
-                        <Plus className="h-4 w-4" />
+                        <Plus className="h-4 w-4 text-white" />
                         Add URL
                       </Button>
                     </div>
@@ -147,13 +199,13 @@ const CompilationPage: React.FC = () => {
                     {youtubeUrls.map((entry) => (
                       <div key={entry.id} className="flex items-start gap-2">
                         <div className="flex items-center gap-2 flex-1">
-                          <Youtube className="h-5 w-5 text-gray-500 mt-2" />
+                          <Youtube className="h-5 w-5 text-black bg-white mt-2" />
                           <Input
                             type="url"
                             placeholder="https://www.youtube.com/watch?v=..."
                             value={entry.url}
                             onChange={(e) => handleYoutubeUrlChange(entry.id, e.target.value)}
-                            className="flex-1"
+                            className="flex-1 bg-white text-black placeholder:text-gray-500"
                           />
                         </div>
 
@@ -162,8 +214,8 @@ const CompilationPage: React.FC = () => {
                             <Button
                               variant="outline"
                               className={cn(
-                                "w-[140px] justify-start text-left font-normal",
-                                !entry.date && "text-gray-500"
+                                "w-[160px] justify-start text-left font-normal bg-white text-black",
+                                !entry.date && "text-black bg-white"
                               )}
                             >
                               <CalendarIcon className="mr-2 h-4 w-4" />

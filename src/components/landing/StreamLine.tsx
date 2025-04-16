@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Youtube, FileUp } from 'lucide-react';
 
-const WalletSection: React.FC = () => {
+const StreamLine: React.FC = () => {
   const navigate = useNavigate();
   
   return (
@@ -21,7 +21,7 @@ const WalletSection: React.FC = () => {
         
         <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-8 mb-16">
           <Button 
-            className="bg-white text-black border border-gray-300 hover:bg-gray-50 rounded-lg shadow-sm"
+            className="bg-white text-black border border-black hover:bg-gray-50 rounded-lg shadow-sm"
             onClick={() => navigate('/dashboard')}
           >
             <Youtube className="w-5 h-5 mr-2" />
@@ -29,7 +29,7 @@ const WalletSection: React.FC = () => {
           </Button>
           
           <Button 
-            className="bg-white text-black border border-gray-300 hover:bg-gray-50 rounded-lg shadow-sm"
+            className="bg-white text-black border border-black hover:bg-gray-50 rounded-lg shadow-sm"
             onClick={() => navigate('/dashboard')}
           >
             <FileUp className="w-5 h-5 mr-2" />
@@ -39,21 +39,14 @@ const WalletSection: React.FC = () => {
         
         <div className="flex justify-center">
           <img 
-            src="/lovable-uploads/75a05867-f430-4592-9140-d7bd68cda560.png" 
+            src="/landing-assets/DashboardNoteGlider.png" 
             alt="PDF Creation App" 
             className="max-w-full h-auto md:max-w-md"
           />
-        </div>
-        
-        <div className="flex flex-wrap justify-center gap-8 mt-16">
-          <div className="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center">Daily</div>
-          <div className="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center">Weekly</div>
-          <div className="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center">Monthly</div>
-          <div className="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center">Custom</div>
         </div>
       </div>
     </section>
   );
 };
 
-export default WalletSection;
+export default StreamLine;

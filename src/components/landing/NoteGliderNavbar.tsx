@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const HaqqNavbar: React.FC = () => {
+const NoteGliderNavbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
 
@@ -85,4 +85,4 @@ const HaqqNavbar: React.FC = () => {
   );
 };
 
-export default HaqqNavbar;
+export default NoteGliderNavbar;

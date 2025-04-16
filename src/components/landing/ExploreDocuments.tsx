@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-interface Product {
+interface Explore {
   title: string;
   description: string;
   image: string;
@@ -15,10 +15,10 @@ interface Product {
   bgColor?: string;
 }
 
-const ProductSlider: React.FC = () => {
+const ExploreSlider: React.FC = () => {
   const navigate = useNavigate();
   
-  const products: Product[] = [
+  const Explores: Explore[] = [
     {
       title: "Newsletter",
       description: "Daily Newsletters: Quick, up-to-date documents with essential question's highlights",
@@ -48,24 +48,24 @@ const ProductSlider: React.FC = () => {
     }
   ];
 
-  const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+  const ExploreCard: React.FC<{ Explore: Explore }> = ({ Explore }) => {
     return (
-      <div className={`rounded-3xl overflow-hidden p-8 ${product.bgColor || 'bg-zinc-900'} h-full flex flex-col`}>
-        <h2 className="text-4xl font-bold mb-4">{product.title}</h2>
-        <p className="text-white/70 mb-8">{product.description}</p>
+      <div className={`rounded-3xl overflow-hidden p-8 ${Explore.bgColor || 'bg-zinc-900'} h-full flex flex-col`}>
+        <h2 className="text-4xl font-bold mb-4">{Explore.title}</h2>
+        <p className="text-white/70 mb-8">{Explore.description}</p>
         
         <Button 
           variant="outline" 
           className="self-start rounded-full border-white/20 hover:bg-white/10 text-white"
           onClick={() => navigate('/dashboard')}
         >
-          {product.action.text}
+          {Explore.action.text}
         </Button>
         
         <div className="mt-auto pt-8">
           <img 
-            src={product.image} 
-            alt={product.title} 
+            src={Explore.image} 
+            alt={Explore.title} 
             className="max-w-full h-auto object-contain"
           />
         </div>
@@ -101,8 +101,8 @@ const ProductSlider: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {products.map((product, index) => (
-            <ProductCard key={index} product={product} />
+          {Explores.map((Explore, index) => (
+            <ExploreCard key={index} Explore={Explore} />
           ))}
         </div>
       </div>
@@ -110,4 +110,4 @@ const ProductSlider: React.FC = () => {
   );
 };
 
-export default ProductSlider;
+export default ExploreSlider;

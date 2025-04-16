@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import Layout from '@/components/Layout';
+import Layout from '@/components/landing/Layout';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, Calendar, BookOpen } from 'lucide-react';
@@ -50,7 +50,7 @@ const DashboardPage: React.FC = () => {
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader className="bg-gradient-to-r from-amber-100 to-amber-200 rounded-t-lg">
                     <div className="flex justify-between items-center">
-                      <CardTitle className="text-xl">Newsletter</CardTitle>
+                      <CardTitle className="text-xl text-black">Newsletter</CardTitle>
                       <FileText className="h-6 w-6 text-amber-600" />
                     </div>
                     <CardDescription>Daily Content</CardDescription>
@@ -62,8 +62,8 @@ const DashboardPage: React.FC = () => {
                     </p>
                   </CardContent>
                   <CardFooter className="bg-white">
-                    <Button 
-                      className="w-full bg-black hover:bg-black/80 text-white" 
+                    <Button
+                      className="w-full bg-black hover:bg-black/80 text-white"
                       onClick={() => navigateToRoute('/task')}
                     >
                       Create Newsletter
@@ -75,19 +75,19 @@ const DashboardPage: React.FC = () => {
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader className="bg-gradient-to-r from-blue-100 to-blue-200 rounded-t-lg">
                     <div className="flex justify-between items-center">
-                      <CardTitle className="text-xl">Compilation</CardTitle>
+                      <CardTitle className="text-xl text-black">Compilation</CardTitle>
                       <Calendar className="h-6 w-6 text-blue-600" />
                     </div>
                     <CardDescription>Weekly Content</CardDescription>
                   </CardHeader>
                   <CardContent className="pt-6 pb-2 bg-white">
                     <p className="text-sm text-gray-600">
-                      Create comprehensive weekly compilations with a unique layout and structure.
+                      Create comprehensive weekly compilations with a unique layout and structure adapting your Brand's Design.
                     </p>
                   </CardContent>
                   <CardFooter className="bg-white">
-                    <Button 
-                      className="w-full bg-black hover:bg-black/80 text-white" 
+                    <Button
+                      className="w-full bg-black hover:bg-black/80 text-white"
                       onClick={() => navigateToRoute('/compilation')}
                     >
                       Create Compilation
@@ -99,7 +99,7 @@ const DashboardPage: React.FC = () => {
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader className="bg-gradient-to-r from-purple-100 to-purple-200 rounded-t-lg">
                     <div className="flex justify-between items-center">
-                      <CardTitle className="text-xl">Magazine</CardTitle>
+                      <CardTitle className="text-xl text-black">Magazine</CardTitle>
                       <BookOpen className="h-6 w-6 text-purple-600" />
                     </div>
                     <CardDescription>Monthly Content</CardDescription>
@@ -110,8 +110,8 @@ const DashboardPage: React.FC = () => {
                     </p>
                   </CardContent>
                   <CardFooter className="bg-white">
-                    <Button 
-                      className="w-full bg-black hover:bg-black/80 text-white" 
+                    <Button
+                      className="w-full bg-black hover:bg-black/80 text-white"
                       onClick={() => navigateToRoute('/magazine')}
                     >
                       Create Magazine
@@ -126,30 +126,30 @@ const DashboardPage: React.FC = () => {
               <h2 className="text-2xl font-semibold mb-6">History</h2>
               <Card className="bg-white">
                 <CardHeader>
-                  <CardTitle>Generated PDFs History</CardTitle>
+                  <CardTitle className="text-black">Generated PDFs History</CardTitle>
                   <CardDescription>View your recently generated PDF files</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="rounded-md border">
-                    <Table>
+                    <Table className='text-black'>
                       <TableHeader>
-                        <TableRow>
-                          <TableHead>Type</TableHead>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Size</TableHead>
-                          <TableHead>Pages</TableHead>
-                          <TableHead>Actions</TableHead>
+                        <TableRow className='text-black'>
+                          <TableHead className='text-black'>Type</TableHead>
+                          <TableHead className='text-black'>Name</TableHead>
+                          <TableHead className='text-black'>Size</TableHead>
+                          <TableHead className='text-black'>Pages</TableHead>
+                          <TableHead className='text-black'>Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {mockHistory.map((item, index) => (
-                          <TableRow key={index}>
+                          <TableRow key={index} className='hover:bg-gray-100'>
                             <TableCell className="font-medium">
-                              <span 
+                              <span
                                 className={`px-2 py-1 rounded-full text-xs font-semibold
-                                  ${item.type === 'NEWSLETTER' ? 'bg-amber-100 text-amber-800' : 
-                                    item.type === 'COMPILATION' ? 'bg-blue-100 text-blue-800' : 
-                                    'bg-purple-100 text-purple-800'}`}
+                                  ${item.type === 'NEWSLETTER' ? 'bg-amber-100 text-amber-800' :
+                                    item.type === 'COMPILATION' ? 'bg-blue-100 text-blue-800' :
+                                      'bg-purple-100 text-purple-800'}`}
                               >
                                 {item.type}
                               </span>

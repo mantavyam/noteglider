@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>PDF Layout</title>
     <style>
-        /* Font definitions for SVGs */
         @font-face {
             font-family: 'Afacad';
             src: url('static/fonts/Afacad-Regular.ttf') format('truetype');
@@ -30,8 +29,6 @@
             src: url('static/fonts/Ahsing-Regular.otf') format('opentype');
             font-weight: normal;
         }
-        
-        /* OpenSauceSans font definitions */
         @font-face {
             font-family: 'OpenSauceSans';
             src: url('static/fonts/OpenSauceSans-Regular.ttf') format('truetype');
@@ -81,33 +78,6 @@
             font-style: normal;
         }
 
-        /* A4 page setup for subsequent pages */
-        @page {
-            size: A4 portrait;
-            margin-top: 15mm;
-            margin-bottom: 15mm;
-            margin-left: 0;
-            margin-right: 0;
-            @top-center {
-                content: element(header);
-            }
-            @bottom-center {
-                content: element(footer);
-            }
-        }
-
-        /* First page with larger header */
-        @page :first {
-            margin-top: 24mm;
-            margin-bottom: 15mm;
-            @top-center {
-                content: element(first-header);
-            }
-            @bottom-center {
-                content: element(footer);
-            }
-        }
-
         /* Base styles */
         body {
             margin: 0;
@@ -133,57 +103,6 @@
             text-decoration: underline;
         }
 
-        /* First page header (24mm) */
-        .first-header {
-            position: running(first-header);
-            height: 24mm;
-            width: 210mm;
-            left: 0;
-            right: 0;
-            margin: 0;
-            padding: 0;
-            background-color: #0097b2;
-        }
-        .first-header svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* Header for subsequent pages (15mm) */
-        #header {
-            position: running(header);
-            height: 15mm;
-            width: 210mm;
-            left: 0;
-            right: 0;
-            margin: 0;
-            padding: 0;
-            background-color: #0097b2;
-        }
-        #header svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* Footer for all pages (15mm) */
-        #footer {
-            position: running(footer);
-            height: 15mm;
-            width: 210mm;
-            left: 0;
-            right: 0;
-            margin: 0;
-            padding: 0;
-            background-color: #0097b2;
-        }
-        #footer svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
         /* Main content container */
         .container {
             padding-left: 10mm;
@@ -197,29 +116,29 @@
             column-count: 3;
             column-gap: 5mm;
             column-rule: 1px solid #000000;
-            column-fill: balance; /* Balances content across columns */
+            column-fill: balance;
         }
 
         /* News item styling */
         .news-item {
-            margin-bottom: 1pt; /* Space between news items */
+            margin-bottom: 1pt;
         }
 
         .news-heading-container {
-            break-inside: avoid; /* Keep the heading container intact */
-            break-after: auto; /* Allow break after heading container */
+            break-inside: avoid;
+            break-after: auto;
         }
         
         .news-heading {
             margin-bottom: 1pt;
             line-height: 1.35;
-            break-inside: avoid; /* Keep the heading intact */
-            break-after: auto; /* Allow break after heading */
+            break-inside: avoid;
+            break-after: auto;
         }
 
         .news-image-container {
-            break-inside: avoid; /* Keep the image container intact */
-            break-before: auto; /* Allow the image container to start in a new column if needed */
+            break-inside: avoid;
+            break-before: auto;
         }
         
         .news-image {
@@ -229,18 +148,17 @@
             display: block;
             margin: 0 auto;
             padding: 1pt;
-            break-inside: avoid; /* Keep the image intact */
-            break-after: avoid; /* Keep image with following content when possible */
+            break-inside: avoid;
+            break-after: avoid;
         }
 
         .news-description-container {
-            break-inside: auto; /* Allow descriptions to break naturally */
+            break-inside: auto;
         }
         
         .news-description {
             margin-top: 1pt;
             margin-bottom: 1pt;
-            /* No break restrictions, allow natural breaking */
         }
 
         /* Separator styling */
@@ -277,7 +195,8 @@
             width: 60mm;
             border: 1px solid black;
             padding: 5px;
-            padding-top: 5pt;
+            padding-top: 2mm;
+            padding-bottom: 2mm;
             box-sizing: border-box;
             text-align: center;
             break-inside: avoid-column;
@@ -342,7 +261,7 @@
             margin-bottom: 1pt;
             text-align: justify;
         }
-        h2{
+        h2 {
             line-height: 1.35;
         }
         p {
@@ -381,11 +300,9 @@
         .full-width-table {
             width: 100%;
             margin-bottom: 2mm;
-            /* Allow table to break across pages */
             break-inside: auto;
         }
         
-        /* Make sure rows don't break in the middle */
         .full-width-table tr {
             break-inside: avoid;
         }
@@ -396,12 +313,10 @@
             text-align: center;
         }
         
-        /* Ensure header rows repeat when table breaks across pages */
         .full-width-table thead {
             display: table-header-group;
         }
         
-        /* Style for column headers when in thead */
         .full-width-table .thead-column-headers th {
             background-color: #0097b2;
             color: white;
@@ -409,7 +324,6 @@
             text-align: center;
         }
         
-        /* Ensure the first header cell (with colspan) is centered */
         .full-width-table thead tr:first-child th {
             text-align: center !important;
             font-weight: bold;
@@ -417,17 +331,94 @@
         hr.solid {
             border-top: 1px solid #000000;
         }
+        
+        @page {
+            size: A4 portrait;
+            margin-top: 15mm;
+            margin-bottom: 15mm;
+            margin-left: 0;
+            margin-right: 0;
+            
+            @top-center {
+                content: element(header);
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+            }
+            
+            @bottom-center {
+                content: element(footer) !important;
+                position: fixed;
+                bottom: 0;
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+                height: 15mm;
+            }
+        }
+
+        @page :first {
+            margin-top: 25mm;
+            margin-bottom: 15mm;
+            margin-left: 0;
+            margin-right: 0;
+            
+            @top-center {
+                content: element(first-header);
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+            }
+            
+            @bottom-center {
+                content: element(footer) !important;
+                position: fixed;
+                bottom: 0;
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+                height: 15mm;
+            }
+        }
+
+        #first-header {
+            position: running(first-header);
+            width: 210mm;
+            height: 25mm;
+            margin: 0 auto;
+            display: block;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        #header {
+            position: running(header);
+            width: 210mm;
+            height: 15mm;
+            margin: 0 auto;
+            display: block;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        #footer {
+            position: running(footer);
+            width: 210mm;
+            height: 15mm;
+            margin: 0 !important;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            box-sizing: border-box;
+        }
+
     </style>
 </head>
 <body>
-    <!-- First page header (24mm) -->
-    <div class="first-header">{{ first_header_svg | safe }}</div>
-
-    <!-- Header for subsequent pages (15mm) -->
-    <div id="header">{{ header_svg | safe }}</div>
-
-    <!-- Footer for all pages (15mm) -->
-    <div id="footer">{{ footer_svg | safe }}</div>
+    <!-- Use IDs instead of classes for running elements -->
+    <div id="footer">{{- footer_html | safe -}}</div>
+    <div id="first-header">{{- header_main_html | safe -}}</div>
+    <div id="header">{{- header_constant_html | safe -}}</div>
 
     <!-- Main content -->
     <div class="container">

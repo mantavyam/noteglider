@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, CheckIcon, Server } from 'lucide-react';
-import Layout from '../components/Layout';
+import Layout from '../components/landing/Layout';
 import PageTransition from '../components/PageTransition';
 import FileUpload from '../components/FileUpload';
 import { toast } from 'sonner';

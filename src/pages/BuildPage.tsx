@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, UploadCloud, AlertTriangle, ArrowRight, Loader2 } from 'lucide-react';
 import MarkdownPreview from '@/components/MarkdownPreview';
 import ImageGrid from '@/components/ImageGrid';
-import Layout from '@/components/Layout';
+import Layout from '@/components/landing/Layout';
 import PageTransition from '@/components/PageTransition';
 import { generatePDF } from '@/services/api';
 import { ScrollArea } from '@/components/ui/scroll-area';

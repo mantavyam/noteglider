@@ -65,3 +65,51 @@ This project is built with .
 **Communication**
 - REST API: For communication between frontend and backend
 - FormData: For sending files from frontend to backend
+
+## Project Tree
+```
+tree -I 'venv|static|output|temp|node_modules|__pycache__|components'
+```
+
+```
+├── README.md
+├── backend
+│   ├── README.md
+│   ├── main.py
+│   ├── requirements.txt
+│   └── templates
+│       ├── Footer.html
+│       ├── Header-Constant.html
+│       ├── Header.html
+│       └── newsletterLayout.html
+├── bun.lockb
+├── components.json
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── public
+├── src
+│   ├── App.css
+│   ├── App.tsx
+│   ├── hooks
+│   ├── index.css
+│   ├── lib
+│   │   └── utils.ts
+│   ├── main.tsx
+│   ├── pages
+│   │   ├── BuildPage.tsx
+│   │   ├── DownloadPage.tsx
+│   │   ├── Index.tsx
+│   │   ├── NotFound.tsx
+│   │   └── TaskPage.tsx
+│   ├── services
+│   │   └── api.ts
+│   └── vite-env.d.ts
+├── tailwind.config.ts
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+```

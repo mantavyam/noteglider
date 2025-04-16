@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-const GrantsSection: React.FC = () => {
+const WorkflowSteps: React.FC = () => {
   const navigate = useNavigate();
 
   return (
@@ -33,4 +33,4 @@ const GrantsSection: React.FC = () => {
   );
 };
 
-export default GrantsSection;
+export default WorkflowSteps;

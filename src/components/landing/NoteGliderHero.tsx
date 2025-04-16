@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-const HaqqHero: React.FC = () => {
+const NoteGliderHero: React.FC = () => {
   const navigate = useNavigate();
   
   return (
@@ -48,4 +48,4 @@ const HaqqHero: React.FC = () => {
   );
 };
 
-export default HaqqHero;
+export default NoteGliderHero;

@@ -1,20 +1,20 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import HaqqNavbar from './HaqqNavbar';
+import NoteGliderNavbar from './Navbar';
 
-interface HaqqLayoutProps {
+interface NoteGliderLayoutProps {
   children: React.ReactNode;
   showNavbar?: boolean;
 }
 
-const HaqqLayout: React.FC<HaqqLayoutProps> = ({ 
+const NoteGliderLayout: React.FC<NoteGliderLayoutProps> = ({ 
   children, 
   showNavbar = true 
 }) => {
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      {showNavbar && <HaqqNavbar />}
+      {showNavbar && <NoteGliderNavbar />}
       <main>{children}</main>
       
       <footer className="bg-black border-t border-white/10 py-12">
@@ -66,4 +66,4 @@ const HaqqLayout: React.FC<HaqqLayoutProps> = ({
   );
 };
 
-export default HaqqLayout;
+export default NoteGliderLayout;
