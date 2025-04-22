@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { checkBackendStatus } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +28,6 @@ const CompilationPage: React.FC = () => {
   const [markdownFile, setMarkdownFile] = useState<File | null>(null);
   const [zipFile, setZipFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagesZip, setImagesZip] = useState<File | null>(null);
   const [youtubeUrls, setYoutubeUrls] = useState<YouTubeUrlEntry[]>([
     { id: '1', url: '', date: undefined },
     { id: '2', url: '', date: undefined },
@@ -60,7 +58,7 @@ const CompilationPage: React.FC = () => {
       e.preventDefault();
       
       if (!backendConnected) {
-        toast.error('Backend service is not available. Please make sure the backend server is running.');
+        toast.error('Backend service is not available.');
         return;
       }
     
@@ -69,22 +67,43 @@ const CompilationPage: React.FC = () => {
         return;
       }
     
-      if (!imagesZip) {
+      if (!zipFile) {
         toast.error('Please upload a ZIP file with images');
         return;
       }
       setIsSubmitting(true);
       
-      // Navigate to build page with the files
-      setTimeout(() => {
+      const formData = new FormData();
+      formData.append('markdown_file', markdownFile);
+      formData.append('images_zip', zipFile);
+
+      if (youtubeUrls.length > 0) {
+        const validUrls = youtubeUrls.filter(entry => entry.url && entry.date);
+        if (validUrls.length > 0) {
+          formData.append('youtube_data', JSON.stringify(validUrls));
+        }
+      }
+
+      // Make API call
+      fetch('/api/generate-compilation', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
         setIsSubmitting(false);
-        navigate('/build', { 
-          state: { 
-            markdownFile,
-            imagesZip,
-          } 
-        });
-      }, 500);
+        if (data.success) {
+          toast.success('Compilation generated successfully');
+          // Handle successful response
+        } else {
+          toast.error(data.message || 'Failed to generate compilation');
+        }
+      })
+      .catch(error => {
+        setIsSubmitting(false);
+        toast.error('Error generating compilation');
+        console.error(error);
+      });
     };
 
   const handleYoutubeUrlChange = (id: string, value: string) => {

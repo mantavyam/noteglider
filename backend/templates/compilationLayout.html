@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weekly Compilation</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 10pt;
+    }
+
+    /* Named Pages */
+    @page first { @top-center { content: element(header-first); } @bottom-center { content: element(footer); } }
+    @page main { @top-center { content: element(header-main); } @bottom-center { content: element(footer); } }
+    body[page="main"] .separator-line { height: 20px; }
+    @page timeline-first { @top-center { content: element(header-timeline-first); } @bottom-center { content: element(footer); } }
+    @page timeline { @top-center { content: element(header-timeline); } @bottom-center { content: element(footer); } }
+    @page current-affairs { @top-center { content: element(header-main); } @bottom-center { content: element(footer); } }
+
+    /* Running Elements */
+    #header-first, #header-main, #header-timeline-first, #header-timeline, #footer {
+      position: running(header-first), running(header-main), running(header-timeline-first), running(header-timeline), running(footer);
+      text-align: center;
+    }
+    .document-info { font-size: 12pt; }
+
+    /* Separator */
+    .separator-container {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: center;
+      max-width: 60mm;
+      margin: 1pt 0;
+    }
+    .separator-line {
+      flex-grow: 1;
+      height: 4px;
+      background: linear-gradient(90deg, #004aad, #5de0e6);
+      min-width: 0;
+    }
+    .separator-line.main { height: 20px; }
+    .separator-text {
+      background: #0097b2;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 8px;
+      height: 4mm;
+      display: flex;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    /* Segment 1: First Page */
+    .first-page {
+      display: grid;
+      grid-template-columns: 70mm 120mm;
+      gap: 10mm;
+    }
+    .highlights-box {
+      background: #222222;
+      border-radius: 22pt;
+      padding: 10mm;
+      color: white;
+      height: 100mm;
+    }
+    .highlights-box h2 {
+      font-size: 20pt;
+      white-space: pre-line;
+    }
+    .highlights-box ol { font-size: 10pt; }
+    .index-box {
+      background: #f5f0ea;
+      border-radius: 22pt;
+      padding: 10mm;
+      height: 80mm;
+    }
+    .index-box h2 {
+      font-size: 10pt;
+      background: white;
+      display: inline-block;
+      padding: 2mm;
+    }
+    .index-box ul { font-size: 10pt; }
+    .index-box a::after { content: " " target-counter(attr(href), page); }
+    .news-item {
+      display: flex;
+      margin-bottom: 5mm;
+    }
+    .news-image {
+      width: 35mm;
+      height: 20mm;
+      object-fit: cover;
+      margin-right: 5mm;
+    }
+    .news-text h3 { font-size: 12pt; }
+    .news-text p { font-size: 10pt; }
+
+    /* Segment 1: Default Pages */
+    .three-columns {
+      column-count: 3;
+      column-gap: 10mm;
+      column-rule: 1px solid black;
+    }
+
+    /* Segment 2: Timeline */
+    .timeline-container {
+      position: relative;
+      margin: 0 auto;
+      width: 100mm;
+    }
+    .timeline-line {
+      position: absolute;
+      left: 50%;
+      width: 1px;
+      background: black;
+      height: 100%;
+    }
+    .timeline-item {
+      position: relative;
+      margin: 10mm 0;
+    }
+    .timeline-item.left .timeline-date {
+      position: absolute;
+      right: 100%;
+      margin-right: 30mm;
+    }
+    .timeline-item.right .timeline-date {
+      position: absolute;
+      left: 100%;
+      margin-left: 30mm;
+    }
+    .timeline-item ul {
+      margin-left: 10mm;
+      font-size: 10pt;
+    }
+
+    /* Segment 3: Current Affairs */
+    .outer-container {
+      width: 60mm;
+      border: 1px solid black;
+      padding: 5px;
+      box-sizing: border-box;
+      text-align: center;
+      margin: 5mm auto;
+    }
+    .table-title {
+      font-size: 10px;
+      color: black;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .inner-table-container {
+      width: 57mm;
+      border: 1px solid black;
+      margin: 0 auto;
+    }
+    .question-table, .answer-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .question-table td, .answer-table td {
+      font-size: 10px;
+      padding: 12px;
+      border-bottom: 1px solid black;
+      text-align: left;
+    }
+    .question-table tr:last-child td, .answer-table tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Headers -->
+  <div id="header-first"><!-- HEADER-FIRST-PLACEHOLDER --></div>
+  <div id="header-main">Weekly Compilation</div>
+  <div id="header-timeline-first">Timeline</div>
+  <div id="header-timeline">Timeline Continued</div>
+  <div id="footer">Page <counter(page)></div>
+
+  <!-- Segment 1: Main Content First Page -->
+  <div style="page: first; page-break-after: always;" class="first-page">
+    <div>
+      <div class="highlights-box">
+        <h2>Highlights of this
+Week's Coverage</h2>
+        <ol><!-- HIGHLIGHTS-PLACEHOLDER --></ol>
+      </div>
+      <div class="index-box">
+        <h2>INDEX</h2>
+        <ul><!-- INDEX-PLACEHOLDER --></ul>
+      </div>
+    </div>
+    <div><!-- FIRST-PAGE-NEWS-PLACEHOLDER --></div>
+  </div>
+
+  <!-- Segment 1: Main Content Default Pages -->
+  <div style="page: main;" class="three-columns">
+    <!-- NEWS-PLACEHOLDER -->
+  </div>
+
+  <!-- Segment 2: Timeline -->
+  <div style="page: timeline-first; page-break-after: always;" class="timeline-container">
+    <div class="timeline-line"></div>
+    <!-- TIMELINE-PLACEHOLDER -->
+  </div>
+  <div style="page: timeline;" class="timeline-container">
+    <div class="timeline-line"></div>
+    <!-- Continuation of TIMELINE-PLACEHOLDER if needed -->
+  </div>
+
+  <!-- Segment 3: Current Affairs -->
+  <div style="page: current-affairs;">
+    <div class="outer-container">
+      <div class="table-title">Important Q&A</div>
+      <div class="inner-table-container">
+        <table class="question-table">
+          <!-- QUESTIONS-PLACEHOLDER -->
+        </table>
+      </div>
+    </div>
+    <div class="outer-container">
+      <div class="table-title">Answers</div>
+      <div class="inner-table-container">
+        <table class="answer-table">
+          <!-- ANSWERS-PLACEHOLDER -->
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -78,9 +78,36 @@ tree -I 'venv|static|output|temp|node_modules|__pycache__|components'
 │   ├── main.py
 │   ├── requirements.txt
 │   └── templates
-│       ├── Footer.html
-│       ├── Header-Constant.html
-│       ├── Header.html
+│       ├── brandings
+│       │   ├── Footer.html
+│       │   ├── Header-Constant.html
+│       │   └── Header-Main.html
+│       ├── compilationLayout.html
+│       ├── magazineLayouts
+│       │   ├── appointLayout.html
+│       │   ├── awardLayout.html
+│       │   ├── bankingLayout.html
+│       │   ├── booksLayout.html
+│       │   ├── brandLayout.html
+│       │   ├── defenceExerciseLayout.html
+│       │   ├── defenceNewsLayout.html
+│       │   ├── festivalsLayout.html
+│       │   ├── gdpLayout.html
+│       │   ├── impDaysLayout.html
+│       │   ├── internationalLayout.html
+│       │   ├── mouLayout.html
+│       │   ├── nationalLayout.html
+│       │   ├── obituaryLayout.html
+│       │   ├── rbiCornerLayout.html
+│       │   ├── reportsLayout.html
+│       │   ├── scienceLayout.html
+│       │   ├── sportsLayout.html
+│       │   ├── stateLayout.html
+│       │   └── visitsLayout.html
+│       │   ├── Xtras
+│       │   │   ├── 100McqLayout.html
+│       │   │   ├── crackerTabular.html
+│       │   │   └── staticAwareness.html
 │       └── newsletterLayout.html
 ├── bun.lockb
 ├── components.json
@@ -96,16 +123,17 @@ tree -I 'venv|static|output|temp|node_modules|__pycache__|components'
 │   ├── hooks
 │   ├── index.css
 │   ├── lib
-│   │   └── utils.ts
 │   ├── main.tsx
 │   ├── pages
 │   │   ├── BuildPage.tsx
+│   │   ├── CompilationPage.tsx
+│   │   ├── DashboardPage.tsx
 │   │   ├── DownloadPage.tsx
 │   │   ├── Index.tsx
+│   │   ├── MagazinePage.tsx
 │   │   ├── NotFound.tsx
 │   │   └── TaskPage.tsx
 │   ├── services
-│   │   └── api.ts
 │   └── vite-env.d.ts
 ├── tailwind.config.ts
 ├── tsconfig.app.json

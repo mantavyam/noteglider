@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
           <div className="flex items-center mb-8">
             <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center mr-4">
               <img 
-                src="/noteglider-logo.png" 
+                src="/noteglider-logo-dark.png" 
                 alt="NoteGlider" 
                 className="h-6 w-6"
               />
