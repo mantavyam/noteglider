@@ -457,6 +457,71 @@
             padding: 2px 4px;
             border-radius: 3px;
         }
+
+        /* Q&A Tables Styling */
+        .qa-section {
+            page-break-before: always;
+            width: 190mm;
+            margin: 0 auto;
+        }
+        
+        .qa-title {
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2mm;
+        }
+        
+        .qa-tables-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 5mm;
+        }
+        
+        .qa-table-column {
+            width: 60mm;
+        }
+        
+        .qa-outer-container {
+            width: 100%;               
+            border: 1px solid black;   
+            padding: 5px;
+            box-sizing: border-box;
+            text-align: center;
+            margin-bottom: 5mm;        
+        }
+        
+        .qa-table-title {
+            font-size: 10px;           
+            color: black;              
+            margin-bottom: 5px;        
+            font-weight: bold;
+        }
+        
+        .qa-inner-container {
+            width: 99%;              
+            border: 1px solid black;   
+            padding: 0px;
+            box-sizing: border-box;
+            margin: 0 auto;            
+        }
+
+        .qa-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0; 
+        }
+
+        .qa-table td {
+            font-size: 10px;            
+            padding: 12px; 
+            border-bottom: 1px solid black; 
+            text-align: left;          
+        }
+
+        .qa-table tr:last-child td {
+            border-bottom: none;       
+        }
     </style>
 </head>
 <body>
@@ -474,5 +539,38 @@
             {{ full_width_tables | safe }}
         {% endif %}
     </div>
+
+    <!-- Q&A Section -->
+    {% if qa_content %}
+    <div class="qa-section">
+        <h1 class="qa-title">Important Q&A</h1>
+        
+        <!-- Questions Table -->
+        <div class="qa-outer-container">
+            <div class="qa-table-title">Questions</div>
+            <div class="qa-inner-container">
+                <table class="qa-table">
+                    {{ qa_content.questions | safe }}
+                </table>
+            </div>
+        </div>
+        
+        <!-- Answer Tables -->
+        <div class="qa-tables-container">
+            {% for answer_table in qa_content.answers %}
+            <div class="qa-table-column">
+                <div class="qa-outer-container">
+                    <div class="qa-table-title">Answers {{ answer_table.range }}</div>
+                    <div class="qa-inner-container">
+                        <table class="qa-table">
+                            {{ answer_table.content | safe }}
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </body>
 </html>

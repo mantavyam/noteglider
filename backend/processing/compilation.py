@@ -38,15 +38,10 @@ def parse_markdown(md_content: str):
         lines = md_content.split('\n')
         current_section = None
         in_outline = False
-        
-        # Date pattern for DD-MM-YY or DD1+DD2-MM-YY
-        # date_pattern = re.compile(r'^\s*\*?\*?(\d{1,2}(\+\d{1,2})?-\d{1,2}-\d{2,4})\*?\*?\s*$')
-        # separator_pattern = re.compile(r'^\s*[:\-]+\s*$')
 
         date_pattern = re.compile(r'^\s*\*{0,2}(\d{1,2}(?:[+-]\d{1,2})?[-/]\d{1,2}[-/]\d{2,4})\*{0,2}\s*$')
         separator_pattern = re.compile(r'^\s*[-:/]+\s*$')
         
-        # Capture the first date line for the header
         for line in lines:
             stripped_line = line.lstrip('#').strip()
             if date_pattern.match(stripped_line):
@@ -151,8 +146,8 @@ def parse_markdown(md_content: str):
                 heading_text_clean = re.sub(r'\*\*(.*?)\*\*', r'\1', heading_text).strip().upper()
                 
                 if heading_level == 1:
-                    if heading_text_clean == 'CURRENT AFFAIRS':
-                        current_section = 'CURRENT AFFAIRS'
+                    if heading_text_clean == 'WEEKLY CURRENT AFFAIRS':
+                        current_section = 'WEEKLY CURRENT AFFAIRS'
                         in_outline = False
                         i += 1
                         continue
@@ -184,7 +179,7 @@ def parse_markdown(md_content: str):
                 i += 1
                 continue
             
-            elif line.startswith('|') and current_section == 'CURRENT AFFAIRS':
+            elif line.startswith('|') and current_section == 'WEEKLY CURRENT AFFAIRS':
                 table_rows = []
                 while i < len(lines) and lines[i].strip().startswith('|'):
                     row = lines[i].strip()
@@ -192,17 +187,19 @@ def parse_markdown(md_content: str):
                     if cells and not any(separator_pattern.match(cell) for cell in cells):
                         table_rows.append(cells)
                     i += 1
-                if table_rows and len(table_rows) > 1:
-                    for row in table_rows[1:]:
-                        if len(row) >= 2:
-                            parsed_data['current_affairs']['questions'].append(row[0])
-                            parsed_data['current_affairs']['answers'].append(row[1])
+                
+                if table_rows:
+                    questions, answers = parse_current_affairs_table(table_rows)
+                    parsed_data['current_affairs']['questions'].extend(questions)
+                    parsed_data['current_affairs']['answers'].extend(answers)
+                    logger.debug(f"Parsed {len(questions)} Q&A pairs from weekly current affairs table")
                 continue
             
             elif line.startswith('|') and not in_outline:
                 # Process tables in other sections
                 table_rows = []
                 headers = []
+                
                 
                 # Process header row
                 row = lines[i].strip()
@@ -327,6 +324,46 @@ def parse_markdown(md_content: str):
         logging.error(f"Error parsing markdown: {str(e)}")
         logging.error(traceback.format_exc())
         raise ValueError(f"Failed to parse markdown: {str(e)}")
+
+def parse_current_affairs_table(table_rows: List[List[str]]) -> Tuple[List[str], List[str]]:
+    """Parse 3-column current affairs table into questions and answers."""
+    questions = []
+    answers = []
+    
+    start_idx = 1 if len(table_rows) > 0 and 'N' in table_rows[0][0].upper() else 0
+    
+    for row in table_rows[start_idx:]:
+        if len(row) >= 3:
+            serial = row[0].strip()
+            question = row[1].strip()
+            answer = row[2].strip()
+            
+            questions.append(f"{serial}. {question}")
+            answers.append(f"{serial}. {answer}")
+    
+    return questions, answers
+
+def process_qa_tables(questions: List[str], answers: List[str]) -> dict:
+    """Process Q&A data into formatted tables."""
+    questions_html = [f'<tr><td>{q}</td></tr>' for q in questions]
+    
+    total_answers = len(answers)
+    if total_answers == 0:
+        return {'questions': '\n'.join(questions_html), 'answers': []}
+    
+    answers_per_table = max(1, (total_answers + 2) // 3)
+    answer_tables = []
+    for i in range(0, total_answers, answers_per_table):
+        table_answers = answers[i:i + answers_per_table]
+        table_content = [f'<tr><td>{ans}</td></tr>' for ans in table_answers]
+        range_start = i + 1
+        range_end = min(i + answers_per_table, total_answers)
+        answer_tables.append({
+            'range': f'({range_start}-{range_end})',
+            'content': '\n'.join(table_content)
+        })
+    
+    return {'questions': '\n'.join(questions_html), 'answers': answer_tables}
 
 def wrap_h1_with_separator(html):
     soup = BeautifulSoup(html, 'html.parser')
@@ -822,14 +859,26 @@ async def generate_compilation(
         logger.debug(f"Full-width tables content length: {len(full_width_tables_content)}")
 
         # Update template data to match template structure
+        qa_content = process_qa_tables(
+            parsed_data['current_affairs']['questions'],
+            parsed_data['current_affairs']['answers']
+        )
+        
         template_data = {
             'base_url': request_dir,
             'footer_html': wk_footer_html,
             'header_main_html': wk_header_main_html,
             'header_constant_html': wk_header_constant_html,
             'content': content_html,
-            'full_width_tables': full_width_tables_content
+            'full_width_tables': full_width_tables_content,
+            'qa_content': qa_content
         }
+
+        # Add debug logging for Q&A content
+        logger.debug("Q&A Content Statistics:")
+        logger.debug(f"Number of questions: {len(parsed_data['current_affairs']['questions'])}")
+        logger.debug(f"Number of answers: {len(parsed_data['current_affairs']['answers'])}")
+        logger.debug(f"Number of answer tables: {len(qa_content['answers'])}")
 
         try:
             main_template = env.get_template("compilationLayout.html")
@@ -877,6 +926,11 @@ async def generate_compilation(
             logger.error(f"Template rendering or PDF generation error: {str(template_error)}")
             logger.error(traceback.format_exc())
             raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(template_error)}")
+
+    except Exception as e:
+        logger.error(f"Error during PDF generation: {str(e)}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))
 
     except Exception as e:
         logger.error(f"Error during PDF generation: {str(e)}")
