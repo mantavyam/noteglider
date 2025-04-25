@@ -1,4 +1,3 @@
-<!--Header-Constant-->
 <style>
   .header,
   .header-content {
@@ -24,6 +23,7 @@
     white-space: nowrap;
     width: 100%;
     justify-content: center;
+    gap: 5px; /* Adds space between elements */
   }
 
   .title-row {
@@ -38,11 +38,14 @@
   }
 
   .youtube {
-    width: 25px;
-    height: 25px;
-    margin: 0 2mm;
+    width: 20px;
+    height: 20px;
     background-image: url(static/icons/youtube.svg);
     background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    display: inline-block;
+    flex-shrink: 0;
   }
 
   .link-text a {
@@ -50,7 +53,13 @@
     text-decoration: none;
     white-space: nowrap;
   }
+
+  .link-row a {
+    display: flex;
+    align-items: center;
+  }
 </style>
+
 <div class="header-content">
   <div class="header-row title-row">
     <span>IMPORTANT NEWS COVERAGE FOR ALL BANK EXAMS</span>
@@ -61,8 +70,9 @@
     </a>
 
     <span class="link-text">
-      <a href="{{ custom_url or 'https://www.youtube.com/@Studyniti/streams' }}" target="_blank"><u>[CLICK] to WATCH Today's NEWS Analysis +
-          Current Affairs</u></a>
+      <a href="{{ custom_url or 'https://www.youtube.com/@Studyniti/streams' }}" target="_blank">
+        <u>[CLICK] to WATCH Today's NEWS Analysis + Current Affairs</u>
+      </a>
     </span>
 
     <a href="{{ custom_url or 'https://www.youtube.com/@Studyniti/streams' }}" target="_blank">

@@ -1,17 +1,20 @@
 import logging
 import os
 from processing.newsletter import generate_newsletter_pdf
-from processing.compilation import generate_compilation_pdf
+from processing.compilation import generate_compilation
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from weasyprint import HTML
 from typing import Optional, List
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
 import json
+from datetime import datetime
+import mimetypes
+import magic  # pip install python-magic
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -44,6 +47,20 @@ class YouTubeEntry(BaseModel):
     url: str
     date: str
 
+def validate_markdown_file(file: UploadFile) -> bool:
+    content = file.file.read()
+    file.file.seek(0)  # Reset file pointer
+    if not content:
+        return False
+    mime = magic.Magic(mime=True)
+    mime_type = mime.from_buffer(content)
+    return mime_type.startswith('text/')
+
+def validate_zip_file(file: UploadFile) -> bool:
+    content = file.file.read(4)
+    file.file.seek(0)  # Reset file pointer
+    return content.startswith(b'PK\x03\x04')
+
 @app.post("/api/generate-pdf")
 async def generate_pdf(
     markdown_file: UploadFile = File(...),
@@ -60,44 +77,56 @@ async def generate_pdf(
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/generate-compilation")
-async def generate_compilation(
+async def generate_compilation_endpoint(
     markdown_file: UploadFile = File(...),
     images_zip: UploadFile = File(...),
-    youtube_data: str = Form(None),
+    youtube_data: Optional[str] = Form(None),
     custom_url: Optional[str] = Form(None)
 ):
     try:
-        # Parse YouTube data if provided
-        youtube_entries = []
-        if youtube_data:
-            try:
-                data = json.loads(youtube_data)
-                # Filter out entries with empty URLs
-                youtube_entries = [
-                    YouTubeEntry(url=entry['url'], date=entry['date'])
-                    for entry in data
-                    if entry.get('url') and entry.get('date')
-                ]
-            except json.JSONDecodeError:
-                logger.error("Failed to parse youtube_data JSON")
-                raise HTTPException(status_code=400, detail="Invalid YouTube data format")
+        # Validate files
+        if not markdown_file.filename.endswith('.md'):
+            raise HTTPException(
+                status_code=400,
+                detail="Markdown file must have .md extension"
+            )
 
-        result = await generate_compilation_pdf(
+        if not validate_markdown_file(markdown_file):
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid or empty Markdown file"
+            )
+
+        if not images_zip.filename.endswith('.zip'):
+            raise HTTPException(
+                status_code=400,
+                detail="Images file must have .zip extension"
+            )
+
+        if not validate_zip_file(images_zip):
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid ZIP file format"
+            )
+
+        result = await generate_compilation(
             markdown_file=markdown_file,
             images_zip=images_zip,
-            youtube_entries=youtube_entries,
             custom_url=custom_url
         )
 
         return {
             "success": True,
-            "message": "Compilation PDF generated successfully",
-            "pdf_url": f"/api/download/compilation/{result['filename']}",
+            "message": "Compilation generated successfully",
+            "pdf_url": f"/api/download/{result['filename']}",
             "filename": result['filename'],
             "size": result['size']
         }
+
+    except HTTPException as he:
+        raise he
     except Exception as e:
-        logger.error(f"Error generating compilation: {str(e)}")
+        logger.error("Error in generate_compilation_endpoint", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/download/{filename}")

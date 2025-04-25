@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PDF Layout</title>
+    <title>Newsletter Document</title>
     <style>
         @font-face {
             font-family: 'Afacad';
@@ -78,6 +78,86 @@
             font-style: normal;
         }
 
+        @page {
+            size: A4 portrait;
+            margin-top: 15mm;
+            margin-bottom: 15mm;
+            margin-left: 0;
+            margin-right: 0;
+            
+            @top-center {
+                content: element(header);
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+            }
+            
+            @bottom-center {
+                content: element(footer) !important;
+                position: fixed;
+                bottom: 0;
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+                height: 15mm;
+            }
+        }
+
+        @page :first {
+            margin-top: 25mm;
+            margin-bottom: 15mm;
+            margin-left: 0;
+            margin-right: 0;
+            
+            @top-center {
+                content: element(first-header);
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+            }
+            
+            @bottom-center {
+                content: element(footer) !important;
+                position: fixed;
+                bottom: 0;
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+                height: 15mm;
+            }
+        }
+
+        #first-header {
+            position: running(first-header);
+            width: 210mm;
+            height: 25mm;
+            margin: 0 auto;
+            display: block;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        #header {
+            position: running(header);
+            width: 210mm;
+            height: 15mm;
+            margin: 0 auto;
+            display: block;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        #footer {
+            position: running(footer);
+            width: 210mm;
+            height: 15mm;
+            margin: 0 !important;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            box-sizing: border-box;
+        }
+
         /* Base styles */
         body {
             margin: 0;
@@ -88,19 +168,6 @@
             text-align: justify;
             widows: 2;
             orphans: 2;
-        }
-        
-        /* Text formatting styles */
-        strong, b {
-            font-weight: bold;
-        }
-        
-        em, i {
-            font-style: italic;
-        }
-        
-        u {
-            text-decoration: underline;
         }
 
         /* Main content container */
@@ -327,86 +394,6 @@
             margin-bottom: 2mm;
             border-top: 1px solid #000000;
         }
-        
-        @page {
-            size: A4 portrait;
-            margin-top: 15mm;
-            margin-bottom: 15mm;
-            margin-left: 0;
-            margin-right: 0;
-            
-            @top-center {
-                content: element(header);
-                margin: 0;
-                padding: 0;
-                width: 210mm;
-            }
-            
-            @bottom-center {
-                content: element(footer) !important;
-                position: fixed;
-                bottom: 0;
-                margin: 0;
-                padding: 0;
-                width: 210mm;
-                height: 15mm;
-            }
-        }
-
-        @page :first {
-            margin-top: 25mm;
-            margin-bottom: 15mm;
-            margin-left: 0;
-            margin-right: 0;
-            
-            @top-center {
-                content: element(first-header);
-                margin: 0;
-                padding: 0;
-                width: 210mm;
-            }
-            
-            @bottom-center {
-                content: element(footer) !important;
-                position: fixed;
-                bottom: 0;
-                margin: 0;
-                padding: 0;
-                width: 210mm;
-                height: 15mm;
-            }
-        }
-
-        #first-header {
-            position: running(first-header);
-            width: 210mm;
-            height: 25mm;
-            margin: 0 auto;
-            display: block;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
-        #header {
-            position: running(header);
-            width: 210mm;
-            height: 15mm;
-            margin: 0 auto;
-            display: block;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
-        #footer {
-            position: running(footer);
-            width: 210mm;
-            height: 15mm;
-            margin: 0 !important;
-            padding: 0;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            box-sizing: border-box;
-        }
 
         /* Enhanced list and nested content styles - optimized for 3-column layout */
         .nested-content {
@@ -461,8 +448,8 @@
             break-inside: avoid;
         }
         /* Text formatting styles */
-        strong { font-weight: bold; }
-        em { font-style: italic; }
+        strong, b { font-weight: bold; }
+        em, i { font-style: italic; }
         u { text-decoration: underline; }
         del { text-decoration: line-through; }
         code {

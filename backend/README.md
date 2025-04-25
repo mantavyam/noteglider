@@ -36,6 +36,14 @@ The API will be available at http://localhost:8000
 - `GET /api/download/{filename}`: Download a generated PDF
 - `GET /api/status`: Check if the backend is running
 
-## Frontend Integration
 
-Make sure the frontend is configured to communicate with these endpoints.
+# NOTES (DELETE LATER)
+- MAKE SURE THE icons-bg and document-info are in the layout as mentioned below:
+1. Inverted Umbrella Style Column Placement where the document-info is placed at bottom attached with icons-bg
+2. icons-bg acts as stick of umbrella on which 2 icons are placed , icons-bg starts from the very top at page edge at top.
+PLACEMENT:
+-ICONS-BG
+ICON-1
+ICON-2
+-DOCUMENT-INFP
+
