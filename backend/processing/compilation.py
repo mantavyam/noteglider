@@ -325,8 +325,8 @@ def parse_markdown(md_content: str):
         logging.error(traceback.format_exc())
         raise ValueError(f"Failed to parse markdown: {str(e)}")
 
-def parse_current_affairs_table(table_rows: List[List[str]]) -> Tuple[List[str], List[str]]:
-    """Parse 3-column current affairs table into questions and answers."""
+def parse_current_affairs_table(table_rows: List[List[str]]) -> Tuple[List[Dict], List[Dict]]:
+    """Parse 3-column current affairs table into questions and answers with separate serial numbers."""
     questions = []
     answers = []
     
@@ -337,33 +337,39 @@ def parse_current_affairs_table(table_rows: List[List[str]]) -> Tuple[List[str],
             serial = row[0].strip()
             question = row[1].strip()
             answer = row[2].strip()
-            
-            questions.append(f"{serial}. {question}")
-            answers.append(f"{serial}. {answer}")
+            questions.append({'serial': serial, 'text': question})
+            answers.append({'serial': serial, 'text': answer})
     
     return questions, answers
 
-def process_qa_tables(questions: List[str], answers: List[str]) -> dict:
-    """Process Q&A data into formatted tables."""
-    questions_html = [f'<tr><td>{q}</td></tr>' for q in questions]
+def process_qa_tables(questions: List[Dict], answers: List[Dict]) -> dict:
+    """Process Q&A data into formatted two-column tables without header rows."""
+    # Generate questions table HTML with two columns, no header
+    questions_html = ''.join(
+        [f'<tr><td>{q["serial"]}</td><td>{q["text"]}</td></tr>' for q in questions]
+    )
     
     total_answers = len(answers)
     if total_answers == 0:
-        return {'questions': '\n'.join(questions_html), 'answers': []}
+        return {'questions': questions_html, 'answers': []}
     
+    # Calculate answers per table and generate three answer tables
     answers_per_table = max(1, (total_answers + 2) // 3)
     answer_tables = []
     for i in range(0, total_answers, answers_per_table):
         table_answers = answers[i:i + answers_per_table]
-        table_content = [f'<tr><td>{ans}</td></tr>' for ans in table_answers]
-        range_start = i + 1
-        range_end = min(i + answers_per_table, total_answers)
-        answer_tables.append({
-            'range': f'({range_start}-{range_end})',
-            'content': '\n'.join(table_content)
-        })
+        if table_answers:
+            first_serial = table_answers[0]['serial']
+            last_serial = table_answers[-1]['serial']
+            table_content = ''.join(
+                [f'<tr><td>{a["serial"]}</td><td>{a["text"]}</td></tr>' for a in table_answers]
+            )
+            answer_tables.append({
+                'range': f'({first_serial}-{last_serial})',
+                'content': table_content
+            })
     
-    return {'questions': '\n'.join(questions_html), 'answers': answer_tables}
+    return {'questions': questions_html, 'answers': answer_tables}
 
 def wrap_h1_with_separator(html):
     soup = BeautifulSoup(html, 'html.parser')
@@ -737,14 +743,7 @@ async def generate_compilation(
         full_width_tables_html = []
         news_item_open = False  # Track if we're inside a news-item div
         
-        # Add Question Table at the beginning
-        if parsed_data['current_affairs']['questions']:
-            question_html = ["<table><tr><th>Important Qs</th></tr>"]
-            for question in parsed_data['current_affairs']['questions']:
-                question_html.append(f"<tr><td>{question}</td></tr>")
-            question_html.append("</table>")
-            all_content_html.append("".join(question_html))
-
+        # Remove the Q&A table addition at beginning
         # Process main content
         current_section = None
         in_bullet_list = False
@@ -752,6 +751,16 @@ async def generate_compilation(
 
         news_item_open = False
         for i, item in enumerate(parsed_data['all_content']):
+            # Skip content that belongs to WEEKLY CURRENT AFFAIRS section
+            if (item['type'] == 'heading' and 
+                item['level'] == 1 and 
+                item['content'].upper() == 'WEEKLY CURRENT AFFAIRS'):
+                current_section = item['content']
+                continue
+            elif current_section == 'WEEKLY CURRENT AFFAIRS':
+                continue
+
+            # Rest of the content processing remains same
             if item['type'] == 'heading' and item['level'] == 1:
                 if news_item_open:
                     all_content_html.append('</div>')  # Close news-item if open
@@ -799,13 +808,7 @@ async def generate_compilation(
         if news_item_open:
             all_content_html.append('</div>')
 
-        # Add Answer Table at the end
-        if parsed_data['current_affairs']['answers']:
-            answer_html = ["<table><tr><th></th><th>Answers</th></tr>"]
-            for i, answer in enumerate(parsed_data['current_affairs']['answers'], start=1):
-                answer_html.append(f"<tr><td>{i}</td><td>{answer}</td></tr>")
-            answer_html.append("</table>")
-            all_content_html.append("".join(answer_html))
+        # Remove the Answer Table addition at the end
 
         content_html = "".join(all_content_html)
         logger.debug(f"Generated content HTML length: {len(content_html)}")

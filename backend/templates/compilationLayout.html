@@ -107,7 +107,7 @@
             margin-bottom: 15mm;
             margin-left: 0;
             margin-right: 0;
-            
+            width: 120mm;
             @top-center {
                 content: element(first-header);
                 margin: 0;
@@ -509,18 +509,37 @@
         .qa-table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0; 
+            border-spacing: 0;
+            border: none;    
         }
 
         .qa-table td {
             font-size: 10px;            
             padding: 12px; 
-            border-bottom: 1px solid black; 
+            border-top: none;
+            border-bottom: 1px solid black;
+            border-left: 1px solid black;
+            border-right: 1px solid black; 
             text-align: left;          
         }
 
         .qa-table tr:last-child td {
             border-bottom: none;       
+        }
+        
+        /* Added styles for two-column tables */
+        .qa-table th:first-child,
+        .qa-table td:first-child {
+            border-left: none;
+            border-right: none;
+            width: 5%;
+            text-align: center;
+        }
+
+        .qa-table th:nth-child(2),
+        .qa-table td:nth-child(2) {
+            border-right: none;
+            width: 95%;
         }
     </style>
 </head>
