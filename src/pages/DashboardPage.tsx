@@ -3,8 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Calendar, BookOpen, ArrowRight } from 'lucide-react';
+import { FileText, Calendar, BookOpen, ArrowRight, Home, Box, Download } from 'lucide-react';
 
 interface HistoryItem {
   type: 'NEWSLETTER' | 'COMPILATION' | 'MAGAZINE';
@@ -23,34 +22,61 @@ const mockHistory: HistoryItem[] = [
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // PDF type route navigation
+  // Navigation handlers
   const navigateToRoute = (route: string) => {
     navigate(route);
   };
 
   return (
-    <div className="min-h-screen w-full bg-neutral-800 text-white overflow-hidden">
-      {/* Top Navigation */}
-      <div className="border-b border-neutral-700">
-        <div className="container mx-auto px-4 py-3 flex items-center">
-          <div className="flex items-center mr-auto">
-            <span className="text-2xl font-light tracking-widest mr-2">NOTE</span>
-            <span className="text-2xl font-medium text-amber-500">GLIDER</span>
+    <div className="min-h-screen w-full bg-zinc-900 text-white overflow-hidden">
+      {/* Top Navigation Tray */}
+      <div className="border-b border-zinc-700 bg-black">
+        <div className="container mx-auto flex items-center justify-between">
+          <div className="flex space-x-1">
+            <button 
+              className="px-6 py-4 text-white bg-red-600 hover:bg-red-700 transition-colors"
+              onClick={() => navigateToRoute('/dashboard')}
+            >
+              <div className="flex items-center space-x-2">
+                <Home className="w-5 h-5" />
+                <span>HOME</span>
+              </div>
+            </button>
+            
+            <button 
+              className="px-6 py-4 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+              onClick={() => navigateToRoute('/task')}
+            >
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5" />
+                <span>TASKS</span>
+              </div>
+            </button>
+            
+            <button 
+              className="px-6 py-4 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+              onClick={() => navigateToRoute('/build')}
+            >
+              <div className="flex items-center space-x-2">
+                <Box className="w-5 h-5" />
+                <span>BUILD</span>
+              </div>
+            </button>
+            
+            <button 
+              className="px-6 py-4 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+              onClick={() => navigateToRoute('/download')}
+            >
+              <div className="flex items-center space-x-2">
+                <Download className="w-5 h-5" />
+                <span>DOWNLOAD</span>
+              </div>
+            </button>
           </div>
           
-          <div className="hidden md:flex space-x-8">
-            <button className="text-neutral-400 hover:text-white transition-colors">
-              Featured
-            </button>
-            <button className="text-neutral-400 hover:text-white transition-colors">
-              Documents
-            </button>
-            <button className="text-neutral-400 hover:text-white transition-colors">
-              Templates
-            </button>
-            <button className="text-neutral-400 hover:text-white transition-colors">
-              Profile
-            </button>
+          <div className="flex items-center pr-4">
+            <div className="h-2 w-2 rounded-full bg-red-500 mr-2 animate-pulse"></div>
+            <span className="text-xs text-zinc-400">SYSTEM ACTIVE</span>
           </div>
         </div>
       </div>
@@ -62,145 +88,123 @@ const DashboardPage: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="space-y-10"
         >
-          <div className="border-l-4 border-amber-500 pl-4">
-            <h1 className="text-3xl font-light tracking-wider">DOCUMENTS</h1>
-          </div>
-
-          <div className="space-y-8">
-            {/* PDF Types Section */}
-            <div>
-              <h2 className="text-2xl font-light mb-6 text-neutral-200">BUILD ON DEMAND DOCUMENTS</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Newsletter Card */}
-                <Card className="bg-neutral-900 border-neutral-700 hover:border-white transition-all group">
-                  <CardHeader className="bg-gradient-to-r from-amber-900/30 to-amber-700/20 border-b border-neutral-700">
-                    <div className="flex justify-between items-center">
-                      <CardTitle className="text-xl text-white">Newsletter</CardTitle>
-                      <div className="w-8 h-8 flex items-center justify-center bg-amber-800/50 rounded-full">
-                        <FileText className="h-4 w-4 text-amber-300" />
-                      </div>
-                    </div>
-                    <CardDescription className="text-neutral-400">Daily Content</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-6 pb-2 bg-neutral-900 text-neutral-300">
-                    <p className="text-sm">
-                      Transform your teaching content into professional daily newsletters with the
-                      current workflow.
-                    </p>
-                  </CardContent>
-                  <CardFooter className="bg-neutral-900 border-t border-neutral-800">
-                    <button
-                      onClick={() => navigateToRoute('/task')}
-                      className="w-full flex items-center justify-between group-hover:bg-white/10 py-2 px-3 text-white transition-all"
-                    >
-                      <span>CREATE NEWSLETTER</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </button>
-                  </CardFooter>
-                </Card>
-
-                {/* Compilation Card */}
-                <Card className="bg-neutral-900 border-neutral-700 hover:border-white transition-all group">
-                  <CardHeader className="bg-gradient-to-r from-blue-900/30 to-blue-700/20 border-b border-neutral-700">
-                    <div className="flex justify-between items-center">
-                      <CardTitle className="text-xl text-white">Compilation</CardTitle>
-                      <div className="w-8 h-8 flex items-center justify-center bg-blue-800/50 rounded-full">
-                        <Calendar className="h-4 w-4 text-blue-300" />
-                      </div>
-                    </div>
-                    <CardDescription className="text-neutral-400">Weekly Content</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-6 pb-2 bg-neutral-900 text-neutral-300">
-                    <p className="text-sm">
-                      Create comprehensive weekly compilations with a unique layout and structure adapting your Brand's Design.
-                    </p>
-                  </CardContent>
-                  <CardFooter className="bg-neutral-900 border-t border-neutral-800">
-                    <button
-                      onClick={() => navigateToRoute('/compilation')}
-                      className="w-full flex items-center justify-between group-hover:bg-white/10 py-2 px-3 text-white transition-all"
-                    >
-                      <span>CREATE COMPILATION</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </button>
-                  </CardFooter>
-                </Card>
-
-                {/* Magazine Card */}
-                <Card className="bg-neutral-900 border-neutral-700 hover:border-white transition-all group">
-                  <CardHeader className="bg-gradient-to-r from-purple-900/30 to-purple-700/20 border-b border-neutral-700">
-                    <div className="flex justify-between items-center">
-                      <CardTitle className="text-xl text-white">Magazine</CardTitle>
-                      <div className="w-8 h-8 flex items-center justify-center bg-purple-800/50 rounded-full">
-                        <BookOpen className="h-4 w-4 text-purple-300" />
-                      </div>
-                    </div>
-                    <CardDescription className="text-neutral-400">Monthly Content</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-6 pb-2 bg-neutral-900 text-neutral-300">
-                    <p className="text-sm">
-                      Build comprehensive monthly magazines with multiple specialized layouts for different sections.
-                    </p>
-                  </CardContent>
-                  <CardFooter className="bg-neutral-900 border-t border-neutral-800">
-                    <button
-                      onClick={() => navigateToRoute('/magazine')}
-                      className="w-full flex items-center justify-between group-hover:bg-white/10 py-2 px-3 text-white transition-all"
-                    >
-                      <span>CREATE MAGAZINE</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </button>
-                  </CardFooter>
-                </Card>
+          {/* Document Types Grid */}
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <div className="w-1 h-6 bg-red-600 mr-3"></div>
+              <h2 className="text-2xl font-light tracking-wider">BUILD ON DEMAND DOCUMENTS</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Newsletter Card */}
+              <div 
+                className="bg-zinc-800 border border-zinc-700 hover:border-red-600 cursor-pointer overflow-hidden group"
+                onClick={() => navigateToRoute('/task')}
+              >
+                <div className="h-48 bg-gradient-to-b from-zinc-700 to-zinc-800 relative">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <FileText className="w-16 h-16 text-zinc-500 group-hover:text-red-500 transition-colors" />
+                  </div>
+                </div>
+                <div className="p-4 flex items-center justify-between border-t border-zinc-700">
+                  <div>
+                    <h3 className="text-lg font-medium">Newsletter</h3>
+                    <p className="text-xs text-zinc-400">Daily Content</p>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-red-500 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+              
+              {/* Compilation Card */}
+              <div 
+                className="bg-zinc-800 border border-zinc-700 hover:border-red-600 cursor-pointer overflow-hidden group"
+                onClick={() => navigateToRoute('/compilation')}
+              >
+                <div className="h-48 bg-gradient-to-b from-zinc-700 to-zinc-800 relative">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Calendar className="w-16 h-16 text-zinc-500 group-hover:text-red-500 transition-colors" />
+                  </div>
+                </div>
+                <div className="p-4 flex items-center justify-between border-t border-zinc-700">
+                  <div>
+                    <h3 className="text-lg font-medium">Compilation</h3>
+                    <p className="text-xs text-zinc-400">Weekly Content</p>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-red-500 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+              
+              {/* Magazine Card */}
+              <div 
+                className="bg-zinc-800 border border-zinc-700 hover:border-red-600 cursor-pointer overflow-hidden group"
+                onClick={() => navigateToRoute('/magazine')}
+              >
+                <div className="h-48 bg-gradient-to-b from-zinc-700 to-zinc-800 relative">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <BookOpen className="w-16 h-16 text-zinc-500 group-hover:text-red-500 transition-colors" />
+                  </div>
+                </div>
+                <div className="p-4 flex items-center justify-between border-t border-zinc-700">
+                  <div>
+                    <h3 className="text-lg font-medium">Magazine</h3>
+                    <p className="text-xs text-zinc-400">Monthly Content</p>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-red-500 group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* History Section */}
-            <div>
-              <h2 className="text-2xl font-light mb-6 text-neutral-200">HISTORY</h2>
-              <Card className="bg-neutral-900 border-neutral-700">
-                <CardHeader className="border-b border-neutral-800">
-                  <CardTitle className="text-white text-lg font-light">Generated PDF Documents</CardTitle>
-                  <CardDescription className="text-neutral-400">View your recently generated files</CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="rounded-none">
-                    <Table className="text-neutral-300">
-                      <TableHeader>
-                        <TableRow className="border-neutral-800 hover:bg-transparent">
-                          <TableHead className="text-neutral-300 font-light">TYPE</TableHead>
-                          <TableHead className="text-neutral-300 font-light">NAME</TableHead>
-                          <TableHead className="text-neutral-300 font-light">SIZE</TableHead>
-                          <TableHead className="text-neutral-300 font-light">PAGES</TableHead>
-                          <TableHead className="text-neutral-300 font-light">ACTIONS</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {mockHistory.map((item, index) => (
-                          <TableRow key={index} className="border-neutral-800 hover:bg-neutral-800/50">
-                            <TableCell className="font-medium">
-                              <span
-                                className={`px-2 py-1 text-xs font-medium
-                                  ${item.type === 'NEWSLETTER' ? 'text-amber-300' :
-                                    item.type === 'COMPILATION' ? 'text-blue-300' :
-                                      'text-purple-300'}`}
-                              >
-                                {item.type}
-                              </span>
-                            </TableCell>
-                            <TableCell>{item.name}</TableCell>
-                            <TableCell>{item.size}</TableCell>
-                            <TableCell>{item.pages}</TableCell>
-                            <TableCell>
-                              <button className="text-neutral-400 hover:text-white transition-colors text-sm">DOWNLOAD</button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
+          {/* History Section */}
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <div className="w-1 h-6 bg-red-600 mr-3"></div>
+              <h2 className="text-2xl font-light tracking-wider">HISTORY</h2>
+            </div>
+            
+            <div className="bg-zinc-800 border border-zinc-700">
+              <div className="border-b border-zinc-700 p-4">
+                <h3 className="text-lg font-medium">Generated PDF Documents</h3>
+                <p className="text-xs text-zinc-400">View your recently generated files</p>
+              </div>
+              <div className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-zinc-700 hover:bg-transparent">
+                      <TableHead className="text-zinc-400">TYPE</TableHead>
+                      <TableHead className="text-zinc-400">NAME</TableHead>
+                      <TableHead className="text-zinc-400">SIZE</TableHead>
+                      <TableHead className="text-zinc-400">PAGES</TableHead>
+                      <TableHead className="text-zinc-400">ACTIONS</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {mockHistory.map((item, index) => (
+                      <TableRow key={index} className="border-zinc-700 hover:bg-zinc-700">
+                        <TableCell className="font-medium">
+                          <span
+                            className={`px-2 py-1 text-xs font-medium
+                              ${item.type === 'NEWSLETTER' ? 'text-amber-300' :
+                                item.type === 'COMPILATION' ? 'text-blue-300' :
+                                  'text-purple-300'}`}
+                          >
+                            {item.type}
+                          </span>
+                        </TableCell>
+                        <TableCell>{item.name}</TableCell>
+                        <TableCell>{item.size}</TableCell>
+                        <TableCell>{item.pages}</TableCell>
+                        <TableCell>
+                          <button className="text-red-500 hover:text-red-400 transition-colors text-sm flex items-center">
+                            <span className="mr-1">DOWNLOAD</span>
+                            <Download className="h-3 w-3" />
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
           </div>
         </motion.div>

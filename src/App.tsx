@@ -19,26 +19,24 @@ const queryClient = new QueryClient();
 
 const App = () => {
   return (
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <TooltipProvider>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/task" element={<TaskPage />} />
-              <Route path="/build" element={<BuildPage />} />
-              <Route path="/download" element={<DownloadPage />} />
-              <Route path="/compilation" element={<CompilationPage />} />
-              <Route path="/magazine" element={<MagazinePage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <Toaster />
-            <Sonner />
-          </TooltipProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <TooltipProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/task" element={<TaskPage />} />
+            <Route path="/build" element={<BuildPage />} />
+            <Route path="/download" element={<DownloadPage />} />
+            <Route path="/compilation" element={<CompilationPage />} />
+            <Route path="/magazine" element={<MagazinePage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 
