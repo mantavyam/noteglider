@@ -54,9 +54,48 @@ const DocumentsPage: React.FC = () => {
       setClickedDocument(null);
     }
   };
+  
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'ArrowLeft':
+          setSelectedDocType(prev => (prev > 0 ? prev - 1 : documents.length - 1));
+          setClickedDocument(null);
+          break;
+        case 'ArrowRight':
+          setSelectedDocType(prev => (prev < documents.length - 1 ? prev + 1 : 0));
+          setClickedDocument(null);
+          break;
+        case 'Enter':
+          // Navigate to the selected document's path
+          navigate(documents[selectedDocType].path);
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedDocType, navigate, documents]);
 
   return (
-    <div className="min-h-screen w-full bg-zinc-900 text-white overflow-hidden">
+    <div className="min-h-screen w-full bg-black text-white overflow-hidden">
+      {/* Background overlay with opacity */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-zinc-900 to-black opacity-90"></div>
+      
+      {/* Grid pattern overlay */}
+      <div 
+        className="absolute inset-0 z-0 opacity-10"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
+          backgroundSize: '20px 20px'
+        }}
+      ></div>
+      
       {/* Full screen background image for selected document */}
       <motion.div 
         key={activeDocument.image}
@@ -82,19 +121,21 @@ const DocumentsPage: React.FC = () => {
         <div className="flex-1"></div>
         
         {/* Bottom document selection - moved up to avoid overlap with stats bar */}
-        <div className="flex items-stretch mb-16">
+        <div className="flex items-stretch mb-24">
           {documents.map((doc, index) => {
             const isActive = selectedDocType === index;
             
             return (
               <div 
                 key={index}
-                className={`flex-1 cursor-pointer transition-all ${
+                className={`flex-1 cursor-pointer ${
                   isActive ? 'border-t-4 border-red-600' : ''
                 } ${index > 0 ? 'ml-px' : ''}`}
                 onClick={() => handleDocumentSelect(index)}
+                tabIndex={0}
+                style={{ height: 'auto' }} // Ensure consistent height
               >
-                <div className={`px-4 py-6 ${
+                <div className={`px-4 py-6 h-full ${
                   isActive ? 'bg-red-600' : 'bg-white'
                 }`}>
                   <div className="text-xs font-bold mb-1 tracking-wider" style={{ 

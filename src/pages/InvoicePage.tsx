@@ -57,11 +57,23 @@ const InvoicePage: React.FC = () => {
   const isFormValid = date && selectedClient && selectedBankAccount;
 
   return (
-    <div className="min-h-screen w-full bg-zinc-900 text-white overflow-hidden">
+    <div className="min-h-screen w-full bg-black text-white overflow-hidden">
+      {/* Background overlay with opacity */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-zinc-900 to-black opacity-90"></div>
+      
+      {/* Grid pattern overlay */}
+      <div 
+        className="absolute inset-0 z-0 opacity-10"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
+          backgroundSize: '20px 20px'
+        }}
+      ></div>
+      
       {/* Navigation Tray */}
       <NavigationTray />
       
-      <div className="container mx-auto px-4 py-10">
+      <div className="container mx-auto px-4 py-10 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

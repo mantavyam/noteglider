@@ -7,10 +7,12 @@ const Index = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [isBlinking, setIsBlinking] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
+      setIsBlinking(true);
     }, 2500);
 
     // Simulate loading progress
@@ -21,11 +23,21 @@ const Index = () => {
       });
     }, 200);
 
+    // Add keyboard event listener
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && !loading) {
+        navigate('/dashboard');
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+
     return () => {
       clearTimeout(timer);
       clearInterval(interval);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [loading, navigate]);
 
   return (
     <div className="h-screen w-full bg-black flex flex-col items-center justify-center overflow-hidden relative">
@@ -52,13 +64,12 @@ const Index = () => {
             <h1 className="text-5xl md:text-7xl font-light tracking-[0.5em] text-white">
               NOTESGLIDER
             </h1>
-            <div className="relative h-1 bg-zinc-800 w-full mt-4">
+            <div className="relative h-1 bg-zinc-800 w-full mt-4" style={{ maxWidth: '100%' }}>
               <motion.div 
                 className="h-1 bg-red-600 absolute top-0 left-0"
                 initial={{ width: "0%" }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.2 }}
-                style={{ maxWidth: '100%' }} // Ensure progress bar doesn't exceed container width
               />
             </div>
           </div>
@@ -76,8 +87,8 @@ const Index = () => {
             className={`text-white text-xl tracking-widest ${
               loading 
                 ? 'bg-zinc-800 border-2 border-zinc-700 cursor-not-allowed' 
-                : 'hover:bg-red-600 border-2 border-red-600'
-            } px-8 py-3 transition-all duration-300`}
+                : 'hover:bg-red-600 border-2 border-red-600 animate-pulse'
+            } px-8 py-3 transition-all duration-300 ${isBlinking ? 'animate-[pulse_1.5s_infinite]' : ''}`}
           >
             {loading ? 'INITIALIZING...' : 'ENTER SYSTEM'}
           </button>

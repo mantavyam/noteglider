@@ -44,7 +44,7 @@ const NavigationTray = () => {
   return (
     <div className="mt-16 relative">
       <div className="flex w-full">
-        {navItems.map((item) => {
+        {navItems.map((item, index) => {
           const isActive = location.pathname === item.path;
           const ItemIcon = item.icon;
           
@@ -55,7 +55,7 @@ const NavigationTray = () => {
                 isActive 
                   ? 'bg-red-600 text-white' 
                   : 'bg-white text-black hover:bg-zinc-200'
-              }`}
+              } ${index > 0 ? 'ml-px' : ''}`}
               onClick={() => navigateToRoute(item.path)}
             >
               <ItemIcon className="w-5 h-5" />
@@ -66,7 +66,7 @@ const NavigationTray = () => {
       </div>
       
       {/* Bottom Stats Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-black bg-opacity-70 px-6 py-3 flex justify-between items-center z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-zinc-800 px-6 py-3 flex justify-between items-center z-50 border-t border-zinc-700">
         <div 
           className="text-white font-bold tracking-wider cursor-pointer"
           onClick={() => navigate('/')}

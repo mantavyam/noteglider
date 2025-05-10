@@ -19,7 +19,6 @@ const DashboardPage: React.FC = () => {
       icon: FileText, 
       path: '/documents', 
       image: 'https://images.pexels.com/photos/768474/pexels-photo-768474.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      className: 'col-span-1 row-span-1'
     },
     { 
       id: 2, 
@@ -28,7 +27,6 @@ const DashboardPage: React.FC = () => {
       icon: History, 
       path: '/history', 
       image: 'https://images.pexels.com/photos/2104152/pexels-photo-2104152.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      className: 'col-span-1 row-span-1'
     },
     { 
       id: 3, 
@@ -37,7 +35,6 @@ const DashboardPage: React.FC = () => {
       icon: Briefcase, 
       path: '/portfolio', 
       image: 'https://images.pexels.com/photos/210012/pexels-photo-210012.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      className: 'col-span-1 row-span-2'
     },
     { 
       id: 4, 
@@ -46,7 +43,6 @@ const DashboardPage: React.FC = () => {
       icon: Receipt, 
       path: '/invoices', 
       image: 'https://images.pexels.com/photos/2398220/pexels-photo-2398220.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      className: 'col-span-1 row-span-1'
     },
     { 
       id: 5, 
@@ -55,7 +51,6 @@ const DashboardPage: React.FC = () => {
       icon: Settings, 
       path: '/settings', 
       image: 'https://images.pexels.com/photos/2132180/pexels-photo-2132180.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      className: 'col-span-1 row-span-1'
     },
   ];
 
@@ -67,6 +62,55 @@ const DashboardPage: React.FC = () => {
   };
 
   const activeItem = gridItems.find(item => item.id === (hoveredItem || selectedItem));
+  
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'ArrowLeft':
+          if (selectedItem > 1 && selectedItem !== 3) {
+            setSelectedItem(prev => prev - 1);
+          } else if (selectedItem === 3) {
+            setSelectedItem(1);
+          } else if (selectedItem === 4) {
+            setSelectedItem(3);
+          }
+          break;
+        case 'ArrowRight':
+          if (selectedItem < 5 && selectedItem !== 3) {
+            setSelectedItem(prev => prev + 1);
+          } else if (selectedItem === 3) {
+            setSelectedItem(4);
+          } else if (selectedItem === 2) {
+            setSelectedItem(3);
+          }
+          break;
+        case 'ArrowUp':
+          if (selectedItem === 2) setSelectedItem(1);
+          if (selectedItem === 5) setSelectedItem(4);
+          break;
+        case 'ArrowDown':
+          if (selectedItem === 1) setSelectedItem(2);
+          if (selectedItem === 4) setSelectedItem(5);
+          break;
+        case 'Enter':
+          if (selectedItem) {
+            const item = gridItems.find(item => item.id === selectedItem);
+            if (item) {
+              navigate(item.path);
+            }
+          }
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedItem, navigate]);
 
   return (
     <div className="min-h-screen w-full bg-black text-white overflow-hidden flex flex-col">
@@ -87,27 +131,25 @@ const DashboardPage: React.FC = () => {
         <NavigationTray />
       </div>
       
-      <div className="flex-1 flex flex-col justify-between py-10 relative z-10">
+      <div className="flex-1 flex flex-col justify-center py-10 relative z-10">
         {/* Grid Layout */}
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-3 gap-6">
-            {/* Column 1 */}
-            <div className="flex flex-col space-y-6">
-              {/* Documents - Column 1 Top */}
-              <div 
-                className="relative overflow-hidden cursor-pointer"
-                onMouseEnter={() => setHoveredItem(1)}
-                onMouseLeave={() => setHoveredItem(null)}
-                onClick={() => handleNavigate('/documents', 1)}
-              >
-                <div className="aspect-w-16 aspect-h-9">
-                  <img 
-                    src={gridItems[0].image} 
-                    alt={gridItems[0].title} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-                </div>
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="grid grid-cols-5 gap-4 h-[500px]">
+            {/* Column 1 Top - Documents */}
+            <div 
+              className="col-span-2 row-span-1 relative overflow-hidden cursor-pointer"
+              onMouseEnter={() => setHoveredItem(1)}
+              onMouseLeave={() => setHoveredItem(null)}
+              onClick={() => handleNavigate('/documents', 1)}
+              tabIndex={0}
+            >
+              <div className="h-full">
+                <img 
+                  src={gridItems[0].image} 
+                  alt={gridItems[0].title} 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                 
                 <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
                   selectedItem === 1 || hoveredItem === 1 ? 'bg-red-600' : 'bg-white'
@@ -131,22 +173,23 @@ const DashboardPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
-              {/* History - Column 1 Bottom */}
-              <div 
-                className="relative overflow-hidden cursor-pointer"
-                onMouseEnter={() => setHoveredItem(2)}
-                onMouseLeave={() => setHoveredItem(null)}
-                onClick={() => handleNavigate('/history', 2)}
-              >
-                <div className="aspect-w-16 aspect-h-9">
-                  <img 
-                    src={gridItems[1].image} 
-                    alt={gridItems[1].title} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-                </div>
+            </div>
+            
+            {/* Column 1 Bottom - History */}
+            <div 
+              className="col-span-2 row-span-1 relative overflow-hidden cursor-pointer"
+              onMouseEnter={() => setHoveredItem(2)}
+              onMouseLeave={() => setHoveredItem(null)}
+              onClick={() => handleNavigate('/history', 2)}
+              tabIndex={0}
+            >
+              <div className="h-full">
+                <img 
+                  src={gridItems[1].image} 
+                  alt={gridItems[1].title} 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                 
                 <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
                   selectedItem === 2 || hoveredItem === 2 ? 'bg-red-600' : 'bg-white'
@@ -174,10 +217,11 @@ const DashboardPage: React.FC = () => {
             
             {/* Column 2 - Portfolio (full column) */}
             <div 
-              className="relative overflow-hidden cursor-pointer row-span-2"
+              className="col-span-1 row-span-2 relative overflow-hidden cursor-pointer"
               onMouseEnter={() => setHoveredItem(3)}
               onMouseLeave={() => setHoveredItem(null)}
               onClick={() => handleNavigate('/portfolio', 3)}
+              tabIndex={0}
             >
               <div className="h-full">
                 <img 
@@ -203,7 +247,7 @@ const DashboardPage: React.FC = () => {
                       <p className={`text-xs ${
                         selectedItem === 3 || hoveredItem === 3 ? 'text-white/80' : 'text-black/70'
                       }`}>
-                        Service offerings and samples
+                        Service offerings
                       </p>
                     </div>
                   </div>
@@ -211,23 +255,21 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
             
-            {/* Column 3 */}
-            <div className="flex flex-col space-y-6">
-              {/* Invoices - Column 3 Top */}
-              <div 
-                className="relative overflow-hidden cursor-pointer"
-                onMouseEnter={() => setHoveredItem(4)}
-                onMouseLeave={() => setHoveredItem(null)}
-                onClick={() => handleNavigate('/invoices', 4)}
-              >
-                <div className="aspect-w-16 aspect-h-9">
-                  <img 
-                    src={gridItems[3].image} 
-                    alt={gridItems[3].title} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-                </div>
+            {/* Column 3 Top - Invoices */}
+            <div 
+              className="col-span-2 row-span-1 relative overflow-hidden cursor-pointer"
+              onMouseEnter={() => setHoveredItem(4)}
+              onMouseLeave={() => setHoveredItem(null)}
+              onClick={() => handleNavigate('/invoices', 4)}
+              tabIndex={0}
+            >
+              <div className="h-full">
+                <img 
+                  src={gridItems[3].image} 
+                  alt={gridItems[3].title} 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                 
                 <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
                   selectedItem === 4 || hoveredItem === 4 ? 'bg-red-600' : 'bg-white'
@@ -251,22 +293,23 @@ const DashboardPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
-              {/* Settings - Column 3 Bottom */}
-              <div 
-                className="relative overflow-hidden cursor-pointer"
-                onMouseEnter={() => setHoveredItem(5)}
-                onMouseLeave={() => setHoveredItem(null)}
-                onClick={() => handleNavigate('/settings', 5)}
-              >
-                <div className="aspect-w-16 aspect-h-9">
-                  <img 
-                    src={gridItems[4].image} 
-                    alt={gridItems[4].title} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-                </div>
+            </div>
+            
+            {/* Column 3 Bottom - Settings */}
+            <div 
+              className="col-span-2 row-span-1 relative overflow-hidden cursor-pointer"
+              onMouseEnter={() => setHoveredItem(5)}
+              onMouseLeave={() => setHoveredItem(null)}
+              onClick={() => handleNavigate('/settings', 5)}
+              tabIndex={0}
+            >
+              <div className="h-full">
+                <img 
+                  src={gridItems[4].image} 
+                  alt={gridItems[4].title} 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                 
                 <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
                   selectedItem === 5 || hoveredItem === 5 ? 'bg-red-600' : 'bg-white'
