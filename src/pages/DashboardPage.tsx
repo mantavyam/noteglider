@@ -18,7 +18,7 @@ const DashboardPage: React.FC = () => {
       description: 'Manage document workflows', 
       icon: FileText, 
       path: '/documents', 
-      image: 'https://source.unsplash.com/photo-1523712999610-f77fbcfc3843',
+      image: 'https://images.pexels.com/photos/768474/pexels-photo-768474.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
       className: 'col-span-1 row-span-1'
     },
     { 
@@ -27,7 +27,7 @@ const DashboardPage: React.FC = () => {
       description: 'View generated documents', 
       icon: History, 
       path: '/history', 
-      image: 'https://source.unsplash.com/photo-1500673922987-e212871fec22',
+      image: 'https://images.pexels.com/photos/2104152/pexels-photo-2104152.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
       className: 'col-span-1 row-span-1'
     },
     { 
@@ -36,7 +36,7 @@ const DashboardPage: React.FC = () => {
       description: 'Service offerings and samples', 
       icon: Briefcase, 
       path: '/portfolio', 
-      image: 'https://source.unsplash.com/photo-1501854140801-50d01698950b',
+      image: 'https://images.pexels.com/photos/210012/pexels-photo-210012.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
       className: 'col-span-2 row-span-2'
     },
     { 
@@ -45,7 +45,7 @@ const DashboardPage: React.FC = () => {
       description: 'Create and manage invoices', 
       icon: Receipt, 
       path: '/invoices', 
-      image: 'https://source.unsplash.com/photo-1482881497185-d4a9ddbe4151',
+      image: 'https://images.pexels.com/photos/2398220/pexels-photo-2398220.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
       className: 'col-span-1 row-span-1'
     },
     { 
@@ -54,7 +54,7 @@ const DashboardPage: React.FC = () => {
       description: 'Configure application', 
       icon: Settings, 
       path: '/settings', 
-      image: 'https://source.unsplash.com/photo-1458668383970-8ddd3927deed',
+      image: 'https://images.pexels.com/photos/2132180/pexels-photo-2132180.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
       className: 'col-span-1 row-span-1'
     },
   ];

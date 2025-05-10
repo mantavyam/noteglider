@@ -50,7 +50,7 @@ const Index = () => {
         >
           <div className="inline-block px-12 py-6">
             <h1 className="text-5xl md:text-7xl font-light tracking-[0.5em] text-white">
-              NOTEGLIDER
+              NOTESGLIDER
             </h1>
             <div className="relative h-1 bg-zinc-800 w-full mt-4">
               <motion.div 

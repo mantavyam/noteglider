@@ -12,26 +12,26 @@ const DocumentsPage: React.FC = () => {
     { 
       id: 0,
       title: 'NEWSLETTER', 
-      subTitle: 'NEW ZEALAND',
+      subTitle: 'Daily Notes',
       path: '/task',
-      image: 'https://source.unsplash.com/photo-1526374965328-7f61d4dc18c5',
-      location: "HAWKE'S BAY"
+      image: 'https://images.pexels.com/photos/2169857/pexels-photo-2169857.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      location: "NEWSLETTER"
     },
     { 
       id: 1,
       title: 'COMPILATION', 
-      subTitle: 'USA',
+      subTitle: 'Weekly Compilation',
       path: '/compilation',
-      image: 'https://source.unsplash.com/photo-1531297484001-80022131f5a1',
-      location: 'MIAMI'
+      image: 'https://images.pexels.com/photos/1687845/pexels-photo-1687845.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      location: 'COMPILATION'
     },
     { 
       id: 2,
       title: 'MAGAZINE', 
-      subTitle: 'COLOMBIA',
+      subTitle: 'Monthly Outlook',
       path: '/magazine',
-      image: 'https://source.unsplash.com/photo-1470813740244-df37b8c1edcb',
-      location: 'SANTA FORTUNA'
+      image: 'https://images.pexels.com/photos/2131856/pexels-photo-2131856.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      location: 'MAGAZINE'
     }
   ];
 
@@ -99,7 +99,7 @@ const DocumentsPage: React.FC = () => {
                   </h3>
                 </div>
                 <div 
-                  className="bg-red-600 h-10 flex items-center justify-center cursor-pointer"
+                  className="bg-red-600 flex items-center justify-end cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDocumentNavigate(doc.path);
