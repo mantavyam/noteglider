@@ -3,26 +3,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import NavigationTray from '../components/NavigationTray';
 import { useNavigate } from 'react-router-dom';
-import { checkBackendStatus } from '@/services/api';
 
 const DocumentsPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedDocType, setSelectedDocType] = useState(0);
-  const [clickTime, setClickTime] = useState<number | null>(null);
-  const [backendConnected, setBackendConnected] = useState(true);
-
-  React.useEffect(() => {
-    const checkBackend = async () => {
-      try {
-        const status = await checkBackendStatus();
-        setBackendConnected(status.status === 'online');
-      } catch (error) {
-        setBackendConnected(false);
-      }
-    };
-
-    checkBackend();
-  }, []);
 
   const documents = [
     { 
@@ -54,16 +38,7 @@ const DocumentsPage: React.FC = () => {
   const activeDocument = documents[selectedDocType];
 
   const handleDocumentSelect = (id: number) => {
-    const now = Date.now();
-    
-    if (selectedDocType === id && clickTime && now - clickTime < 300) {
-      // Double click - navigate to the path
-      handleDocumentNavigate(documents[id].path);
-    } else {
-      // Single click or first click - select the document
-      setSelectedDocType(id);
-      setClickTime(now);
-    }
+    setSelectedDocType(id);
   };
 
   const handleDocumentNavigate = (path: string) => {
@@ -71,7 +46,7 @@ const DocumentsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black text-white overflow-hidden">
+    <div className="min-h-screen w-full bg-zinc-900 text-white overflow-hidden">
       {/* Full screen background image for selected document */}
       <motion.div 
         key={activeDocument.image}
@@ -85,24 +60,13 @@ const DocumentsPage: React.FC = () => {
           alt={activeDocument.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
       </motion.div>
-      
-      {/* Grid pattern overlay */}
-      <div 
-        className="fixed inset-0 z-0 opacity-10 pointer-events-none"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
-          backgroundSize: '20px 20px'
-        }}
-      ></div>
       
       {/* Content with proper z-index */}
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Navigation Tray */}
-        <div className="mt-10">
-          <NavigationTray />
-        </div>
+        <NavigationTray />
         
         {/* Flex spacer */}
         <div className="flex-1"></div>
@@ -134,26 +98,22 @@ const DocumentsPage: React.FC = () => {
                     {doc.location}
                   </h3>
                 </div>
+                <div 
+                  className="bg-red-600 flex items-center justify-end cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDocumentNavigate(doc.path);
+                  }}
+                  style={{ 
+                    opacity: isActive ? 1 : 0,
+                    pointerEvents: isActive ? 'auto' : 'none',
+                  }}
+                >
+                  <span className="text-white font-semibold">START</span>
+                </div>
               </div>
             );
           })}
-        </div>
-      </div>
-      
-      {/* Bottom Stats Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-10 border-t border-zinc-800 py-3 px-6 flex justify-between items-center">
-        <div 
-          onClick={() => navigate('/')} 
-          className="text-lg font-bold tracking-wider cursor-pointer hover:text-red-500 transition-colors"
-        >
-          NOTESGLIDER
-        </div>
-        
-        <div className="flex items-center">
-          <div className={`h-2 w-2 rounded-full ${backendConnected ? 'bg-green-500' : 'bg-red-500'} mr-2 animate-pulse`}></div>
-          <span className="text-xs text-zinc-400">
-            {backendConnected ? 'SYSTEM ACTIVE' : 'SYSTEM INACTIVE'}
-          </span>
         </div>
       </div>
     </div>
