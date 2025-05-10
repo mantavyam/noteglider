@@ -4,13 +4,7 @@ import { motion } from 'framer-motion';
 import NavigationTray from '../components/NavigationTray';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
@@ -32,14 +26,14 @@ interface BankAccount {
 }
 
 const mockClients: Client[] = [
-  { id: '1', name: 'John Smith', company: 'Smith Enterprises', email: 'john@smith.com' },
-  { id: '2', name: 'Sarah Johnson', company: 'Johnson Industries', email: 'sarah@johnson.com' },
-  { id: '3', name: 'Michael Brown', company: 'Brown Solutions', email: 'michael@brown.com' },
+  { id: '1', name: 'Kapil K', company: 'Learning Niti', email: 'learningnit@gmail.com' },
+  { id: '2', name: 'Kush P', company: 'Yes Officers', email: 'pandey.22k@gmail.com' },
+  { id: '3', name: 'Shivam S', company: 'Mantavyam Studios', email: 'studios@mantavyam.com' },
 ];
 
 const mockBankAccounts: BankAccount[] = [
-  { id: '1', name: 'Main Business Account', accountNumber: '****3456', bankName: 'First National Bank' },
-  { id: '2', name: 'Secondary Account', accountNumber: '****7890', bankName: 'Global Banking Group' },
+  { id: '1', name: 'Main Business Account', accountNumber: '****XXXX', bankName: 'HDFC Bank' },
+  { id: '2', name: 'Secondary Account', accountNumber: '****XXXX', bankName: 'Punjab National Bank' },
 ];
 
 const InvoicePage: React.FC = () => {

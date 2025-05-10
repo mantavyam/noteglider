@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Highlights</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      background-color: white;
+      color: white;
+      font-family: 'Noto Serif Display', serif;
+      font-style: italic;
+      font-stretch: extra-condensed;
+      margin: 0;
+    }
+
+    .highlight-container {
+      background-color: #f6f1ec;
+      width: 70mm;
+      min-height: 100mm;
+      height: auto;
+      border-radius: 22px;
+      padding: 1mm;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 12pt;
+      text-align: center;
+      color: black;
+      margin-bottom: 0mm;
+      line-height: 1;
+    }
+
+    li {
+      font-style: normal;
+      align-items: center;
+      display: flex;
+      font-family: 'Afacad', serif;
+      font-size: 10pt;
+      text-align: justify;
+      padding-right: 8mm;
+      line-height: 1.2;
+      color: black;
+    }
+    
+    ol {
+        width: 68mm;
+    }
+    
+    .line {
+      flex: 1;
+      margin: 0 4mm;
+      border-bottom: 1px dashed #555;
+    }
+
+    .pg-numbering {
+      font-weight: bold;
+      font-size: 10pt;
+      font-family: 'Afacad', serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="highlight-container">
+    <h1>Index</h1>
+    <ol>
+      {% for text, page in index_items %}
+      <li><span>{{ text }}</span><span class="line"></span><span class="pg-numbering">{{ page }}</span></li>
+      {% endfor %}
+    </ol>
+  </div>
+</body>
+</html>

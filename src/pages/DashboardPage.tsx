@@ -133,8 +133,8 @@ const DashboardPage: React.FC = () => {
       
       <div className="flex-1 flex flex-col justify-center py-10 relative z-10">
         {/* Grid Layout */}
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="grid grid-cols-5 gap-4 h-[500px]">
+        <div className="container mx-auto px-6 mt-auto mb-20">
+          <div className="grid grid-cols-5 gap-1 h-[500px]">
             {/* Column 1 Top - Documents */}
             <div 
               className="col-span-2 row-span-1 relative overflow-hidden cursor-pointer"
@@ -217,7 +217,7 @@ const DashboardPage: React.FC = () => {
             
             {/* Column 2 - Portfolio (full column) */}
             <div 
-              className="col-span-1 row-span-2 relative overflow-hidden cursor-pointer"
+              className="col-span-1 row-span-2 relative overflow-hidden cursor-pointer w-64 md:w-80 lg:w-96"
               onMouseEnter={() => setHoveredItem(3)}
               onMouseLeave={() => setHoveredItem(null)}
               onClick={() => handleNavigate('/portfolio', 3)}

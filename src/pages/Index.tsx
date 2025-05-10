@@ -64,7 +64,7 @@ const Index = () => {
             <h1 className="text-5xl md:text-7xl font-light tracking-[0.5em] text-white">
               NOTESGLIDER
             </h1>
-            <div className="relative h-1 bg-zinc-800 w-full mt-4" style={{ maxWidth: '100%' }}>
+            <div className="relative h-1 bg-zinc-800 w-full mt-4" style={{ maxWidth: '95.5%' }}>
               <motion.div 
                 className="h-1 bg-red-600 absolute top-0 left-0"
                 initial={{ width: "0%" }}
@@ -88,7 +88,7 @@ const Index = () => {
               loading 
                 ? 'bg-zinc-800 border-2 border-zinc-700 cursor-not-allowed' 
                 : 'hover:bg-red-600 border-2 border-red-600 animate-pulse'
-            } px-8 py-3 transition-all duration-300 ${isBlinking ? 'animate-[pulse_1.5s_infinite]' : ''}`}
+            } px-8 py-3 transition-all duration-725 ${isBlinking ? 'animate-[pulse_5s_infinite]' : ''}`}
           >
             {loading ? 'INITIALIZING...' : 'ENTER SYSTEM'}
           </button>

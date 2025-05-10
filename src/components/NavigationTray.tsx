@@ -68,10 +68,10 @@ const NavigationTray = () => {
       {/* Bottom Stats Bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-zinc-800 px-6 py-3 flex justify-between items-center z-50 border-t border-zinc-700">
         <div 
-          className="text-white font-bold tracking-wider cursor-pointer"
+          className="text-white font-light tracking-wider cursor-pointer"
           onClick={() => navigate('/')}
         >
-          NOTESGLIDER
+          NOTESGLIDER @mantavyam
         </div>
         
         <div className="flex items-center">

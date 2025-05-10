@@ -1,0 +1,69 @@
+<!-- highlights.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Highlights</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      background-color: white;
+      color: white;
+      font-family: 'Noto Serif Display', serif;
+      font-style: italic;
+      font-stretch: extra-condensed;
+      margin: 0;
+    }
+
+    .highlight-container {
+      background-color: #1c1c1c;
+      width: 70mm;
+      min-height: 80mm;
+      height: auto;
+      border-radius: 22px;
+      padding: 1mm;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 18pt;
+      text-align: center;
+      margin-bottom: 0mm;
+      line-height: 1;
+    }
+
+    li {
+      font-style: normal;
+      font-family: 'Afacad', serif;
+      font-size: 10pt;
+      text-align: justify;
+      padding-right: 8mm;
+      line-height: 1.2;
+    }
+    
+    ol {
+        width: 68mm;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="highlight-container">
+    <h1>Highlights of this<br>Week’s Coverage</h1>
+    <div class="lists">
+        <ol type=1>
+        {% for highlight in highlights %}
+            <li>{{ highlight }}</li>
+        {% endfor %}
+        </ol>
+    </div>
+  </div>
+</body>
+</html>
