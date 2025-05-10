@@ -4,6 +4,9 @@ import { motion } from 'framer-motion';
 import NavigationTray from '../components/NavigationTray';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Download } from 'lucide-react';
+import { checkBackendStatus } from '@/services/api';
+import { useNavigate } from 'react-router-dom';
+import HitmanLayout from '../components/HitmanLayout';
 
 interface HistoryItem {
   type: 'NEWSLETTER' | 'COMPILATION' | 'MAGAZINE';
@@ -24,10 +27,7 @@ const mockHistory: HistoryItem[] = [
 
 const HistoryPage: React.FC = () => {
   return (
-    <div className="min-h-screen w-full bg-zinc-900 text-white overflow-hidden">
-      {/* Navigation Tray */}
-      <NavigationTray />
-      
+    <HitmanLayout>
       <div className="container mx-auto px-4 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -89,7 +89,7 @@ const HistoryPage: React.FC = () => {
           </div>
         </motion.div>
       </div>
-    </div>
+    </HitmanLayout>
   );
 };
 

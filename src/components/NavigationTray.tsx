@@ -22,7 +22,7 @@ const NavigationTray = () => {
   };
 
   return (
-    <div className="mt-16 relative">
+    <div className="relative w-full">
       <div className="flex w-full">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -43,11 +43,6 @@ const NavigationTray = () => {
             </button>
           );
         })}
-      </div>
-      
-      <div className="absolute top-4 right-8 flex items-center">
-        <div className="h-2 w-2 rounded-full bg-red-500 mr-2 animate-pulse"></div>
-        <span className="text-xs text-zinc-400">SYSTEM ACTIVE</span>
       </div>
     </div>
   );

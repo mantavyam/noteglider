@@ -52,6 +52,7 @@ const Index = () => {
             <h1 className="text-5xl md:text-7xl font-light tracking-[0.5em] text-white">
               NOTESGLIDER
             </h1>
+            {/* Progress indicator is now constrained to the exact width of text */}
             <div className="relative h-1 bg-zinc-800 w-full mt-4">
               <motion.div 
                 className="h-1 bg-red-600 absolute top-0 left-0"

@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, CheckIcon, Server } from 'lucide-react';
-import Layout from '../components/landing/Layout';
-import PageTransition from '../components/PageTransition';
+import HitmanLayout from '../components/HitmanLayout';
 import FileUpload from '../components/FileUpload';
 import { toast } from 'sonner';
 import { checkBackendStatus } from '@/services/api';
@@ -69,54 +68,45 @@ const TaskPage = () => {
     }, 500);
   };
 
-  const staggerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15
-      }
-    }
-  };
-  
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
-    }
-  };
-
   return (
-    <Layout>
-      <PageTransition>
+    <HitmanLayout>
+      <div className="container mx-auto px-4 md:px-6 py-10">
         <div className="max-w-2xl mx-auto">
           {/* Back Button */}
           <motion.button
-            onClick={() => navigate('/')}
-            className="mb-12 flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            onClick={() => navigate('/documents')}
+            className="mb-12 flex items-center text-sm font-medium text-white/70 hover:text-white transition-colors"
             whileHover={{ x: -4 }}
             whileTap={{ scale: 0.98 }}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
+            Back to Documents
           </motion.button>
+          
+          {/* Page Title */}
+          <div className="mb-10">
+            <div className="flex items-center">
+              <div className="w-1 h-6 bg-red-600 mr-3"></div>
+              <h2 className="text-2xl font-light tracking-wider">NEWSLETTER</h2>
+            </div>
+            <h1 className="text-3xl font-bold mt-4">Upload Your Content</h1>
+            <div className="h-1 w-20 bg-red-600 mt-2"></div>
+          </div>
           
           {/* Backend Status */}
           <motion.div 
-            className={`mb-6 px-4 py-2 rounded-lg flex items-center ${
+            className={`mb-6 px-4 py-3 border ${
               isCheckingBackend 
-              ? "bg-gray-100" 
+              ? "border-zinc-600" 
               : backendConnected 
-                ? "bg-green-50 text-green-700" 
-                : "bg-red-50 text-red-700"
-            }`}
+                ? "border-green-500" 
+                : "border-red-500"
+            } flex items-center`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <Server className="w-4 h-4 mr-2" />
-            <span className="text-sm">
+            <Server className="w-5 h-5 mr-3" />
+            <span>
               {isCheckingBackend 
                 ? "Checking backend status..." 
                 : backendConnected 
@@ -125,46 +115,27 @@ const TaskPage = () => {
             </span>
           </motion.div>
           
-          {/* Page Title */}
-          <motion.div 
-            className="mb-10 text-center"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-3xl font-bold">Upload Your Content</h1>
-            <p className="text-muted-foreground mt-2">
-              Provide the necessary files to create your newsletter
-            </p>
-          </motion.div>
-          
           {/* Upload Form */}
-          <motion.form
-            onSubmit={handleSubmit}
-            className="space-y-8"
-            variants={staggerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div variants={itemVariants}>
+          <form onSubmit={handleSubmit} className="space-y-8 bg-zinc-800/50 p-6 border border-zinc-700">
+            <div>
               <FileUpload
                 label="Markdown File"
                 accept=".md"
                 onChange={setMarkdownFile}
                 value={markdownFile}
               />
-            </motion.div>
+            </div>
             
-            <motion.div variants={itemVariants}>
+            <div>
               <FileUpload
                 label="Images (ZIP file)"
                 accept=".zip"
                 onChange={setImagesZip}
                 value={imagesZip}
               />
-            </motion.div>
+            </div>
             
-            <motion.div variants={itemVariants} className="pt-2">
+            <div className="pt-2">
               <div className="flex items-center mb-4">
                 <div className="flex items-center space-x-2">
                   <button
@@ -172,13 +143,13 @@ const TaskPage = () => {
                     role="checkbox"
                     aria-checked={useCustomUrl}
                     onClick={() => setUseCustomUrl(!useCustomUrl)}
-                    className={`h-5 w-5 rounded border flex items-center justify-center transition-colors ${
+                    className={`h-5 w-5 rounded flex items-center justify-center transition-colors ${
                       useCustomUrl 
-                        ? "bg-primary border-primary text-primary-foreground" 
-                        : "border-input"
+                        ? "bg-red-600 border-red-600" 
+                        : "border border-white/30"
                     }`}
                   >
-                    {useCustomUrl && <CheckIcon className="h-3 w-3" />}
+                    {useCustomUrl && <CheckIcon className="h-3 w-3 text-white" />}
                   </button>
                   <label 
                     htmlFor="custom-url" 
@@ -202,24 +173,22 @@ const TaskPage = () => {
                     value={customUrl}
                     onChange={(e) => setCustomUrl(e.target.value)}
                     placeholder="https://youtube.com/..."
-                    className="w-full px-4 py-2 rounded-md border border-input focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                    className="w-full px-4 py-2 rounded-md bg-zinc-900 border border-zinc-700 focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors"
                   />
                 </motion.div>
               )}
-            </motion.div>
+            </div>
             
-            <motion.div variants={itemVariants} className="pt-6">
-              <motion.button
+            <div className="pt-6">
+              <button
                 type="submit"
-                className={`w-full text-white rounded-md px-4 py-3 font-medium relative overflow-hidden group ${
-                  backendConnected ? "bg-black hover:bg-black/90" : "bg-gray-400 cursor-not-allowed"
+                className={`w-full text-white rounded-none px-4 py-3 font-medium relative overflow-hidden group ${
+                  backendConnected ? "bg-red-600 hover:bg-red-500" : "bg-zinc-600 cursor-not-allowed"
                 }`}
-                whileHover={backendConnected ? { scale: 1.01 } : {}}
-                whileTap={backendConnected ? { scale: 0.98 } : {}}
                 disabled={isSubmitting || !backendConnected}
               >
                 <span className="relative z-10">
-                  {isSubmitting ? 'Processing...' : 'Build Design'}
+                  {isSubmitting ? 'Processing...' : 'Build Newsletter'}
                 </span>
                 {backendConnected && (
                   <motion.span
@@ -232,12 +201,12 @@ const TaskPage = () => {
                     style={{ transformOrigin: 'left' }}
                   />
                 )}
-              </motion.button>
-            </motion.div>
-          </motion.form>
+              </button>
+            </div>
+          </form>
         </div>
-      </PageTransition>
-    </Layout>
+      </div>
+    </HitmanLayout>
   );
 };
 
