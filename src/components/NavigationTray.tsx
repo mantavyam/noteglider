@@ -22,8 +22,8 @@ const NavigationTray = () => {
   };
 
   return (
-    <div className="mt-16 px-8">
-      <div className="flex">
+    <div className="mt-16 relative">
+      <div className="flex w-full">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           const ItemIcon = item.icon;
@@ -31,10 +31,10 @@ const NavigationTray = () => {
           return (
             <button 
               key={item.path}
-              className={`px-8 py-4 flex items-center space-x-2 transition-colors ${
+              className={`flex-1 py-4 flex items-center justify-center space-x-2 transition-colors ${
                 isActive 
                   ? 'bg-red-600 text-white' 
-                  : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                  : 'bg-white text-black hover:bg-zinc-200'
               }`}
               onClick={() => navigateToRoute(item.path)}
             >
