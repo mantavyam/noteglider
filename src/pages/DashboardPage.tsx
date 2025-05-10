@@ -1,12 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import NavigationTray from '../components/NavigationTray';
 import { FileText, History, Briefcase, Receipt, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardPage: React.FC = () => {
-  const [selectedItem, setSelectedItem] = useState<number | null>(null);
+  const [selectedItem, setSelectedItem] = useState<number>(1); // Set Documents (id: 1) as default selected
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ const DashboardPage: React.FC = () => {
       icon: Briefcase, 
       path: '/portfolio', 
       image: 'https://images.pexels.com/photos/210012/pexels-photo-210012.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      className: 'col-span-2 row-span-2'
+      className: 'col-span-1 row-span-2'
     },
     { 
       id: 4, 
@@ -66,63 +66,231 @@ const DashboardPage: React.FC = () => {
     }, 300);
   };
 
-  const activeItem = gridItems.find(item => item.id === (selectedItem ?? hoveredItem));
+  const activeItem = gridItems.find(item => item.id === (hoveredItem || selectedItem));
 
   return (
-    <div className="min-h-screen w-full bg-zinc-900 text-white overflow-hidden flex flex-col">
-      {/* Navigation Tray */}
-      <NavigationTray />
+    <div className="min-h-screen w-full bg-black text-white overflow-hidden flex flex-col">
+      {/* Background overlay with opacity */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-zinc-900 to-black opacity-90"></div>
       
-      <div className="flex-1 flex flex-col justify-between py-10">
+      {/* Grid pattern overlay */}
+      <div 
+        className="absolute inset-0 z-0 opacity-10"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
+          backgroundSize: '20px 20px'
+        }}
+      ></div>
+      
+      {/* Navigation Tray */}
+      <div className="relative z-10">
+        <NavigationTray />
+      </div>
+      
+      <div className="flex-1 flex flex-col justify-between py-10 relative z-10">
         {/* Grid Layout */}
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-3 gap-6">
-            {gridItems.map((item) => {
-              const isActive = selectedItem === item.id || hoveredItem === item.id;
-              
-              return (
-                <div 
-                  key={item.id}
-                  className={`relative overflow-hidden cursor-pointer ${item.className}`}
-                  onMouseEnter={() => setHoveredItem(item.id)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                  onClick={() => handleNavigate(item.path, item.id)}
-                >
-                  {/* Image background */}
-                  <div className="h-full">
-                    <img 
-                      src={item.image} 
-                      alt={item.title} 
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-                  </div>
-                  
-                  {/* Bottom label */}
-                  <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
-                    isActive ? 'bg-red-600' : 'bg-white'
-                  }`}>
-                    <div className="flex items-center px-4 py-3 justify-between">
-                      <div className="flex items-center space-x-3">
-                        <item.icon 
-                          className={`w-5 h-5 ${isActive ? 'text-white' : 'text-black'}`} 
-                        />
-                        <div>
-                          <h3 className={`font-bold ${isActive ? 'text-white' : 'text-black'}`}>
-                            {item.title}
-                          </h3>
-                          <p className={`text-xs ${
-                            isActive ? 'text-white/80' : 'text-black/70'
-                          }`}>
-                            {item.description}
-                          </p>
-                        </div>
+            {/* Column 1 */}
+            <div className="flex flex-col space-y-6">
+              {/* Documents - Column 1 Top */}
+              <div 
+                className="relative overflow-hidden cursor-pointer"
+                onMouseEnter={() => setHoveredItem(1)}
+                onMouseLeave={() => setHoveredItem(null)}
+                onClick={() => handleNavigate('/documents', 1)}
+              >
+                <div className="aspect-w-16 aspect-h-9">
+                  <img 
+                    src={gridItems[0].image} 
+                    alt={gridItems[0].title} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+                </div>
+                
+                <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
+                  selectedItem === 1 || hoveredItem === 1 ? 'bg-red-600' : 'bg-white'
+                }`}>
+                  <div className="flex items-center px-4 py-3 justify-between">
+                    <div className="flex items-center space-x-3">
+                      <FileText 
+                        className={`w-5 h-5 ${selectedItem === 1 || hoveredItem === 1 ? 'text-white' : 'text-black'}`} 
+                      />
+                      <div>
+                        <h3 className={`font-bold ${selectedItem === 1 || hoveredItem === 1 ? 'text-white' : 'text-black'}`}>
+                          DOCUMENTS
+                        </h3>
+                        <p className={`text-xs ${
+                          selectedItem === 1 || hoveredItem === 1 ? 'text-white/80' : 'text-black/70'
+                        }`}>
+                          Manage document workflows
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+              
+              {/* History - Column 1 Bottom */}
+              <div 
+                className="relative overflow-hidden cursor-pointer"
+                onMouseEnter={() => setHoveredItem(2)}
+                onMouseLeave={() => setHoveredItem(null)}
+                onClick={() => handleNavigate('/history', 2)}
+              >
+                <div className="aspect-w-16 aspect-h-9">
+                  <img 
+                    src={gridItems[1].image} 
+                    alt={gridItems[1].title} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+                </div>
+                
+                <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
+                  selectedItem === 2 || hoveredItem === 2 ? 'bg-red-600' : 'bg-white'
+                }`}>
+                  <div className="flex items-center px-4 py-3 justify-between">
+                    <div className="flex items-center space-x-3">
+                      <History 
+                        className={`w-5 h-5 ${selectedItem === 2 || hoveredItem === 2 ? 'text-white' : 'text-black'}`} 
+                      />
+                      <div>
+                        <h3 className={`font-bold ${selectedItem === 2 || hoveredItem === 2 ? 'text-white' : 'text-black'}`}>
+                          HISTORY
+                        </h3>
+                        <p className={`text-xs ${
+                          selectedItem === 2 || hoveredItem === 2 ? 'text-white/80' : 'text-black/70'
+                        }`}>
+                          View generated documents
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Column 2 - Portfolio (full column) */}
+            <div 
+              className="relative overflow-hidden cursor-pointer row-span-2"
+              onMouseEnter={() => setHoveredItem(3)}
+              onMouseLeave={() => setHoveredItem(null)}
+              onClick={() => handleNavigate('/portfolio', 3)}
+            >
+              <div className="h-full">
+                <img 
+                  src={gridItems[2].image} 
+                  alt={gridItems[2].title} 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+              </div>
+              
+              <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
+                selectedItem === 3 || hoveredItem === 3 ? 'bg-red-600' : 'bg-white'
+              }`}>
+                <div className="flex items-center px-4 py-3 justify-between">
+                  <div className="flex items-center space-x-3">
+                    <Briefcase 
+                      className={`w-5 h-5 ${selectedItem === 3 || hoveredItem === 3 ? 'text-white' : 'text-black'}`} 
+                    />
+                    <div>
+                      <h3 className={`font-bold ${selectedItem === 3 || hoveredItem === 3 ? 'text-white' : 'text-black'}`}>
+                        PORTFOLIO
+                      </h3>
+                      <p className={`text-xs ${
+                        selectedItem === 3 || hoveredItem === 3 ? 'text-white/80' : 'text-black/70'
+                      }`}>
+                        Service offerings and samples
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Column 3 */}
+            <div className="flex flex-col space-y-6">
+              {/* Invoices - Column 3 Top */}
+              <div 
+                className="relative overflow-hidden cursor-pointer"
+                onMouseEnter={() => setHoveredItem(4)}
+                onMouseLeave={() => setHoveredItem(null)}
+                onClick={() => handleNavigate('/invoices', 4)}
+              >
+                <div className="aspect-w-16 aspect-h-9">
+                  <img 
+                    src={gridItems[3].image} 
+                    alt={gridItems[3].title} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+                </div>
+                
+                <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
+                  selectedItem === 4 || hoveredItem === 4 ? 'bg-red-600' : 'bg-white'
+                }`}>
+                  <div className="flex items-center px-4 py-3 justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Receipt 
+                        className={`w-5 h-5 ${selectedItem === 4 || hoveredItem === 4 ? 'text-white' : 'text-black'}`} 
+                      />
+                      <div>
+                        <h3 className={`font-bold ${selectedItem === 4 || hoveredItem === 4 ? 'text-white' : 'text-black'}`}>
+                          INVOICES
+                        </h3>
+                        <p className={`text-xs ${
+                          selectedItem === 4 || hoveredItem === 4 ? 'text-white/80' : 'text-black/70'
+                        }`}>
+                          Create and manage invoices
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Settings - Column 3 Bottom */}
+              <div 
+                className="relative overflow-hidden cursor-pointer"
+                onMouseEnter={() => setHoveredItem(5)}
+                onMouseLeave={() => setHoveredItem(null)}
+                onClick={() => handleNavigate('/settings', 5)}
+              >
+                <div className="aspect-w-16 aspect-h-9">
+                  <img 
+                    src={gridItems[4].image} 
+                    alt={gridItems[4].title} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+                </div>
+                
+                <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
+                  selectedItem === 5 || hoveredItem === 5 ? 'bg-red-600' : 'bg-white'
+                }`}>
+                  <div className="flex items-center px-4 py-3 justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Settings 
+                        className={`w-5 h-5 ${selectedItem === 5 || hoveredItem === 5 ? 'text-white' : 'text-black'}`} 
+                      />
+                      <div>
+                        <h3 className={`font-bold ${selectedItem === 5 || hoveredItem === 5 ? 'text-white' : 'text-black'}`}>
+                          SETTINGS
+                        </h3>
+                        <p className={`text-xs ${
+                          selectedItem === 5 || hoveredItem === 5 ? 'text-white/80' : 'text-black/70'
+                        }`}>
+                          Configure application
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import NavigationTray from '../components/NavigationTray';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const DocumentsPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedDocType, setSelectedDocType] = useState(0);
+  const [clickedDocument, setClickedDocument] = useState<number | null>(null);
 
   const documents = [
     { 
@@ -37,12 +38,21 @@ const DocumentsPage: React.FC = () => {
 
   const activeDocument = documents[selectedDocType];
 
-  const handleDocumentSelect = (id: number) => {
-    setSelectedDocType(id);
-  };
+  useEffect(() => {
+    // If a document is clicked and then clicked again, navigate to its path
+    if (clickedDocument !== null && clickedDocument === selectedDocType) {
+      navigate(documents[clickedDocument].path);
+    }
+  }, [clickedDocument, navigate, selectedDocType, documents]);
 
-  const handleDocumentNavigate = (path: string) => {
-    navigate(path);
+  const handleDocumentSelect = (id: number) => {
+    // If already selected, set as clicked, otherwise just select it
+    if (selectedDocType === id) {
+      setClickedDocument(id);
+    } else {
+      setSelectedDocType(id);
+      setClickedDocument(null);
+    }
   };
 
   return (
@@ -71,8 +81,8 @@ const DocumentsPage: React.FC = () => {
         {/* Flex spacer */}
         <div className="flex-1"></div>
         
-        {/* Bottom document selection */}
-        <div className="flex items-stretch">
+        {/* Bottom document selection - moved up to avoid overlap with stats bar */}
+        <div className="flex items-stretch mb-16">
           {documents.map((doc, index) => {
             const isActive = selectedDocType === index;
             
@@ -97,19 +107,6 @@ const DocumentsPage: React.FC = () => {
                   }`}>
                     {doc.location}
                   </h3>
-                </div>
-                <div 
-                  className="bg-red-600 flex items-center justify-end cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDocumentNavigate(doc.path);
-                  }}
-                  style={{ 
-                    opacity: isActive ? 1 : 0,
-                    pointerEvents: isActive ? 'auto' : 'none',
-                  }}
-                >
-                  <span className="text-white font-semibold">START</span>
                 </div>
               </div>
             );

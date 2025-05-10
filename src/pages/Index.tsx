@@ -58,6 +58,7 @@ const Index = () => {
                 initial={{ width: "0%" }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.2 }}
+                style={{ maxWidth: '100%' }} // Ensure progress bar doesn't exceed container width
               />
             </div>
           </div>
