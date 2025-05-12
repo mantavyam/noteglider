@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { checkBackendStatus } from '@/services/api';
 import PageTransition from '../components/PageTransition';
@@ -109,16 +108,20 @@ interface CategoryProps {
   isActive: boolean;
   onClick: () => void;
   tabType: 'main' | 'extras';
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }
 
-const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick, tabType }) => {
+const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick, tabType, onMouseEnter, onMouseLeave }) => {
   return (
     <motion.div
       key={category.id}
       className={`relative flex-shrink-0 w-[300px] h-[400px] transition-all duration-300 ${
-        isActive ? 'scale-105 z-10 border border-white' : 'scale-95 opacity-70'
+        isActive ? 'scale-105 z-10 border-2 border-white' : 'scale-95 opacity-70 hover:border hover:border-white'
       }`}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       whileHover={{ scale: 1.05, opacity: 1 }}
     >
       {/* Main card */}
@@ -183,6 +186,7 @@ const MagazinePage = () => {
         const status = await checkBackendStatus();
         setBackendConnected(status.status === 'online');
       } catch (error) {
+        console.error('Error checking backend status:', error);
         setBackendConnected(false);
       } finally {
         setIsCheckingBackend(false);
@@ -249,6 +253,9 @@ const MagazinePage = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [selectedIndex, activeCategories]);
+
+  // Get active category for dynamic text display
+  const activeItem = activeCategories[displayIndex];
 
   return (
     <div className="min-h-screen w-full bg-black text-white overflow-hidden">
@@ -327,23 +334,6 @@ const MagazinePage = () => {
                     ))}
                   </div>
                 </div>
-
-                {/* Hitman-style minimal slider */}
-                <div className="flex justify-center mt-8">
-                  <div className="relative w-[180px]">
-                    <Slider 
-                      value={[displayIndex]}
-                      max={Math.max(0, activeCategories.length - 1)}
-                      step={1}
-                      className="h-1 bg-gray-700"
-                      onValueChange={(vals) => setSelectedIndex(vals[0])}
-                    />
-                    <div 
-                      className="absolute -top-2 w-[16px] h-[16px] bg-white rounded-full transition-all duration-200 hover:scale-125"
-                      style={{ left: `calc(${displayIndex / Math.max(activeCategories.length - 1, 1) * 100}% - 8px)` }}
-                    />
-                  </div>
-                </div>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-16 text-gray-400">
@@ -352,6 +342,22 @@ const MagazinePage = () => {
             )}
           </div>
         </PageTransition>
+        
+        {/* Dynamic Text Display at bottom (similar to Dashboard) */}
+        {activeItem && (
+          <motion.div 
+            key={activeItem?.id}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="container mx-auto px-6 mt-auto mb-20"
+          >
+            <h1 className="text-7xl font-bold tracking-tighter text-white/90">
+              {activeItem.name}
+            </h1>
+            <div className="h-1 w-20 bg-red-600 mt-2"></div>
+          </motion.div>
+        )}
         
         {/* Bottom Stats Bar with integrated search */}
         <div className="fixed bottom-0 left-0 right-0 bg-zinc-800 px-6 py-3 flex justify-between items-center z-50 border-t border-zinc-700">
