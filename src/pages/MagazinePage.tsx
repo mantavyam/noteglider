@@ -117,7 +117,7 @@ const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick, ta
     <motion.div
       key={category.id}
       className={`relative flex-shrink-0 w-[300px] h-[400px] transition-all duration-300 ${
-        isActive ? 'scale-105 z-10 border-2 border-white' : 'scale-95 opacity-70 hover:border hover:border-white'
+        isActive ? 'scale-105 z-10 border-4 border-white' : 'scale-95 opacity-70 hover:border-4 hover:border-white'
       }`}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
@@ -257,6 +257,9 @@ const MagazinePage = () => {
   // Get active category for dynamic text display
   const activeItem = activeCategories[displayIndex];
 
+  // Calculate visible cards range - only scroll when needed
+  const visibleStartIndex = Math.max(0, displayIndex - 2);
+
   return (
     <div className="min-h-screen w-full bg-black text-white overflow-hidden">
       {/* Background overlay with opacity */}
@@ -274,10 +277,10 @@ const MagazinePage = () => {
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Navigation Tabs using the TabsList from shadcn */}
         <Tabs defaultValue="main" className="w-full mt-16">
-          <TabsList className="w-full grid grid-cols-2 h-12 bg-white text-black">
+          <TabsList className="w-full grid grid-cols-2 h-12 bg-white">
             <TabsTrigger 
               value="main" 
-              className="data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold"
+              className="data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold rounded-none h-full"
               onClick={() => {
                 setActiveCategory('main');
                 setSelectedIndex(0);
@@ -288,7 +291,7 @@ const MagazinePage = () => {
             </TabsTrigger>
             <TabsTrigger 
               value="extras"
-              className="data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold"
+              className="data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold rounded-none h-full"
               onClick={() => {
                 setActiveCategory('extras');
                 setSelectedIndex(0);
@@ -301,7 +304,7 @@ const MagazinePage = () => {
         </Tabs>
 
         <PageTransition>
-          <div className="max-w-6xl mx-auto px-4 py-10">
+          <div className="max-w-6xl mx-auto px-6 py-10">
             {/* Back Button */}
             <motion.button
               onClick={() => navigate('/documents')}
@@ -319,7 +322,7 @@ const MagazinePage = () => {
                 <div className="flex overflow-hidden space-x-4 py-8">
                   <div 
                     className="flex transition-transform duration-300 ease-out"
-                    style={{ transform: `translateX(-${displayIndex * 320}px)` }}
+                    style={{ transform: `translateX(-${visibleStartIndex * 320}px)` }}
                   >
                     {activeCategories.map((category, index) => (
                       <CategoryCard 
