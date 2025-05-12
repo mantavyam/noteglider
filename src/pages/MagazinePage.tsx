@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { checkBackendStatus } from '@/services/api';
-import NavigationTray from '../components/NavigationTray';
 import PageTransition from '../components/PageTransition';
 
 // Categories data
@@ -109,9 +108,10 @@ interface CategoryProps {
   };
   isActive: boolean;
   onClick: () => void;
+  tabType: 'main' | 'extras';
 }
 
-const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick }) => {
+const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick, tabType }) => {
   return (
     <motion.div
       key={category.id}
@@ -119,7 +119,7 @@ const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick }) 
         isActive ? 'scale-105 z-10 border border-white' : 'scale-95 opacity-70'
       }`}
       onClick={onClick}
-      whileHover={{ scale: isActive ? 1.05 : 1, opacity: 1 }}
+      whileHover={{ scale: 1.05, opacity: 1 }}
     >
       {/* Main card */}
       <div className="relative w-full h-full overflow-hidden">
@@ -130,10 +130,14 @@ const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick }) 
         />
         
         {/* Text overlay */}
-        <div className="absolute bottom-0 left-0 p-6 text-white">
-          <div className="mb-2 text-sm opacity-80">{category.location}</div>
+        <motion.div 
+          className={`absolute bottom-0 left-0 p-6 text-white ${isActive ? 'translate-y-[-80px]' : ''}`}
+          animate={isActive ? { translateY: -80 } : { translateY: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="mb-2 text-sm opacity-80">{tabType === 'main' ? 'MAIN' : 'EXTRA'}</div>
           <h3 className="text-3xl font-bold mb-1">{category.name}</h3>
-        </div>
+        </motion.div>
         
         {/* Active indicator */}
         {isActive && (
@@ -167,6 +171,7 @@ const MagazinePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<'main' | 'extras'>('main');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [backendConnected, setBackendConnected] = useState(false);
   const [isCheckingBackend, setIsCheckingBackend] = useState(true);
   
@@ -199,8 +204,19 @@ const MagazinePage = () => {
 
   const activeCategories = filteredCategories[activeCategory];
   
+  // Use hovered index if available, otherwise use selected index
+  const displayIndex = hoveredIndex !== null ? hoveredIndex : selectedIndex;
+
   const handleSelectCategory = (index: number) => {
     setSelectedIndex(index);
+  };
+  
+  const handleMouseEnter = (index: number) => {
+    setHoveredIndex(index);
+  };
+  
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
   };
 
   const handleViewCategory = () => {
@@ -214,9 +230,11 @@ const MagazinePage = () => {
       switch (e.key) {
         case 'ArrowLeft':
           setSelectedIndex(prev => (prev > 0 ? prev - 1 : activeCategories.length - 1));
+          setHoveredIndex(null);
           break;
         case 'ArrowRight':
           setSelectedIndex(prev => (prev < activeCategories.length - 1 ? prev + 1 : 0));
+          setHoveredIndex(null);
           break;
         case 'Enter':
           handleViewCategory();
@@ -248,9 +266,7 @@ const MagazinePage = () => {
       
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Navigation Tabs using the TabsList from shadcn */}
-        <NavigationTray />
-        
-        <Tabs defaultValue="main" className="w-full">
+        <Tabs defaultValue="main" className="w-full mt-16">
           <TabsList className="w-full grid grid-cols-2 h-12 bg-white text-black">
             <TabsTrigger 
               value="main" 
@@ -258,6 +274,7 @@ const MagazinePage = () => {
               onClick={() => {
                 setActiveCategory('main');
                 setSelectedIndex(0);
+                setHoveredIndex(null);
               }}
             >
               MAIN CATEGORIES
@@ -268,6 +285,7 @@ const MagazinePage = () => {
               onClick={() => {
                 setActiveCategory('extras');
                 setSelectedIndex(0);
+                setHoveredIndex(null);
               }}
             >
               EXTRA CATEGORIES
@@ -294,14 +312,17 @@ const MagazinePage = () => {
                 <div className="flex overflow-hidden space-x-4 py-8">
                   <div 
                     className="flex transition-transform duration-300 ease-out"
-                    style={{ transform: `translateX(-${selectedIndex * 320}px)` }}
+                    style={{ transform: `translateX(-${displayIndex * 320}px)` }}
                   >
                     {activeCategories.map((category, index) => (
                       <CategoryCard 
                         key={category.id}
                         category={category}
-                        isActive={selectedIndex === index}
+                        isActive={displayIndex === index}
                         onClick={() => handleSelectCategory(index)}
+                        tabType={activeCategory}
+                        onMouseEnter={() => handleMouseEnter(index)}
+                        onMouseLeave={handleMouseLeave}
                       />
                     ))}
                   </div>
@@ -311,7 +332,7 @@ const MagazinePage = () => {
                 <div className="flex justify-center mt-8">
                   <div className="relative w-[180px]">
                     <Slider 
-                      value={[selectedIndex]}
+                      value={[displayIndex]}
                       max={Math.max(0, activeCategories.length - 1)}
                       step={1}
                       className="h-1 bg-gray-700"
@@ -319,7 +340,7 @@ const MagazinePage = () => {
                     />
                     <div 
                       className="absolute -top-2 w-[16px] h-[16px] bg-white rounded-full transition-all duration-200 hover:scale-125"
-                      style={{ left: `calc(${selectedIndex / Math.max(activeCategories.length - 1, 1) * 100}% - 8px)` }}
+                      style={{ left: `calc(${displayIndex / Math.max(activeCategories.length - 1, 1) * 100}% - 8px)` }}
                     />
                   </div>
                 </div>
