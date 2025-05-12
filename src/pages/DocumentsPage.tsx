@@ -6,9 +6,8 @@ import { useNavigate } from 'react-router-dom';
 
 const DocumentsPage: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedDocType, setSelectedDocType] = useState(0);
+  const [activeDocType, setActiveDocType] = useState(0);
   const [clickedDocument, setClickedDocument] = useState<number | null>(null);
-  const [hoveredDocument, setHoveredDocument] = useState<number | null>(null);
 
   const documents = [
     { 
@@ -37,28 +36,24 @@ const DocumentsPage: React.FC = () => {
     }
   ];
 
-  // Get the active document based on selected or hovered state
-  const activeDocument = documents[hoveredDocument !== null ? hoveredDocument : selectedDocType];
+  // Get the active document
+  const activeDocument = documents[activeDocType];
 
   useEffect(() => {
     // If a document is clicked and then clicked again, navigate to its path
-    if (clickedDocument !== null && clickedDocument === selectedDocType) {
+    if (clickedDocument !== null && clickedDocument === activeDocType) {
       navigate(documents[clickedDocument].path);
     }
-  }, [clickedDocument, navigate, selectedDocType, documents]);
+  }, [clickedDocument, navigate, activeDocType, documents]);
 
   const handleDocumentSelect = (id: number) => {
     // If already selected, set as clicked, otherwise just select it
-    if (selectedDocType === id) {
+    if (activeDocType === id) {
       setClickedDocument(id);
     } else {
-      setSelectedDocType(id);
+      setActiveDocType(id);
       setClickedDocument(null);
     }
-  };
-
-  const handleDocumentHover = (id: number | null) => {
-    setHoveredDocument(id);
   };
   
   // Keyboard navigation
@@ -66,18 +61,16 @@ const DocumentsPage: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
         case 'ArrowLeft':
-          setSelectedDocType(prev => (prev > 0 ? prev - 1 : documents.length - 1));
-          setHoveredDocument(null);
+          setActiveDocType(prev => (prev > 0 ? prev - 1 : documents.length - 1));
           setClickedDocument(null);
           break;
         case 'ArrowRight':
-          setSelectedDocType(prev => (prev < documents.length - 1 ? prev + 1 : 0));
-          setHoveredDocument(null);
+          setActiveDocType(prev => (prev < documents.length - 1 ? prev + 1 : 0));
           setClickedDocument(null);
           break;
         case 'Enter':
           // Navigate to the selected document's path
-          navigate(documents[selectedDocType].path);
+          navigate(documents[activeDocType].path);
           break;
         default:
           break;
@@ -88,7 +81,7 @@ const DocumentsPage: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedDocType, navigate, documents]);
+  }, [activeDocType, navigate, documents]);
 
   return (
     <div className="min-h-screen w-full bg-black text-white overflow-hidden">
@@ -131,7 +124,7 @@ const DocumentsPage: React.FC = () => {
         {/* Bottom document selection - moved up to avoid overlap with stats bar */}
         <div className="flex items-stretch mb-36">
           {documents.map((doc, index) => {
-            const isActive = selectedDocType === index || hoveredDocument === index;
+            const isActive = activeDocType === index;
             
             return (
               <div 
@@ -140,10 +133,8 @@ const DocumentsPage: React.FC = () => {
                   isActive ? 'border-t-4 border-red-600' : ''
                 } ${index > 0 ? 'ml-px' : ''}`}
                 onClick={() => handleDocumentSelect(index)}
-                onMouseEnter={() => handleDocumentHover(index)}
-                onMouseLeave={() => handleDocumentHover(null)}
+                onMouseEnter={() => setActiveDocType(index)}
                 tabIndex={0}
-                style={{ height: isActive ? '100%' : 'auto' }} // Keep height consistent
               >
                 <div className={`px-4 py-6 ${
                   isActive ? 'bg-red-600' : 'bg-white'

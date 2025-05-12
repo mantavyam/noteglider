@@ -2,16 +2,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import Layout from '@/components/landing/Layout';
-import { Search, ArrowLeft, Server, ArrowRight, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { checkBackendStatus } from '@/services/api';
-import { toast } from 'sonner';
-import { FileText } from 'lucide-react';
-import PageTransition from '../components/PageTransition';
 import { Slider } from '@/components/ui/slider';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { checkBackendStatus } from '@/services/api';
+import NavigationTray from '../components/NavigationTray';
+import PageTransition from '../components/PageTransition';
 
 // Categories data
 const categories = {
@@ -119,7 +116,7 @@ const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick }) 
     <motion.div
       key={category.id}
       className={`relative flex-shrink-0 w-[300px] h-[400px] transition-all duration-300 ${
-        isActive ? 'scale-105 z-10' : 'scale-95 opacity-70'
+        isActive ? 'scale-105 z-10 border border-white' : 'scale-95 opacity-70'
       }`}
       onClick={onClick}
       whileHover={{ scale: isActive ? 1.05 : 1, opacity: 1 }}
@@ -141,9 +138,9 @@ const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick }) 
         {/* Active indicator */}
         {isActive && (
           <motion.div 
-            initial={{ width: 0 }}
-            animate={{ width: '100%' }}
-            className="absolute bottom-0 left-0 h-12 bg-white"
+            initial={{ height: 0 }}
+            animate={{ height: '80px' }}
+            className="absolute bottom-0 left-0 w-full bg-white"
           >
             <div className="flex items-center justify-between px-4 h-full">
               <div>
@@ -155,7 +152,7 @@ const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick }) 
                 </div>
               </div>
               <div className="bg-gray-800 p-2">
-                <ArrowRight className="h-5 w-5 text-white" />
+                <ArrowLeft className="h-5 w-5 text-white rotate-[135deg]" />
               </div>
             </div>
           </motion.div>
@@ -172,7 +169,6 @@ const MagazinePage = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [backendConnected, setBackendConnected] = useState(false);
   const [isCheckingBackend, setIsCheckingBackend] = useState(true);
-  const [scrollPosition, setScrollPosition] = useState(0);
   
   // Check if backend is available on component mount
   useEffect(() => {
@@ -207,14 +203,6 @@ const MagazinePage = () => {
     setSelectedIndex(index);
   };
 
-  const handleNavigation = (direction: 'prev' | 'next') => {
-    if (direction === 'next') {
-      setSelectedIndex(prev => (prev < activeCategories.length - 1 ? prev + 1 : 0));
-    } else {
-      setSelectedIndex(prev => (prev > 0 ? prev - 1 : activeCategories.length - 1));
-    }
-  };
-
   const handleViewCategory = () => {
     const category = activeCategories[selectedIndex];
     navigate('/task', { state: { category: category.name } });
@@ -225,10 +213,10 @@ const MagazinePage = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
         case 'ArrowLeft':
-          handleNavigation('prev');
+          setSelectedIndex(prev => (prev > 0 ? prev - 1 : activeCategories.length - 1));
           break;
         case 'ArrowRight':
-          handleNavigation('next');
+          setSelectedIndex(prev => (prev < activeCategories.length - 1 ? prev + 1 : 0));
           break;
         case 'Enter':
           handleViewCategory();
@@ -259,35 +247,33 @@ const MagazinePage = () => {
       ></div>
       
       <div className="relative z-10 min-h-screen flex flex-col">
-        {/* Navigation Tabs - Similar to NavigationTray */}
-        <div className="mt-16 relative">
-          <div className="flex w-full">
-            <button 
-              className={`flex-1 py-4 flex items-center justify-center space-x-2 transition-colors border-r border-gray-700 ${
-                activeCategory === 'main' ? 'bg-red-600 text-white' : 'bg-white text-black hover:bg-zinc-200'
-              }`}
+        {/* Navigation Tabs using the TabsList from shadcn */}
+        <NavigationTray />
+        
+        <Tabs defaultValue="main" className="w-full">
+          <TabsList className="w-full grid grid-cols-2 h-12 bg-white text-black">
+            <TabsTrigger 
+              value="main" 
+              className="data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold"
               onClick={() => {
                 setActiveCategory('main');
                 setSelectedIndex(0);
               }}
             >
-              <FileText className="w-5 h-5" />
-              <span className="font-bold tracking-wider text-sm">MAIN CATEGORIES</span>
-            </button>
-            <button 
-              className={`flex-1 py-4 flex items-center justify-center space-x-2 transition-colors ${
-                activeCategory === 'extras' ? 'bg-red-600 text-white' : 'bg-white text-black hover:bg-zinc-200'
-              }`}
+              MAIN CATEGORIES
+            </TabsTrigger>
+            <TabsTrigger 
+              value="extras"
+              className="data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold"
               onClick={() => {
                 setActiveCategory('extras');
                 setSelectedIndex(0);
               }}
             >
-              <FileText className="w-5 h-5" />
-              <span className="font-bold tracking-wider text-sm">EXTRA CATEGORIES</span>
-            </button>
-          </div>
-        </div>
+              EXTRA CATEGORIES
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         <PageTransition>
           <div className="max-w-6xl mx-auto px-4 py-10">
@@ -301,69 +287,10 @@ const MagazinePage = () => {
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Documents
             </motion.button>
-            
-            {/* Backend Status */}
-            <motion.div 
-              className={`mb-6 px-4 py-2 rounded-lg flex items-center ${
-                isCheckingBackend 
-                ? "bg-gray-800" 
-                : backendConnected 
-                  ? "bg-green-900/30 text-green-400" 
-                  : "bg-red-900/30 text-red-400"
-              }`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <Server className="w-4 h-4 mr-2" />
-              <span className="text-sm">
-                {isCheckingBackend 
-                  ? "Checking backend status..." 
-                  : backendConnected 
-                    ? "Backend service is connected" 
-                    : "Backend service is not available. Please start the backend server."}
-              </span>
-            </motion.div>
-
-            {/* Search */}
-            <div className="relative my-6">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input 
-                type="search"
-                placeholder="Search categories..." 
-                className="pl-10 bg-zinc-800 border-zinc-700 text-white"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-
-            {/* Carousel Navigation */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">
-                {activeCategory === 'main' ? 'Main Categories' : 'Extra Categories'}
-              </h2>
-              <div className="flex space-x-4">
-                <Button 
-                  variant="outline" 
-                  size="icon"
-                  onClick={() => handleNavigation('prev')}
-                  className="border-zinc-700 text-white hover:bg-zinc-800"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="icon"
-                  onClick={() => handleNavigation('next')}
-                  className="border-zinc-700 text-white hover:bg-zinc-800"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
 
             {/* Category Cards Carousel */}
             {activeCategories.length > 0 ? (
-              <div className="relative">
+              <div className="relative mt-12">
                 <div className="flex overflow-hidden space-x-4 py-8">
                   <div 
                     className="flex transition-transform duration-300 ease-out"
@@ -380,17 +307,20 @@ const MagazinePage = () => {
                   </div>
                 </div>
 
-                {/* Slider for position indication */}
-                <div className="mt-6 flex items-center px-4">
-                  <Slider 
-                    value={[selectedIndex]}
-                    max={Math.max(0, activeCategories.length - 1)}
-                    step={1}
-                    className="max-w-md"
-                    onValueChange={(vals) => setSelectedIndex(vals[0])}
-                  />
-                  <div className="ml-4 text-gray-400 text-sm">
-                    {selectedIndex + 1}/{activeCategories.length}
+                {/* Hitman-style minimal slider */}
+                <div className="flex justify-center mt-8">
+                  <div className="relative w-[180px]">
+                    <Slider 
+                      value={[selectedIndex]}
+                      max={Math.max(0, activeCategories.length - 1)}
+                      step={1}
+                      className="h-1 bg-gray-700"
+                      onValueChange={(vals) => setSelectedIndex(vals[0])}
+                    />
+                    <div 
+                      className="absolute -top-2 w-[16px] h-[16px] bg-white rounded-full transition-all duration-200 hover:scale-125"
+                      style={{ left: `calc(${selectedIndex / Math.max(activeCategories.length - 1, 1) * 100}% - 8px)` }}
+                    />
                   </div>
                 </div>
               </div>
@@ -399,27 +329,49 @@ const MagazinePage = () => {
                 <p>No categories match your search</p>
               </div>
             )}
-
-            {/* Action Button */}
-            {activeCategories.length > 0 && (
-              <motion.div
-                className="mt-8 flex justify-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                <Button 
-                  className="bg-red-600 hover:bg-red-700 px-8"
-                  onClick={handleViewCategory}
-                >
-                  View {activeCategories[selectedIndex]?.name}
-                </Button>
-              </motion.div>
-            )}
           </div>
         </PageTransition>
         
-        {/* Bottom Stats Bar - Added via NavigationTray component */}
+        {/* Bottom Stats Bar with integrated search */}
+        <div className="fixed bottom-0 left-0 right-0 bg-zinc-800 px-6 py-3 flex justify-between items-center z-50 border-t border-zinc-700">
+          <div 
+            className="text-white font-light tracking-wider cursor-pointer"
+            onClick={() => navigate('/')}
+          >
+            NOTESGLIDER @mantavyam
+          </div>
+          
+          <div className="flex-1 mx-8 max-w-md">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input 
+                type="search"
+                placeholder="Search categories..." 
+                className="pl-10 h-8 bg-zinc-700 border-zinc-600 text-white text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <div className="flex items-center">
+            <div className={`h-2 w-2 rounded-full mr-2 animate-pulse ${
+              isCheckingBackend 
+                ? "bg-yellow-500" 
+                : backendConnected 
+                  ? "bg-green-500" 
+                  : "bg-red-500"
+            }`}></div>
+            <span className="text-xs text-zinc-400">
+              {isCheckingBackend 
+                ? "CHECKING SYSTEM" 
+                : backendConnected 
+                  ? "SYSTEM ACTIVE" 
+                  : "SYSTEM INACTIVE"
+              }
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
