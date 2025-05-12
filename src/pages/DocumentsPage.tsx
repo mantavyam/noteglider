@@ -8,6 +8,7 @@ const DocumentsPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedDocType, setSelectedDocType] = useState(0);
   const [clickedDocument, setClickedDocument] = useState<number | null>(null);
+  const [hoveredDocument, setHoveredDocument] = useState<number | null>(null);
 
   const documents = [
     { 
@@ -36,7 +37,8 @@ const DocumentsPage: React.FC = () => {
     }
   ];
 
-  const activeDocument = documents[selectedDocType];
+  // Get the active document based on selected or hovered state
+  const activeDocument = documents[hoveredDocument !== null ? hoveredDocument : selectedDocType];
 
   useEffect(() => {
     // If a document is clicked and then clicked again, navigate to its path
@@ -54,6 +56,10 @@ const DocumentsPage: React.FC = () => {
       setClickedDocument(null);
     }
   };
+
+  const handleDocumentHover = (id: number | null) => {
+    setHoveredDocument(id);
+  };
   
   // Keyboard navigation
   useEffect(() => {
@@ -61,10 +67,12 @@ const DocumentsPage: React.FC = () => {
       switch (e.key) {
         case 'ArrowLeft':
           setSelectedDocType(prev => (prev > 0 ? prev - 1 : documents.length - 1));
+          setHoveredDocument(null);
           setClickedDocument(null);
           break;
         case 'ArrowRight':
           setSelectedDocType(prev => (prev < documents.length - 1 ? prev + 1 : 0));
+          setHoveredDocument(null);
           setClickedDocument(null);
           break;
         case 'Enter':
@@ -121,9 +129,9 @@ const DocumentsPage: React.FC = () => {
         <div className="flex-1"></div>
         
         {/* Bottom document selection - moved up to avoid overlap with stats bar */}
-        <div className="flex items-stretch mb-24">
+        <div className="flex items-stretch mb-36">
           {documents.map((doc, index) => {
-            const isActive = selectedDocType === index;
+            const isActive = selectedDocType === index || hoveredDocument === index;
             
             return (
               <div 
@@ -132,10 +140,12 @@ const DocumentsPage: React.FC = () => {
                   isActive ? 'border-t-4 border-red-600' : ''
                 } ${index > 0 ? 'ml-px' : ''}`}
                 onClick={() => handleDocumentSelect(index)}
+                onMouseEnter={() => handleDocumentHover(index)}
+                onMouseLeave={() => handleDocumentHover(null)}
                 tabIndex={0}
-                style={{ height: 'auto' }} // Ensure consistent height
+                style={{ height: isActive ? '100%' : 'auto' }} // Keep height consistent
               >
-                <div className={`px-4 py-6 h-full ${
+                <div className={`px-4 py-6 ${
                   isActive ? 'bg-red-600' : 'bg-white'
                 }`}>
                   <div className="text-xs font-bold mb-1 tracking-wider" style={{ 
