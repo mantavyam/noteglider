@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import NavigationTray from '../components/NavigationTray';
@@ -61,7 +60,17 @@ const DashboardPage: React.FC = () => {
     }, 300);
   };
 
-  const activeItem = gridItems.find(item => item.id === (hoveredItem || selectedItem));
+  // This function determines which item should be considered "active" for highlighting
+  // If an item is being hovered, it takes precedence over the selected item
+  const isItemActive = (id: number) => {
+    if (hoveredItem !== null) {
+      return hoveredItem === id;
+    }
+    return selectedItem === id;
+  };
+  
+  // Get the active item for the dynamic text display
+  const activeItem = gridItems.find(item => isItemActive(item.id));
   
   // Keyboard navigation
   useEffect(() => {
@@ -70,8 +79,10 @@ const DashboardPage: React.FC = () => {
         case 'ArrowLeft':
           if (selectedItem > 1 && selectedItem !== 3) {
             setSelectedItem(prev => prev - 1);
+          } else if (selectedItem === 1) {
+            setSelectedItem(5);
           } else if (selectedItem === 3) {
-            setSelectedItem(1);
+            setSelectedItem(2);
           } else if (selectedItem === 4) {
             setSelectedItem(3);
           }
@@ -79,6 +90,8 @@ const DashboardPage: React.FC = () => {
         case 'ArrowRight':
           if (selectedItem < 5 && selectedItem !== 3) {
             setSelectedItem(prev => prev + 1);
+          } else if (selectedItem === 5) {
+            setSelectedItem(1);
           } else if (selectedItem === 3) {
             setSelectedItem(4);
           } else if (selectedItem === 2) {
@@ -86,12 +99,16 @@ const DashboardPage: React.FC = () => {
           }
           break;
         case 'ArrowUp':
-          if (selectedItem === 2) setSelectedItem(1);
-          if (selectedItem === 5) setSelectedItem(4);
+          if (selectedItem === 1) setSelectedItem(4);
+          if (selectedItem === 2) setSelectedItem(5);
+          if (selectedItem === 4) setSelectedItem(1);
+          if (selectedItem === 5) setSelectedItem(2);
           break;
         case 'ArrowDown':
-          if (selectedItem === 1) setSelectedItem(2);
-          if (selectedItem === 4) setSelectedItem(5);
+          if (selectedItem === 1) setSelectedItem(4);
+          if (selectedItem === 2) setSelectedItem(5);
+          if (selectedItem === 4) setSelectedItem(1);
+          if (selectedItem === 5) setSelectedItem(2);
           break;
         case 'Enter':
           if (selectedItem) {
@@ -133,7 +150,7 @@ const DashboardPage: React.FC = () => {
       
       <div className="flex-1 flex flex-col justify-center py-10 relative z-10">
         {/* Grid Layout */}
-        <div className="container mx-auto px-6 mt-auto mb-20">
+        <div className="container mx-auto flex justify-center mt-auto mb-20">
           <div className="grid grid-cols-5 gap-1 h-[500px]">
             {/* Column 1 Top - Documents */}
             <div 
@@ -152,19 +169,19 @@ const DashboardPage: React.FC = () => {
                 <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                 
                 <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
-                  selectedItem === 1 || hoveredItem === 1 ? 'bg-red-600' : 'bg-white'
+                  isItemActive(1) ? 'bg-red-600' : 'bg-white'
                 }`}>
                   <div className="flex items-center px-4 py-3 justify-between">
                     <div className="flex items-center space-x-3">
                       <FileText 
-                        className={`w-5 h-5 ${selectedItem === 1 || hoveredItem === 1 ? 'text-white' : 'text-black'}`} 
+                        className={`w-5 h-5 ${isItemActive(1) ? 'text-white' : 'text-black'}`} 
                       />
                       <div>
-                        <h3 className={`font-bold ${selectedItem === 1 || hoveredItem === 1 ? 'text-white' : 'text-black'}`}>
+                        <h3 className={`font-bold ${isItemActive(1) ? 'text-white' : 'text-black'}`}>
                           DOCUMENTS
                         </h3>
                         <p className={`text-xs ${
-                          selectedItem === 1 || hoveredItem === 1 ? 'text-white/80' : 'text-black/70'
+                          isItemActive(1) ? 'text-white/80' : 'text-black/70'
                         }`}>
                           Manage document workflows
                         </p>
@@ -192,19 +209,19 @@ const DashboardPage: React.FC = () => {
                 <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                 
                 <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
-                  selectedItem === 2 || hoveredItem === 2 ? 'bg-red-600' : 'bg-white'
+                  isItemActive(2) ? 'bg-red-600' : 'bg-white'
                 }`}>
                   <div className="flex items-center px-4 py-3 justify-between">
                     <div className="flex items-center space-x-3">
                       <History 
-                        className={`w-5 h-5 ${selectedItem === 2 || hoveredItem === 2 ? 'text-white' : 'text-black'}`} 
+                        className={`w-5 h-5 ${isItemActive(2) ? 'text-white' : 'text-black'}`} 
                       />
                       <div>
-                        <h3 className={`font-bold ${selectedItem === 2 || hoveredItem === 2 ? 'text-white' : 'text-black'}`}>
+                        <h3 className={`font-bold ${isItemActive(2) ? 'text-white' : 'text-black'}`}>
                           HISTORY
                         </h3>
                         <p className={`text-xs ${
-                          selectedItem === 2 || hoveredItem === 2 ? 'text-white/80' : 'text-black/70'
+                          isItemActive(2) ? 'text-white/80' : 'text-black/70'
                         }`}>
                           View generated documents
                         </p>
@@ -233,19 +250,19 @@ const DashboardPage: React.FC = () => {
               </div>
               
               <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
-                selectedItem === 3 || hoveredItem === 3 ? 'bg-red-600' : 'bg-white'
+                isItemActive(3) ? 'bg-red-600' : 'bg-white'
               }`}>
                 <div className="flex items-center px-4 py-3 justify-between">
                   <div className="flex items-center space-x-3">
                     <Briefcase 
-                      className={`w-5 h-5 ${selectedItem === 3 || hoveredItem === 3 ? 'text-white' : 'text-black'}`} 
+                      className={`w-5 h-5 ${isItemActive(3) ? 'text-white' : 'text-black'}`} 
                     />
                     <div>
-                      <h3 className={`font-bold ${selectedItem === 3 || hoveredItem === 3 ? 'text-white' : 'text-black'}`}>
+                      <h3 className={`font-bold ${isItemActive(3) ? 'text-white' : 'text-black'}`}>
                         PORTFOLIO
                       </h3>
                       <p className={`text-xs ${
-                        selectedItem === 3 || hoveredItem === 3 ? 'text-white/80' : 'text-black/70'
+                        isItemActive(3) ? 'text-white/80' : 'text-black/70'
                       }`}>
                         Service offerings
                       </p>
@@ -272,19 +289,19 @@ const DashboardPage: React.FC = () => {
                 <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                 
                 <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
-                  selectedItem === 4 || hoveredItem === 4 ? 'bg-red-600' : 'bg-white'
+                  isItemActive(4) ? 'bg-red-600' : 'bg-white'
                 }`}>
                   <div className="flex items-center px-4 py-3 justify-between">
                     <div className="flex items-center space-x-3">
                       <Receipt 
-                        className={`w-5 h-5 ${selectedItem === 4 || hoveredItem === 4 ? 'text-white' : 'text-black'}`} 
+                        className={`w-5 h-5 ${isItemActive(4) ? 'text-white' : 'text-black'}`} 
                       />
                       <div>
-                        <h3 className={`font-bold ${selectedItem === 4 || hoveredItem === 4 ? 'text-white' : 'text-black'}`}>
+                        <h3 className={`font-bold ${isItemActive(4) ? 'text-white' : 'text-black'}`}>
                           INVOICES
                         </h3>
                         <p className={`text-xs ${
-                          selectedItem === 4 || hoveredItem === 4 ? 'text-white/80' : 'text-black/70'
+                          isItemActive(4) ? 'text-white/80' : 'text-black/70'
                         }`}>
                           Create and manage invoices
                         </p>
@@ -312,19 +329,19 @@ const DashboardPage: React.FC = () => {
                 <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                 
                 <div className={`absolute bottom-0 left-0 right-0 transition-colors ${
-                  selectedItem === 5 || hoveredItem === 5 ? 'bg-red-600' : 'bg-white'
+                  isItemActive(5) ? 'bg-red-600' : 'bg-white'
                 }`}>
                   <div className="flex items-center px-4 py-3 justify-between">
                     <div className="flex items-center space-x-3">
                       <Settings 
-                        className={`w-5 h-5 ${selectedItem === 5 || hoveredItem === 5 ? 'text-white' : 'text-black'}`} 
+                        className={`w-5 h-5 ${isItemActive(5) ? 'text-white' : 'text-black'}`} 
                       />
                       <div>
-                        <h3 className={`font-bold ${selectedItem === 5 || hoveredItem === 5 ? 'text-white' : 'text-black'}`}>
+                        <h3 className={`font-bold ${isItemActive(5) ? 'text-white' : 'text-black'}`}>
                           SETTINGS
                         </h3>
                         <p className={`text-xs ${
-                          selectedItem === 5 || hoveredItem === 5 ? 'text-white/80' : 'text-black/70'
+                          isItemActive(5) ? 'text-white/80' : 'text-black/70'
                         }`}>
                           Configure application
                         </p>

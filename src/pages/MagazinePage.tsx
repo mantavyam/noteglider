@@ -146,7 +146,7 @@ const MagazinePage= () => {
         <div className="max-w-2xl mx-auto">
           {/* Back Button */}
           <motion.button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/documents')}
             className="mb-12 flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             whileHover={{ x: -4 }}
             whileTap={{ scale: 0.98 }}

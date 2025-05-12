@@ -15,7 +15,7 @@ const DocumentsPage: React.FC = () => {
       title: 'NEWSLETTER', 
       subTitle: 'Daily Notes',
       path: '/task',
-      image: 'https://images.pexels.com/photos/2169857/pexels-photo-2169857.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      image: '/landing-assets/landing-2.png',
       location: "NEWSLETTER"
     },
     { 
@@ -23,7 +23,7 @@ const DocumentsPage: React.FC = () => {
       title: 'COMPILATION', 
       subTitle: 'Weekly Compilation',
       path: '/compilation',
-      image: 'https://images.pexels.com/photos/1687845/pexels-photo-1687845.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      image: '/landing-assets/sample-weekly-compile-notesglider.png',
       location: 'COMPILATION'
     },
     { 
@@ -31,7 +31,7 @@ const DocumentsPage: React.FC = () => {
       title: 'MAGAZINE', 
       subTitle: 'Monthly Outlook',
       path: '/magazine',
-      image: 'https://images.pexels.com/photos/2131856/pexels-photo-2131856.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      image: '/landing-assets/landing-1.png',
       location: 'MAGAZINE'
     }
   ];
@@ -109,7 +109,7 @@ const DocumentsPage: React.FC = () => {
           alt={activeDocument.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-0"></div>
       </motion.div>
       
       {/* Content with proper z-index */}

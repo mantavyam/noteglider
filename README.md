@@ -103,7 +103,7 @@ tree -I 'venv|static|output|temp|node_modules|__pycache__|components'
 │   │   ├── DownloadPage.tsx
 │   │   ├── Index.tsx
 │   │   ├── NotFound.tsx
-│   │   └── TaskPage.tsx
+│   │   └── Newsletter.tsx
 │   ├── services
 │   │   └── api.ts
 │   └── vite-env.d.ts

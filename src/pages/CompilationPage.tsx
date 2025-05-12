@@ -121,7 +121,7 @@ const CompilationPage: React.FC = () => {
           <div className="flex items-center gap-4">
             <Button 
               variant="ghost" 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/documents')}
               className="p-2"
             >
               <ArrowLeft size={20} />
