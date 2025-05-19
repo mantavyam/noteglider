@@ -467,6 +467,77 @@ def process_zip_file(zip_file: UploadFile, request_dir: str) -> Dict[str, List[s
 
     return category_images
 
+def extract_highlights(html: str) -> tuple[str, list[str]]:
+    """Extract highlights section and return modified HTML and highlights list."""
+    soup = BeautifulSoup(html, 'html.parser')
+    highlights_section = None
+    highlights_list = []
+
+    # Find the HIGHLIGHTS section
+    for h1 in soup.find_all('h1'):
+        if 'HIGHLIGHTS OF THIS WEEK' in h1.text.strip().upper():
+            # Get all content until next h1
+            current = h1.next_sibling
+            while current and (not current.name == 'h1' if hasattr(current, 'name') else True):
+                if current.name == 'ul' or current.name == 'ol':
+                    for item in current.find_all('li'):
+                        highlights_list.append(item.text.strip())
+                current = current.next_sibling
+            
+            # Remove the section
+            current = h1
+            next_h1 = h1.find_next('h1')
+            while current and current != next_h1:
+                next_elem = current.next_sibling
+                current.decompose()
+                current = next_elem
+            break
+
+    logger.debug(f"Extracted {len(highlights_list)} highlights")
+    return str(soup), highlights_list
+
+def extract_index(html: str) -> tuple[str, list[tuple[str, str]]]:
+    """Extract index section and return modified HTML and index list."""
+    soup = BeautifulSoup(html, 'html.parser')
+    index_section = None
+    index_list = []
+
+    # Find the INDEX section
+    for h1 in soup.find_all('h1'):
+        if 'INDEX' in h1.text.strip().upper():
+            # Get all content until next h1
+            current = h1.next_sibling
+            while current and (not current.name == 'h1' if hasattr(current, 'name') else True):
+                if current.name == 'ul' or current.name == 'ol':
+                    for item in current.find_all('li'):
+                        index_list.append((item.text.strip(), 'x'))  # Default page number
+                current = current.next_sibling
+            
+            # Find and map page numbers
+            if index_list:
+                page_map = {}
+                current_page = 1
+                for tag in soup.find_all('h1'):
+                    heading = tag.text.strip().upper()
+                    if heading not in ['INDEX', 'HIGHLIGHTS OF THIS WEEK']:
+                        page_map[heading] = current_page
+                        current_page += 1
+                
+                # Update page numbers
+                index_list = [(text, str(page_map.get(text.upper(), 'x'))) for text, _ in index_list]
+            
+            # Remove the section
+            current = h1
+            next_h1 = h1.find_next('h1')
+            while current and current != next_h1:
+                next_elem = current.next_sibling
+                current.decompose()
+                current = next_elem
+            break
+
+    logger.debug(f"Extracted {len(index_list)} index items")
+    return str(soup), index_list
+
 async def generate_compilation(
     markdown_file: UploadFile,
     images_zip: UploadFile,
@@ -819,6 +890,25 @@ async def generate_compilation(
             full_width_tables_content = "<div class='full-width-tables-container'>" + "".join(full_width_tables_html) + "</div>"
             logger.debug(f"Generated {len(full_width_tables_html)} full-width tables")
 
+        # Extract highlights and index before other transformations
+        content_html, highlights_list = extract_highlights(content_html)
+        content_html, index_list = extract_index(content_html)
+
+        # Log extracted data
+        logger.debug("Highlights list: %s", highlights_list)
+        logger.debug("Index list: %s", index_list)
+
+        # Only render templates if we have data
+        highlights_html = ''
+        if highlights_list:
+            highlights_template = env.get_template('brandings/weekly/highlights.html')
+            highlights_html = highlights_template.render(highlights=highlights_list)
+
+        index_html = ''
+        if index_list:
+            index_template = env.get_template('brandings/weekly/wk-index.html')
+            index_html = index_template.render(index_items=index_list)
+
         content_html = wrap_h1_with_separator(content_html)
         logger.debug("Applied H1 separator transformation")
         content_html = wrap_tables(content_html)
@@ -874,6 +964,9 @@ async def generate_compilation(
             'header_constant_html': wk_header_constant_html,
             'content': content_html,
             'full_width_tables': full_width_tables_content,
+            'qa_content': qa_content,
+            'highlights_html': highlights_html,
+            'index_html': index_html
             'qa_content': qa_content
         }
 

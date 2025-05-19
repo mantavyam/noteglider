@@ -132,7 +132,7 @@ tree -I 'venv|static|output|temp|node_modules|__pycache__|components'
 │   │   ├── Index.tsx
 │   │   ├── MagazinePage.tsx
 │   │   ├── NotFound.tsx
-│   │   └── TaskPage.tsx
+│   │   └── Newsletter.tsx
 │   ├── services
 │   └── vite-env.d.ts
 ├── tailwind.config.ts

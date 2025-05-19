@@ -2,55 +2,181 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import Layout from '@/components/landing/Layout';
-import { Search, ArrowLeft, Server } from 'lucide-react';
+import { ArrowLeft, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { checkBackendStatus } from '@/services/api';
-import {toast} from 'sonner';
-import { FileText} from 'lucide-react';
 import PageTransition from '../components/PageTransition';
 
 // Categories data
 const categories = {
   main: [
-    'Appointments & Resignation',
-    'Awards & Recognition',
-    'Banking & Insurance',
-    'Books & Authors',
-    'Brand Ambassadors',
-    'Defence News',
-    'Festivals',
-    'GDP Forecast',
-    'Important Days',
-    'International News',
-    'MOU\'s & Partnership',
-    'National News',
-    'Obituaries',
-    'RBI & SEBI Corner',
-    'Reports & Indices',
-    'Science & Technology',
-    'Sports',
-    'State / UT News',
-    'Visits, Meetings & Summits',
+    {
+      id: 1,
+      name: 'Appointments & Resignation',
+      location: 'India',
+      image: '/landing-assets/landing-2.png',
+      difficulty: 'Normal',
+      progress: '14/105'
+    },
+    {
+      id: 2,
+      name: 'Awards & Recognition',
+      location: 'Paris',
+      image: '/landing-assets/landing-1.png',
+      difficulty: 'Medium',
+      progress: '8/35'
+    },
+    {
+      id: 3,
+      name: 'Banking & Insurance',
+      location: 'Bangkok',
+      image: '/landing-assets/landing-3.png',
+      difficulty: 'Hard',
+      progress: '3/12'
+    },
+    {
+      id: 4,
+      name: 'Books & Authors',
+      location: 'Marrakesh',
+      image: '/landing-assets/landing-4.png',
+      difficulty: 'Easy',
+      progress: '10/15'
+    },
+    {
+      id: 5,
+      name: 'Brand Ambassadors',
+      location: 'Tokyo',
+      image: '/landing-assets/sample-weekly-compile-notesglider.png',
+      difficulty: 'Normal',
+      progress: '5/20'
+    },
+    {
+      id: 6,
+      name: 'Defence News',
+      location: 'Berlin',
+      image: '/landing-assets/landing-3.png',
+      difficulty: 'Hard',
+      progress: '7/25'
+    },
+    {
+      id: 7,
+      name: 'Festivals',
+      location: 'Rio',
+      image: '/landing-assets/landing-4.png',
+      difficulty: 'Medium',
+      progress: '12/30'
+    },
   ],
   extras: [
-    'Tabular Data',
-    'Static Awareness',
-    'Current Affairs MCQs',
+    {
+      id: 101,
+      name: 'Tabular Data',
+      location: 'New York',
+      image: '/landing-assets/landing-1.png',
+      difficulty: 'Medium',
+      progress: '4/10'
+    },
+    {
+      id: 102,
+      name: 'Static Awareness',
+      location: 'London',
+      image: '/landing-assets/landing-2.png',
+      difficulty: 'Easy',
+      progress: '9/15'
+    },
+    {
+      id: 103,
+      name: 'Current Affairs MCQs',
+      location: 'Sydney',
+      image: '/landing-assets/landing-3.png',
+      difficulty: 'Hard',
+      progress: '2/20'
+    }
   ],
 };
 
-const MagazinePage= () => {
+interface CategoryProps {
+  category: {
+    id: number;
+    name: string;
+    location: string;
+    image: string;
+    difficulty: string;
+    progress: string;
+  };
+  isActive: boolean;
+  onClick: () => void;
+  tabType: 'main' | 'extras';
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}
+
+const CategoryCard: React.FC<CategoryProps> = ({ category, isActive, onClick, tabType, onMouseEnter, onMouseLeave }) => {
+  return (
+    <motion.div
+      key={category.id}
+      className={`relative flex-shrink-0 w-[300px] h-[400px] transition-all duration-300 ${
+        isActive ? 'scale-105 z-10 border-4 border-white' : 'scale-95 opacity-70 hover:border-4 hover:border-white'
+      }`}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      whileHover={{ scale: 1.05, opacity: 1 }}
+    >
+      {/* Main card */}
+      <div className="relative w-full h-full overflow-hidden">
+        <img
+          src={category.image}
+          alt={category.name}
+          className="w-full h-full object-cover"
+        />
+        
+        {/* Text overlay */}
+        <motion.div 
+          className={`absolute bottom-0 left-0 p-6 text-white ${isActive ? 'translate-y-[-80px]' : ''}`}
+          animate={isActive ? { translateY: -80 } : { translateY: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="mb-2 text-sm opacity-80">{tabType === 'main' ? 'MAIN' : 'EXTRA'}</div>
+          <h3 className="text-3xl font-bold mb-1">{category.name}</h3>
+        </motion.div>
+        
+        {/* Active indicator */}
+        {isActive && (
+          <motion.div 
+            initial={{ height: 0 }}
+            animate={{ height: '80px' }}
+            className="absolute bottom-0 left-0 w-full bg-white"
+          >
+            <div className="flex items-center justify-between px-4 h-full">
+              <div>
+                <div className="text-sm font-medium text-black">
+                  Difficulty Level: <span className="font-bold">{category.difficulty}</span>
+                </div>
+                <div className="text-xs text-gray-600">
+                  Challenge Completion: {category.progress}
+                </div>
+              </div>
+              <div className="bg-gray-800 p-2">
+                <ArrowLeft className="h-5 w-5 text-white rotate-[135deg]" />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
+const MagazinePage = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [markdownFile, setMarkdownFile] = useState<File | null>(null);
-  const [imagesZip, setImagesZip] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<'main' | 'extras'>('main');
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [backendConnected, setBackendConnected] = useState(false);
   const [isCheckingBackend, setIsCheckingBackend] = useState(true);
-  
   
   // Check if backend is available on component mount
   useEffect(() => {
@@ -60,6 +186,7 @@ const MagazinePage= () => {
         const status = await checkBackendStatus();
         setBackendConnected(status.status === 'online');
       } catch (error) {
+        console.error('Error checking backend status:', error);
         setBackendConnected(false);
       } finally {
         setIsCheckingBackend(false);
@@ -69,225 +196,214 @@ const MagazinePage= () => {
     checkBackend();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!backendConnected) {
-      toast.error('Backend service is not available. Please make sure the backend server is running.');
-      return;
-    }
+  // Filter categories based on search term
+  const filteredCategories = {
+    main: categories.main.filter(item => 
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ),
+    extras: categories.extras.filter(item => 
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  };
 
-    if (!markdownFile) {
-      toast.error('Please upload a Markdown file');
-      return;
-    }
-    
-    if (!imagesZip) {
-      toast.error('Please upload a ZIP file with images');
-      return;
-    }
-    setIsSubmitting(true);
-    
-    // Navigate to build page with the files
-    setTimeout(() => {
-      setIsSubmitting(false);
-      navigate('/build', { 
-        state: { 
-          markdownFile,
-          imagesZip,
-        } 
-      });
-    }, 500);
+  const activeCategories = filteredCategories[activeCategory];
+  
+  // Use hovered index if available, otherwise use selected index
+  const displayIndex = hoveredIndex !== null ? hoveredIndex : selectedIndex;
+
+  const handleSelectCategory = (index: number) => {
+    setSelectedIndex(index);
   };
   
-    // Filter categories based on search term
-  const filterCategories = (items: string[]) => {
-    return items.filter(item => 
-      item.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const handleMouseEnter = (index: number) => {
+    setHoveredIndex(index);
+  };
+  
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
   };
 
-  const handleSelectCategory = (category: string) => {
-    // Here you would navigate to the specific category layout
-    navigate('/task', { state: { category } });
+  const handleViewCategory = () => {
+    const category = activeCategories[selectedIndex];
+    navigate('/task', { state: { category: category.name } });
   };
 
-  // Prepare filtered categories
-  const filteredMainCategories = filterCategories(categories.main);
-  const filteredExtraCategories = filterCategories(categories.extras);
-  const staggerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'ArrowLeft':
+          setSelectedIndex(prev => (prev > 0 ? prev - 1 : activeCategories.length - 1));
+          setHoveredIndex(null);
+          break;
+        case 'ArrowRight':
+          setSelectedIndex(prev => (prev < activeCategories.length - 1 ? prev + 1 : 0));
+          setHoveredIndex(null);
+          break;
+        case 'Enter':
+          handleViewCategory();
+          break;
+        default:
+          break;
       }
-    }
-  };
-  
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
-    }
-  };
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedIndex, activeCategories]);
+
+  // Get active category for dynamic text display
+  const activeItem = activeCategories[displayIndex];
+
+  // Calculate visible cards range - only scroll when needed
+  const visibleStartIndex = Math.max(0, displayIndex - 2);
+
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-10 max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-6"
-        >
-                <PageTransition>
-        <div className="max-w-2xl mx-auto">
-          {/* Back Button */}
-          <motion.button
-            onClick={() => navigate('/')}
-            className="mb-12 flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            whileHover={{ x: -4 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
-          </motion.button>
-          
-          {/* Backend Status */}
+    <div className="min-h-screen w-full bg-black text-white overflow-hidden">
+      {/* Background overlay with opacity */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-zinc-900 to-black opacity-90"></div>
+      
+      {/* Grid pattern overlay */}
+      <div 
+        className="absolute inset-0 z-0 opacity-10"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
+          backgroundSize: '20px 20px'
+        }}
+      ></div>
+      
+      <div className="relative z-10 min-h-screen flex flex-col">
+        {/* Navigation Tabs using the TabsList from shadcn */}
+        <Tabs defaultValue="main" className="w-full mt-16">
+          <TabsList className="w-full grid grid-cols-2 h-12 bg-white">
+            <TabsTrigger 
+              value="main" 
+              className="data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold rounded-none h-full"
+              onClick={() => {
+                setActiveCategory('main');
+                setSelectedIndex(0);
+                setHoveredIndex(null);
+              }}
+            >
+              MAIN CATEGORIES
+            </TabsTrigger>
+            <TabsTrigger 
+              value="extras"
+              className="data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold rounded-none h-full"
+              onClick={() => {
+                setActiveCategory('extras');
+                setSelectedIndex(0);
+                setHoveredIndex(null);
+              }}
+            >
+              EXTRA CATEGORIES
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <PageTransition>
+          <div className="max-w-6xl mx-auto px-6 py-10">
+            {/* Back Button */}
+            <motion.button
+              onClick={() => navigate('/documents')}
+              className="mb-8 flex items-center text-sm font-medium text-gray-400 hover:text-white transition-colors"
+              whileHover={{ x: -4 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Documents
+            </motion.button>
+
+            {/* Category Cards Carousel */}
+            {activeCategories.length > 0 ? (
+              <div className="relative mt-12">
+                <div className="flex overflow-hidden space-x-4 py-8">
+                  <div 
+                    className="flex transition-transform duration-300 ease-out"
+                    style={{ transform: `translateX(-${visibleStartIndex * 320}px)` }}
+                  >
+                    {activeCategories.map((category, index) => (
+                      <CategoryCard 
+                        key={category.id}
+                        category={category}
+                        isActive={displayIndex === index}
+                        onClick={() => handleSelectCategory(index)}
+                        tabType={activeCategory}
+                        onMouseEnter={() => handleMouseEnter(index)}
+                        onMouseLeave={handleMouseLeave}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+                <p>No categories match your search</p>
+              </div>
+            )}
+          </div>
+        </PageTransition>
+        
+        {/* Dynamic Text Display at bottom (similar to Dashboard) */}
+        {activeItem && (
           <motion.div 
-            className={`mb-6 px-4 py-2 rounded-lg flex items-center ${
-              isCheckingBackend 
-              ? "bg-gray-100" 
-              : backendConnected 
-                ? "bg-green-50 text-green-700" 
-                : "bg-red-50 text-red-700"
-            }`}
+            key={activeItem?.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="container mx-auto px-6 mt-auto mb-20"
           >
-            <Server className="w-4 h-4 mr-2" />
-            <span className="text-sm">
-              {isCheckingBackend 
-                ? "Checking backend status..." 
-                : backendConnected 
-                  ? "Backend service is connected" 
-                  : "Backend service is not available. Please start the backend server."}
-            </span>
+            <h1 className="text-7xl font-bold tracking-tighter text-white/90">
+              {activeItem.name}
+            </h1>
+            <div className="h-1 w-20 bg-red-600 mt-2"></div>
           </motion.div>
-          {/* Page Title */}
-          <motion.div 
-            className="mb-10 text-center"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+        )}
+        
+        {/* Bottom Stats Bar with integrated search */}
+        <div className="fixed bottom-0 left-0 right-0 bg-zinc-800 px-6 py-3 flex justify-between items-center z-50 border-t border-zinc-700">
+          <div 
+            className="text-white font-light tracking-wider cursor-pointer"
+            onClick={() => navigate('/')}
           >
-            <h1 className="text-3xl font-bold">Monthly Magazine</h1>
-            <p className="text-muted-foreground mt-2">
-              Create the associated PDF from your intended Input Types
-            </p>
-          </motion.div>
-        </div>
-      </PageTransition>
-
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black" />
-            <Input 
-              type="search"
-              placeholder="Search categories..." 
-              className="pl-10 bg-white text-black"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            NOTESGLIDER @mantavyam
           </div>
-
-          {/* Main Categories Section */}
-          <section className="space-y-6">
-            <h2 className="text-xl font-semibold">Main Categories</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {filteredMainCategories.map((category, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2, delay: index * 0.05 }}
-                >
-                  <Card className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="bg-gradient-to-r from-blue-100 to-blue-200 rounded-t-lg">
-                    <div className="flex justify-between items-center">
-                      <CardTitle className="text-xl text-black"><h3 className="font-medium">{category}</h3></CardTitle>
-                      <FileText className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <CardDescription>Description Here</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-6 pb-2 bg-white">
-                    <h3 className="font-medium">{category}</h3>
-                  </CardContent>
-                  <CardFooter className="bg-white">
-                    <Button
-                      className="w-full bg-white hover:bg-gray-100 text-black border border-black"
-                      onClick={() => handleSelectCategory(category)}
-                    >
-                      Create Document
-                    </Button>
-                  </CardFooter>
-                </Card>
-                </motion.div>
-              ))}
+          
+          <div className="flex-1 mx-8 max-w-md">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input 
+                type="search"
+                placeholder="Search categories..." 
+                className="pl-10 h-8 bg-zinc-700 border-zinc-600 text-white text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-              
-            {filteredMainCategories.length === 0 && (
-              <div className="text-center py-10 text-gray-500">
-                No main categories match your search
-              </div>
-            )}
-          </section>
-
-          {/* Extra Categories Section */}
-          <section className="space-y-6">
-            <h2 className="text-xl font-semibold">Extra Categories</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {filteredExtraCategories.map((category, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2, delay: index * 0.05 }}
-                >
-                  <Card className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="bg-gradient-to-r from-blue-100 to-blue-200 rounded-t-lg">
-                    <div className="flex justify-between items-center">
-                      <CardTitle className="text-xl text-black"><h3 className="font-medium">{category}</h3></CardTitle>
-                      <FileText className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <CardDescription>Description Here</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-6 pb-2 bg-white">
-                    <h3 className="font-medium">{category}</h3>
-                  </CardContent>
-                  <CardFooter className="bg-white">
-                    <Button
-                      className="w-full bg-white hover:bg-gray-100 text-black border border-black"
-                      onClick={() => handleSelectCategory(category)}
-                    >
-                      Create Document
-                    </Button>
-                  </CardFooter>
-                </Card>
-                </motion.div>
-              ))}
-            </div>
-              
-            {filteredExtraCategories.length === 0 && (
-              <div className="text-center py-10 text-gray-500">
-                No extra categories match your search
-              </div>
-            )}
-          </section>
-        </motion.div>
+          </div>
+          
+          <div className="flex items-center">
+            <div className={`h-2 w-2 rounded-full mr-2 animate-pulse ${
+              isCheckingBackend 
+                ? "bg-yellow-500" 
+                : backendConnected 
+                  ? "bg-green-500" 
+                  : "bg-red-500"
+            }`}></div>
+            <span className="text-xs text-zinc-400">
+              {isCheckingBackend 
+                ? "CHECKING SYSTEM" 
+                : backendConnected 
+                  ? "SYSTEM ACTIVE" 
+                  : "SYSTEM INACTIVE"
+              }
+            </span>
+          </div>
+        </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

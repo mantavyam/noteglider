@@ -72,6 +72,9 @@
   <div class="highlight-container">
     <h1>Index</h1>
     <ol>
+      {% for text, page in index_items %}
+      <li><span>{{ text }}</span><span class="line"></span><span class="pg-numbering">{{ page }}</span></li>
+      {% endfor %}
       <li><span>News-Category</span><span class="line"></span><span class="pg-numbering">x</span></li>
       <li><span>News-Category</span><span class="line"></span><span class="pg-numbering">x</span></li>
     </ol>

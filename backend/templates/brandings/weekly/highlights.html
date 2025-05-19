@@ -59,6 +59,9 @@
     <h1>Highlights of this<br>Week’s Coverage</h1>
     <div class="lists">
         <ol type=1>
+        {% for highlight in highlights %}
+            <li>{{ highlight }}</li>
+        {% endfor %}
         <li>Highlight</li>
         </ol>
     </div>
