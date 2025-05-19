@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { checkBackendStatus } from '@/services/api';
+import { checkBackendStatus, generateCompilation, API_URL } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Layout from '@/components/landing/Layout';
@@ -29,7 +28,6 @@ const CompilationPage: React.FC = () => {
   const [markdownFile, setMarkdownFile] = useState<File | null>(null);
   const [zipFile, setZipFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagesZip, setImagesZip] = useState<File | null>(null);
   const [youtubeUrls, setYoutubeUrls] = useState<YouTubeUrlEntry[]>([
     { id: '1', url: '', date: undefined },
     { id: '2', url: '', date: undefined },
@@ -56,35 +54,57 @@ const CompilationPage: React.FC = () => {
       checkBackend();
     }, []);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       
       if (!backendConnected) {
-        toast.error('Backend service is not available. Please make sure the backend server is running.');
+        toast.error('Backend service is not available.');
         return;
       }
     
-      if (!markdownFile) {
-        toast.error('Please upload a Markdown file');
+      if (!markdownFile || !markdownFile.name.endsWith('.md')) {
+        toast.error('Please upload a valid Markdown file (.md)');
         return;
       }
     
-      if (!imagesZip) {
-        toast.error('Please upload a ZIP file with images');
+      if (!zipFile || !zipFile.name.endsWith('.zip')) {
+        toast.error('Please upload a valid ZIP file (.zip)');
         return;
       }
+    
       setIsSubmitting(true);
-      
-      // Navigate to build page with the files
-      setTimeout(() => {
+    
+      try {
+        const validYoutubeData = youtubeUrls
+          .filter(entry => entry.url && entry.date)
+          .map(entry => ({
+            url: entry.url,
+            date: entry.date ? format(entry.date, 'yyyy-MM-dd') : undefined
+          }))
+          .filter(entry => entry.date) as { url: string; date: string }[];
+    
+        const result = await generateCompilation(
+          markdownFile,
+          zipFile,
+          validYoutubeData.length > 0 ? validYoutubeData : undefined
+        );
+    
+        if (result.success) {
+          toast.success('Compilation generated successfully');
+          if (result.pdf_url) {
+            // Fix: Correctly construct the PDF URL
+            const pdfUrl = `http://localhost:8000${result.pdf_url}`;
+            window.open(pdfUrl, '_blank');
+          }
+        } else {
+          toast.error(result.message || 'Failed to generate compilation');
+        }
+      } catch (error) {
+        console.error('Submission error:', error);
+        toast.error(error instanceof Error ? error.message : 'Failed to generate compilation');
+      } finally {
         setIsSubmitting(false);
-        navigate('/build', { 
-          state: { 
-            markdownFile,
-            imagesZip,
-          } 
-        });
-      }, 500);
+      }
     };
 
   const handleYoutubeUrlChange = (id: string, value: string) => {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PDF Layout</title>
+    <title>Newsletter Document</title>
     <style>
         @font-face {
             font-family: 'Afacad';
@@ -78,6 +78,86 @@
             font-style: normal;
         }
 
+        @page {
+            size: A4 portrait;
+            margin-top: 15mm;
+            margin-bottom: 15mm;
+            margin-left: 0;
+            margin-right: 0;
+            
+            @top-center {
+                content: element(header);
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+            }
+            
+            @bottom-center {
+                content: element(footer) !important;
+                position: fixed;
+                bottom: 0;
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+                height: 15mm;
+            }
+        }
+
+        @page :first {
+            margin-top: 25mm;
+            margin-bottom: 15mm;
+            margin-left: 0;
+            margin-right: 0;
+            
+            @top-center {
+                content: element(first-header);
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+            }
+            
+            @bottom-center {
+                content: element(footer) !important;
+                position: fixed;
+                bottom: 0;
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+                height: 15mm;
+            }
+        }
+
+        #first-header {
+            position: running(first-header);
+            width: 210mm;
+            height: 25mm;
+            margin: 0 auto;
+            display: block;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        #header {
+            position: running(header);
+            width: 210mm;
+            height: 15mm;
+            margin: 0 auto;
+            display: block;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        #footer {
+            position: running(footer);
+            width: 210mm;
+            height: 15mm;
+            margin: 0 !important;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            box-sizing: border-box;
+        }
+
         /* Base styles */
         body {
             margin: 0;
@@ -88,19 +168,6 @@
             text-align: justify;
             widows: 2;
             orphans: 2;
-        }
-        
-        /* Text formatting styles */
-        strong, b {
-            font-weight: bold;
-        }
-        
-        em, i {
-            font-style: italic;
-        }
-        
-        u {
-            text-decoration: underline;
         }
 
         /* Main content container */
@@ -159,6 +226,16 @@
         .news-description {
             margin-top: 1pt;
             margin-bottom: 1pt;
+            text-align: justify;
+            padding-left: 5pt;  /* Space for bullet points */
+        }
+
+        /* Add specific styling for non-bullet content */
+        .news-description.non-bullet {
+            padding-left: 0;  /* Remove bullet point space */
+            text-indent: 0;   /* No indentation for regular paragraphs */
+            display: block;   /* Ensure block-level formatting */
+            font-weight: bold;
         }
 
         /* Separator styling */
@@ -168,7 +245,9 @@
             width: 100%;
             justify-content: center;
             max-width: 60mm;
-            margin: 1pt 0;
+            break-inside: avoid;
+            break-before: auto;
+            break-after: auto;
         }
         .separator-line {
             flex-grow: 1;
@@ -269,17 +348,11 @@
             margin-bottom: 1pt;
             text-align: justify;
         }
-        ul, ol {
-            margin-top: 1pt;
-            margin-bottom: 1pt;
-            padding-left: 15pt;
-            text-align: justify;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 1pt 0;
-            break-inside: avoid-column;
+            break-inside: auto;
         }
         th, td {
             border: 1px solid #ddd;
@@ -291,127 +364,114 @@
             color: white;
         }
         
-        /* Specific styles for full-width tables */
         .full-width-tables-container {
             margin-top: 2mm;
-            page-break-before: always;
         }
         
         .full-width-table {
             width: 100%;
             margin-bottom: 2mm;
             break-inside: auto;
-        }
-        
-        .full-width-table tr {
-            break-inside: avoid;
-        }
-        
-        .full-width-table .highlight-row {
-            background-color: #0097b2;
-            color: white;
-            text-align: center;
+            orphans: 3;
+            widows: 3;
         }
         
         .full-width-table thead {
             display: table-header-group;
         }
         
-        .full-width-table .thead-column-headers th {
-            background-color: #0097b2;
-            color: white;
-            font-weight: bold;
-            text-align: center;
+        .full-width-table tbody {
+            break-inside: auto;
         }
         
-        .full-width-table thead tr:first-child th {
-            text-align: center !important;
-            font-weight: bold;
+        .full-width-table tr {
+            break-inside: avoid;
         }
+
         hr.solid {
+            break-after: auto;
+            break-before: auto;
+            margin-bottom: 2mm;
             border-top: 1px solid #000000;
         }
+
+        /* Enhanced list and nested content styles - optimized for 3-column layout */
+        .nested-content {
+            margin-left: 5pt;  /* Reduced from 15pt for better column fit */
+            margin-top: 0.5pt;
+            margin-bottom: 0.5pt;
+        }
+
+        /* Refined indentation levels */
+        .indent-1 { margin-left: 5pt; }
+        .indent-2 { margin-left: 8pt; }
+        .indent-3 { margin-left: 11pt; }
+        .indent-4 { margin-left: 14pt; }
+
+        /* List styling optimization */
+        ol {
+            list-style-type: decimal;
+            margin: 0.5pt 0;
+            padding-left: 8pt;  /* Reduced padding */
+            text-align: justify;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin: 0.5pt 0;
+            padding-left: 5pt;  /* Slightly less than ol for visual balance */
+            text-align: justify;
+        }
+
+        li {
+            margin: 0.5pt 0;  /* Minimal spacing between items */
+            text-align: justify;
+            position: relative;  /* For better list marker positioning */
+        }
+
+        /* Nested list refinements */
+        li > ul,
+        li > ol {
+            margin: 0.5pt 0 0.5pt 8pt;  /* Top, right, bottom, left */
+            padding-left: 8pt;
+        }
+
+        .text-block {
+            margin: 0.5pt 0;
+            text-align: justify;
+            break-inside: auto;
+        }
+
+        /* Optimized list styles for 3-column layout */
+        .list-container {
+            margin: 0.5pt 0;
+            break-inside: avoid;
+        }
+        /* Text formatting styles */
+        strong, b { font-weight: bold; }
+        em, i { font-style: italic; }
+        u { text-decoration: underline; }
+        del { text-decoration: line-through; }
+        code {
+            font-family: monospace;
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        /* Add these specific styles for news items */
+        .news-item:last-child {
+            margin-bottom: 0;  /* Remove bottom margin from last item */
+        }
         
-        @page {
-            size: A4 portrait;
-            margin-top: 15mm;
-            margin-bottom: 15mm;
-            margin-left: 0;
-            margin-right: 0;
-            
-            @top-center {
-                content: element(header);
-                margin: 0;
-                padding: 0;
-                width: 210mm;
-            }
-            
-            @bottom-center {
-                content: element(footer) !important;
-                position: fixed;
-                bottom: 0;
-                margin: 0;
-                padding: 0;
-                width: 210mm;
-                height: 15mm;
-            }
+        .news-description-container:last-child {
+            margin-bottom: 0;  /* Remove bottom margin from last description */
         }
-
-        @page :first {
-            margin-top: 25mm;
-            margin-bottom: 15mm;
-            margin-left: 0;
-            margin-right: 0;
-            
-            @top-center {
-                content: element(first-header);
-                margin: 0;
-                padding: 0;
-                width: 210mm;
-            }
-            
-            @bottom-center {
-                content: element(footer) !important;
-                position: fixed;
-                bottom: 0;
-                margin: 0;
-                padding: 0;
-                width: 210mm;
-                height: 15mm;
-            }
+        
+        /* Ensure text content is properly spaced */
+        .news-item .news-description-container:last-child {
+            padding-bottom: 1em;  /* Add some padding to last content */
         }
-
-        #first-header {
-            position: running(first-header);
-            width: 210mm;
-            height: 25mm;
-            margin: 0 auto;
-            display: block;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
-        #header {
-            position: running(header);
-            width: 210mm;
-            height: 15mm;
-            margin: 0 auto;
-            display: block;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
-        #footer {
-            position: running(footer);
-            width: 210mm;
-            height: 15mm;
-            margin: 0 !important;
-            padding: 0;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            box-sizing: border-box;
-        }
-
     </style>
 </head>
 <body>

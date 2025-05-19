@@ -1,13 +1,9 @@
-<!--Header-Constant-->
 <style>
   .header,
   .header-content {
     width: 100%;
-    /* Match the container width */
     height: 15mm;
-    /* Fixed height matching the template */
     max-width: 210mm;
-    /* Max width of A4 */
     background-color: #0097b2;
     color: #ffffff;
     font-family: 'Afacad', Arial, sans-serif;
@@ -16,13 +12,9 @@
     justify-content: center;
     align-items: center;
     padding: 0;
-    /* Remove padding to ensure full height is used */
     margin: 0 auto;
-    /* Center the header */
     position: relative;
-    /* Ensure proper positioning */
     box-sizing: border-box;
-    /* Include padding in width calculation */
   }
 
   .header-row {
@@ -31,6 +23,7 @@
     white-space: nowrap;
     width: 100%;
     justify-content: center;
+    gap: 5px; /* Adds space between elements */
   }
 
   .title-row {
@@ -45,12 +38,14 @@
   }
 
   .youtube {
-    width: 25px;
-    height: 25px;
-    margin: 0 2mm;
-    background-image: url('file:///Users/mantavyam/Development/projects/noteglider/backend/static/icons/youtube.svg');
-    background-size: contain;
+    width: 20px;
+    height: 20px;
+    background-image: url(static/icons/youtube.svg);
     background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    display: inline-block;
+    flex-shrink: 0;
   }
 
   .link-text a {
@@ -58,23 +53,26 @@
     text-decoration: none;
     white-space: nowrap;
   }
+
+  .link-row a {
+    display: flex;
+    align-items: center;
+  }
 </style>
-<!-- Structure for header in subsequent pages only -->
+
 <div class="header-content">
-  <!-- First row: Title text -->
   <div class="header-row title-row">
     <span>IMPORTANT NEWS COVERAGE FOR ALL BANK EXAMS</span>
   </div>
-
-  <!-- Second row: Icons and link -->
   <div class="header-row link-row">
     <a href="{{ custom_url or 'https://www.youtube.com/@Studyniti/streams' }}" target="_blank">
       <div class="youtube"></div>
     </a>
 
     <span class="link-text">
-      <a href="{{ custom_url or 'https://www.youtube.com/@Studyniti/streams' }}" target="_blank"><u>[CLICK] to WATCH Today's NEWS Analysis +
-          Current Affairs</u></a>
+      <a href="{{ custom_url or 'https://www.youtube.com/@Studyniti/streams' }}" target="_blank">
+        <u>[CLICK] to WATCH Today's NEWS Analysis + Current Affairs</u>
+      </a>
     </span>
 
     <a href="{{ custom_url or 'https://www.youtube.com/@Studyniti/streams' }}" target="_blank">

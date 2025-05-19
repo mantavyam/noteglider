@@ -1,4 +1,3 @@
-<!-- Header-Main-->
 <style>
   .first-header, .header-container {
     width: 210mm;
@@ -10,8 +9,6 @@
     box-sizing: border-box;
     position: relative;
   }
-
-  /* Company name */
   .company-name {
     position: absolute;
     top: 6px;
@@ -21,8 +18,6 @@
     font-weight: 600;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   }
-
-  /* Tagline */
   .tagline {
     position: absolute;
     top: 8px;
@@ -32,8 +27,6 @@
     font-weight: 600;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   }
-
-  /* Connecting line */
   .connecting-line {
     position: absolute;
     top: 29.5px;
@@ -42,8 +35,6 @@
     height: 3px;
     background-color: white;
   }
-
-  /* Document type */
   .document-type {
     position: absolute;
     top: 28px;
@@ -62,8 +53,6 @@
     font-weight: 600;
     letter-spacing: 0px;
   }
-
-  /* YouTube section */
   .yt-section {
     position: absolute;
     top: 54px;
@@ -75,7 +64,7 @@
   .yt-icon {
     width: 30px;
     height: 30px;
-    background-image: url('file:///Users/mantavyam/Development/projects/noteglider/backend/static/icons/youtube.svg');
+    background-image: url(static/icons/youtube.svg);
     background-size: contain;
     background-repeat: no-repeat;
   }
@@ -93,7 +82,6 @@
     text-decoration: underline;
   }
 
-  /* Main branding */
   .branding {
     position: absolute;
     top: 25px;
@@ -103,7 +91,6 @@
     letter-spacing: 0em;
   }
 
-  /* Date section */
   .date-section {
     position: absolute;
     top: 12px;
@@ -123,7 +110,6 @@
     letter-spacing: 0px;
   }
 
-  /* Author section */
   .author {
     position: absolute;
     top: 60px;
@@ -135,23 +121,13 @@
   }
 </style>
 
-<!-- HTML version of Header-Main.svg -->
 <div class="header-container">
-  <!-- Company name -->
   <div class="company-name">Learning Niti</div>
-
-  <!-- Tagline -->
   <div class="tagline">ONE STOP SOLUTION FOR ALL BANKING EXAMS</div>
-
-  <!-- Connecting Line -->
   <div class="connecting-line"></div>
-
-  <!-- Document Type -->
   <div class="document-type">
     <div class="doc-label">DAILY NEWSLETTER</div>
   </div>
-
-  <!-- YouTube icon and link -->
   <div class="yt-section">
     <div class="yt-icon"></div>
     <div class="live-class-link">
@@ -159,15 +135,9 @@
       <a href="{{ custom_url or 'https://www.youtube.com/@Studyniti/featured' }}">NEWS Analysis + Current Affairs</a>
     </div>
   </div>
-
-  <!-- Main branding -->
   <div class="branding">CROSSWORD</div>
-
-  <!-- Date section -->
   <div class="date-section">
     <div class="date-label">{{ date }}</div>
   </div>
-
-  <!-- Author section -->
   <div class="author">By: Kapil Kathpal</div>
 </div>

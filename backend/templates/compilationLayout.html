@@ -107,6 +107,11 @@
             margin-bottom: 15mm;
             margin-left: 0;
             margin-right: 0;
+            margin-top: 25mm;
+            margin-bottom: 15mm;
+            margin-left: 0;
+            margin-right: 0;
+            width: 120mm;
             @top-center {
                 content: element(first-header);
                 margin: 0;
@@ -174,7 +179,14 @@
             padding-right: 10mm;
             box-sizing: border-box;
         }
-
+        /* Content area with three columns */
+        .content-area {
+            width: 190mm;
+            column-count: 3;
+            column-gap: 5mm;
+            column-rule: 1px solid #000000;
+            column-fill: balance;
+        }
         /* News item styling */
         .news-item {
             margin-bottom: 1pt;
@@ -601,6 +613,7 @@
     </div>
 
     <!-- Existing content container -->
+    <!-- Update the content structure -->
     <div class="container">
         <div class="content-area">
             {{ content | safe }}

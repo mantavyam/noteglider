@@ -23,6 +23,8 @@ This is a FastAPI backend service that generates PDF newsletters from Markdown a
    or for backend in reload mode
    ```
    uvicorn main:app --reload --reload-dir=templates --host 0.0.0.0 --port 8000
+   uvicorn main:app --reload --reload-dir=templates 
+   uvicorn main:app --reload --reload-dir=processing --reload-dir=templates 
    ```
 
 The API will be available at http://localhost:8000
@@ -33,6 +35,3 @@ The API will be available at http://localhost:8000
 - `GET /api/download/{filename}`: Download a generated PDF
 - `GET /api/status`: Check if the backend is running
 
-## Frontend Integration
-
-Make sure the frontend is configured to communicate with these endpoints.
